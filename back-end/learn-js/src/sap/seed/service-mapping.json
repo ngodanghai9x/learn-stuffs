@@ -1,0 +1,22 @@
+{
+  "activity": {
+    "directoryName": "activity-service",
+    "servicePath": "sap/c4c/odata/v1/c4codataapi",
+    "npmPackageName": "activity-service"
+  },
+  "contact": {
+    "directoryName": "contact-service",
+    "servicePath": "sap/c4c/odata/v1/c4codataapi",
+    "npmPackageName": "contact-service"
+  },
+  "lead": {
+    "directoryName": "lead-service",
+    "servicePath": "sap/c4c/odata/v1/c4codataapi",
+    "npmPackageName": "lead-service"
+  },
+  "opportunity": {
+    "directoryName": "opportunity-service",
+    "servicePath": "sap/c4c/odata/v1/c4codataapi",
+    "npmPackageName": "opportunity-service"
+  }
+}

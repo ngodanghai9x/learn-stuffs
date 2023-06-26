@@ -1,0 +1,199 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "editor.suggestSelection": "first",
+  "editor.detectIndentation": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.formatOnSave": false,
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "files.autoSave": "off",
+  "explorer.confirmDelete": false,
+  "explorer.compactFolders": false,
+  "javascript.updateImportsOnFileMove.enabled": "never",
+  "debug.allowBreakpointsEverywhere": true,
+  "vsicons.dontShowNewVersionMessage": true,
+  "eslint.format.enable": false,
+  "editor.hover.enabled": true,
+  "editor.hover.delay": 500,
+  "files.eol": "\n",
+  "code-runner.executorMap": {
+    "typescript": "node -r ts-node/register",
+    "javascript": "node"
+  },
+  "better-comments.multilineComments": true,
+  "better-comments.highlightPlainText": false,
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "?",
+      "color": "#3498DB",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "//",
+      "color": "#474747",
+      "strikethrough": true,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "todo",
+      "color": "#FF8C00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "*",
+      "color": "#98C379",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    }
+  ],
+  "python.formatting.autopep8Args": [
+    "--max-line-length",
+    "135",
+    "--experimental"
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "editor.tabSize": 2,
+  "editor.fontSize": 14,
+  "workbench.editor.wrapTabs": true,
+  "cSpell.userWords": [
+    "Apix",
+    "Banksy",
+    "dataplatform",
+    "Datetime",
+    "Fintech",
+    "fundings",
+    "fundraisings",
+    "Insurtech",
+    "linkedin",
+    "nestjs",
+    "Pressable",
+    "Regtech",
+    "setex",
+    "Streamable",
+    "typeorm"
+  ],
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    // "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "workbench.settings.editor": "json",
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "sync.gist": "71863a40078174e707f0dc91f0aa1279",
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "terminal.integrated.profiles.windows": {
+    "Git Bash": {
+      "source": "Git Bash",
+      "icon": "terminal-bash",
+      "path": "G:\\Program Files\\Git\\bin\\bash.exe"
+    },
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Windows PowerShell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.shell.windows": "G:\\Program Files\\Git\\bin\\bash.exe",
+  // "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-bash.exe",
+  "files.exclude": {
+    "node_modules/": true
+  },
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "git.confirmSync": false,
+  "ManageVulnerableCodeHighlight": "Highlight All Issues",
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "tabnine.experimentalAutoImports": true,
+  "remote.SSH.remotePlatform": {
+    "172.16.11.19": "linux",
+    "103.157.218.97": "linux"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "workbench.startupEditor": "none",
+  "commentTranslate.hover.concise": false,
+  "commentTranslate.hover.string": true,
+  "commentTranslate.hover.content": true,
+  "commentTranslate.multiLineMerge": true,
+  "commentTranslate.hover.nearShow": true,
+  "commentTranslate.hover.variable": true,
+  "commentTranslate.source": "Google",
+  "commentTranslate.targetLanguage": "en",
+  "commentTranslate.ignore": [
+    // {
+    //   "languageId": "javascript,typescript,javascriptreact,typescriptreact",
+    //   "regular": "[\\*\\s]+"
+    // },
+    // {
+    //   "languageId": "dart",
+    //   "regular": "[\\s|/]+"
+    // }
+  ],
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "githubPullRequests.pullBranch": "never",
+  "hardhat.telemetry": true,
+  "yaml.schemas": {
+    "file:///c%3A/Users/MSI/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+  },
+  "workbench.colorCustomizations": {},
+  "diffEditor.ignoreTrimWhitespace": false,
+  "redhat.telemetry.enabled": true,
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

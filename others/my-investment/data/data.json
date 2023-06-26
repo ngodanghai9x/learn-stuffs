@@ -1,0 +1,83 @@
+[
+  {
+    "shareCode": "E1VFVN30",
+    "shareName": "Quỹ ETF VFMVN30",
+    "shareUnit": 100,
+    "price": 23.90,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "shareCode": "E1VFVN30",
+    "shareName": "Quỹ ETF VFMVN30",
+    "shareUnit": 100,
+    "price": 23.88,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 100,
+    "price": 7.06,
+    "createdOn": "03/08/2021"
+  },
+  {
+    "shareCode": "VNM",
+    "shareName": "CTCP Sữa Việt Nam",
+    "shareUnit": 100,
+    "price": 86.90,
+    "createdOn": "06/08/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 100,
+    "price": 7.45,
+    "createdOn": "09/08/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 100,
+    "price": 7.38,
+    "createdOn": "13/08/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 100,
+    "price": 7.35,
+    "createdOn": "13/08/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 200,
+    "price": 7.05,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "shareCode": "VIC",
+    "shareName": "Tập đoàn VINGROUP - CTCP",
+    "shareUnit": 100,
+    "price": 97.50,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "shareCode": "TCB",
+    "shareName": "Ngân hàng TMCP Kỹ thương Việt Nam",
+    "shareUnit": 100,
+    "price": 50.20,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "shareCode": "HNG",
+    "shareName": "CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai",
+    "shareUnit": 200,
+    "price": 7.04,
+    "createdOn": "23/08/2021"
+  },
+  
+  {
+    "data": "[{\"shareCode\":\"E1VFVN30\",\"shareName\":\"Quỹ ETF VFMVN30\",\"shareUnit\":100,\"price\":23.9,\"createdOn\":\"\"},{\"shareCode\":\"E1VFVN30\",\"shareName\":\"Quỹ ETF VFMVN30\",\"shareUnit\":100,\"price\":23.88,\"createdOn\":\"23/07/2021\"},{\"shareCode\":\"HNG\",\"shareName\":\"CTCP Nông nghiệp Quốc tế Hoàng Anh Gia Lai\",\"shareUnit\":100,\"price\":7.1,\"createdOn\":\"03/08/2021\"}]"
+  }
+]

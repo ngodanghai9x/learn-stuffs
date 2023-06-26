@@ -1,0 +1,153 @@
+<html>
+  <head>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/sha256.min.js"
+    ></script>
+  </head>
+
+  <body>
+    <h2>Danh sách các giao dịch sau khi đào Block trong Blockchain:</h2>
+    <button type="button" onclick="run()">Run</button>
+    <p id="loading"></p>
+    <pre id="DanhSachGiaoDichSauKhiDao"></pre>
+    <br />
+
+    <script>
+      /*=== ĐÂY LÀ CLASS MÔ TẢ CẤU TRÚC CỦA MỘT BLOCK. MỘT PHẦN TỬ CỦA BLOCKCHAIN ===*/
+      class Block {
+        constructor(NgayGioTao, DuLieu, HashTruocDo = "") {
+          //Để tạo ra một Block chúng ta cần truyền vào các tham số như sau:
+          this.NgayGioTao = NgayGioTao; //Ngày tháng hiện tại tạo ra Block này
+          this.DuLieu = DuLieu; //Dữ liệu sẽ được lưu trong BLock này. Nó có thể là bất cứ cái gì, từ String, Array, Object JSON...
+          this.HashTruocDo = HashTruocDo; //Lưu trữ Hash của Block ngay trước Block này. Vì các Block sẽ được nối lại thành chuỗi (mảng).
+          this.Hash = this.TinhToanHash(); //Mã hóa toàn bộ nội dung của BLock này theo thuật toán SHA256 và lưu lại vào chính Block này.
+          this.GiaTriTuTang = 0; //THÊM VÀO Giá trị tự tăng của Block
+        }
+        TinhToanHash() {
+          //Hàm mã hóa nội dung của toàn bộ Block. Do đó ta cần lấy toàn bộ các thuộc tính của Block đưa vào SHA256 để mã hóa ra một chuỗi.
+          return CryptoJS.SHA256(
+            this.HashTruocDo +
+              this.NgayTao +
+              JSON.stringify(this.DuLieu) +
+              this.GiaTriTuTang
+          ).toString(); //chú ý: JSON.stringify(this.DuLieu) sẽ convert biến Object this.DuLieu thành chuỗi
+        }
+
+        DaoBlock(DoKho) {
+          while (this.Hash.substring(0, DoKho) !== Array(DoKho + 1).join("0")) {
+            //Kiểm tra xem giá trị Hash hiện tại đã đạt đủ số 0 ở đầu tiên như yêu vầu về độ khó đặt ra chưa. Lặp đi lặp lại hàm cho đến khi tìm được giá trị Hash đáp ứng yêu cầu.
+            this.GiaTriTuTang++; //Tăng giá trị trong Block lên, để Hash mỗi lần sẽ nhận được một giá trị khác nhau. Nếu Hash không có 2 hoặc n số 0 ở đầu thì sẽ không đạt yêu cầu và phải tiếp tục Hash cái khác.
+            this.Hash = this.TinhToanHash(); //Tính toán lại Hash của toàn bộ Block ứng với lần tăng này.
+          }
+          console.log("Đã đào xong Block: " + this.Hash); //Nếu đã tìm được Hash thì ta coi đấy là một lần "đào" (hashing) thành công.
+        }
+      }
+      /*=== ĐÂY LÀ CLASS MÔ TẢ CẤU TRÚC CỦA MỘT BLOCKCHAIN. LÀ MỘT MẢNG CÁC BLOCK ===*/
+      class Blockchain {
+        constructor() {
+          //Cấu trúc của Blockchain như sau
+          this.MangBlock = []; //Tạo ra một mảng rỗng để chứa các Block.
+          this.MangBlock.push(new Block("01/01/2018", "Genesis Block", "0")); //Tạo phần tử đầu tiên của Blockchain. Đây thường được gọi là Genesis Block, hay chính là "phần tử khởi tạo". Các phần tử tiếp theo sẽ nối tiếp vào phần tử này.
+
+          //this.DoKho = 3;  //Với độ khó này thì chỉ 0.5 giây sẽ Hash được 1 block.
+          this.DoKho = 4; //Với độ khó này thì 3 giây sẽ Hash được 1 block.
+          //this.DoKho = 5; //Với độ khó này thì 20 giây sẽ Hash được 1 block.
+        }
+
+        PhanTuCuoiCung() {
+          return this.MangBlock[this.MangBlock.length - 1]; //Lấy ra phần tử cuối cùng của Blockchain
+        }
+
+        TaoMoiBlock(newBlock) {
+          //Hàm dùng để thêm mới một Block vào Blockchain.
+          newBlock.HashTruocDo = this.PhanTuCuoiCung().Hash; //Lấy Hash của phần tử cuối cùng của mảng và lưu vào HasTruocDo của phần tử này
+          //newBlock.Hash = newBlock.TinhToanHash(); //Lúc này ta không tính toán Hash đơn thuần nữa mà phải "đào" thì mới có Hash cho Block mới.
+          newBlock.DaoBlock(this.DoKho);
+          this.MangBlock.push(newBlock); //Nối phần tử newBlock vào làm phần tử cuối cùng của mảng Blockchain sau khi đã "đào" được.
+        }
+
+        KiemTraTinhToanVen() {
+          for (let i = 1; i < this.MangBlock.length; i++) {
+            const BlockHienTai = this.MangBlock[i]; //Lấy ra phần tử ở vị trí hiện tại
+            const BlockTruocDo = this.MangBlock[i - 1]; //Lấy ra phần tử ở ngay trước vị trí hiện tại
+            if (BlockHienTai.Hash !== BlockHienTai.TinhToanHash()) {
+              //Kiểm tra lại Hash của toàn bộ Block hiện tại và Hash đã lưu xem có trùng nhau không.
+              return false; //Nếu không trùng tức là Dữ liệu trong Block hiện tạiđã bị chỉnh sửa, hàm KiemTraToanVen sẽ trả về false luôn.
+            }
+            if (BlockHienTai.HashTruocDo !== BlockTruocDo.Hash) {
+              //Lấy Hash hiện tại và Hash phần tử trước đó đã lưu xem có trùng nhau không.
+              return false; //Nếu không trùng tức là Hash của Block hiện tại đã bị chỉnh sửa, hàm KiemTraToanVen sẽ trả về false luôn.
+            }
+          }
+          return true; //Nếu kiểm tra hết toàn bộ trong vòng For mà không vấn đề gì thì tức là Blockchain vẫn toàn vẹn, chưa bị sửa đổi.
+        }
+      }
+
+      /*=== BẮT ĐẦU TEST CÁC CHỨC NĂNG CỦA BLOCKCHAIN VỪA TẠO  ===*/
+      function run() {
+        document.getElementById("loading").textContent = "running...";
+        console.log("running...");
+        setTimeout(executeDaoCoin, 10);
+      }
+      async function executeDaoCoin() {
+        var MyCoin = new Blockchain(); //Tạo mới một Blockchain để chứa các giao dịch.
+        MyCoin.TaoMoiBlock(
+          new Block("02/01/2018", {
+            NguoiGui: "Ong A",
+            NguoiNhan: "Ba B",
+            Tien: 350,
+          })
+        ); //Thêm một giao dịch mới, Data là một Object chứa nội dung chuyển tiền
+
+        MyCoin.TaoMoiBlock(
+          new Block("03/01/2018", {
+            NguoiGui: "Ba B",
+            NguoiNhan: "Ong C",
+            Tien: 200,
+          })
+        ); //Thêm một giao dịch mới, Data là một Object chứa nội dung chuyển tiền
+
+        MyCoin.TaoMoiBlock(
+          new Block("03/01/2018", {
+            NguoiGui: "Thim B",
+            NguoiNhan: "Duong C",
+            Tien: 150,
+          })
+        ); //Thêm một giao dịch mới, Data là một Object chứa nội dung chuyển tiền
+
+        //Hiển thị toàn bộ Blockchain sau khi đã đào hết các Block (được thêm vào)
+        document.getElementById("DanhSachGiaoDichSauKhiDao").innerHTML =
+          JSON.stringify(MyCoin, null, 2);
+        document.getElementById("loading").innerHTML = "";
+      }
+
+      function mounted() {
+        // First check if the script already exists on the dom
+        // by searching for an id
+        let id = "googleMaps";
+        if (document.getElementById(id) === null) {
+          let script = document.createElement("script");
+          script.setAttribute(
+            "src",
+            "https://maps.googleapis.com/maps/api/js?key=" + null
+          );
+          script.setAttribute("id", id);
+          document.body.appendChild(script);
+
+          // now wait for it to load...
+          script.onload = () => {
+            // script has loaded, you can now use it safely
+            console.log("thank me later");
+            // ... do something with the newly loaded script
+          };
+        }
+      }
+      setTimeout(mounted, 1000);
+    </script>
+  </body>
+</html>

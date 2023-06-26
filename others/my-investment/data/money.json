@@ -1,0 +1,176 @@
+[
+  {
+    "type": 1,
+    "description": "",
+    "amount": 500000,
+    "createdOn": "22/07/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 2000000,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 500000,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 2000000,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 500000,
+    "createdOn": "30/07/2021"
+  },
+  {
+    "type": 2,
+    "description": "",
+    "amount": 11,
+    "createdOn": "30/07/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 4360003,
+    "createdOn": "05/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 4036637,
+    "createdOn": "05/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 333003,
+    "createdOn": "06/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 710000,
+    "createdOn": "06/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 1500000,
+    "createdOn": "09/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 17175674,
+    "createdOn": "20/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 400000,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "type": 1,
+    "description": "",
+    "amount": 50000,
+    "createdOn": "23/08/2021"
+  },
+
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -2388,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -2390,
+    "createdOn": "23/07/2021"
+  },
+  {
+    "type": 0,
+    "description": "",
+    "amount": -10,
+    "createdOn": "30/07/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -706,
+    "createdOn": "04/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -8690,
+    "createdOn": "06/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -745,
+    "createdOn": "09/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -738,
+    "createdOn": "13/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -735,
+    "createdOn": "13/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -1410,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -9750,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -5020,
+    "createdOn": "23/08/2021"
+  },
+  {
+    "type": 0,
+    "description": "Phi mua co phieu",
+    "amount": -1408,
+    "createdOn": "23/08/2021"
+  },
+    {
+    "type": 1,
+    "description": "",
+    "amount": 9241305,
+    "createdOn": "01/09/2021"
+  },
+   {
+    "type": 1,
+    "description": "",
+    "amount": 7750000,
+    "createdOn": "01/09/2021"
+  },
+  {
+    "cacLoaiPhi": 0,
+    "napTKCK": 1,
+    "laiTienGui": 2
+  }
+]

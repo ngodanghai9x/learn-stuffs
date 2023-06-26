@@ -1,0 +1,7 @@
+{
+  "activity": {
+    "directoryName": "activity-service",
+    "servicePath": "sap/c4c/odata/v1/c4codataapi",
+    "npmPackageName": "activity-service"
+  }
+}

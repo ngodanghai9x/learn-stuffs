@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
+}
+
+model Companies {
+  @@map("companies")
+  id                    Int                     @id(map: "PK_d4bc3e82a314fa9e29f652c2c22") @default(autoincrement())
+  website               String                  @db.VarChar
+  email                 String                  @db.VarChar
+  employee_to_companies Employee_to_companies[]
+}
+
+model Employee_to_companies {
+  @@map("employee_to_companies")
+  employeeToCompanyId Int       @id(map: "PK_56114d65eb93ed7e00fc5ccac90") @default(autoincrement())
+  employeeId          Int
+  companyId           Int
+  order               Int
+  companies           Companies @relation(fields: [companyId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9347f53698172b971f903ebcc04")
+  employees           Employees @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_e755744bf6c814ad7686aed2394")
+}
+
+model Employees {
+  @@map("employees")
+  id                    Int                     @id(map: "PK_b9535a98350d5b26e7eb0c26af4") @default(autoincrement())
+  name                  String                  @db.VarChar
+  employee_to_companies Employee_to_companies[]
+}
+
+model Migrations {
+  @@map("migrations")
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model Roles {
+  @@map("roles")
+  id          Int     @id(map: "PK_c1433d71a4838793a49dcad46ab") @default(autoincrement())
+  role_name   String  @db.VarChar
+  description String  @db.VarChar
+  users       Users[]
+}
+
+model User_details {
+  @@map("user_details")
+  id          Int     @id(map: "PK_fb08394d3f499b9e441cab9ca51") @default(autoincrement())
+  more_detail String? @db.VarChar
+  user_id     Int     @unique(map: "REL_ef1a1915f99bcf7a87049f7449")
+  users       Users   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ef1a1915f99bcf7a87049f74494")
+}
+
+model Users {
+  @@map("users")
+  id                 Int           @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(autoincrement())
+  username           String        @unique(map: "UQ_fe0bb3f6520ee0469504521e710") @db.VarChar
+  password           String        @db.VarChar
+  full_name          String        @db.VarChar
+  role_id            Int
+  email              String        @db.VarChar
+  phone              String?       @db.VarChar
+  birthday           DateTime?     @db.Date
+  bank_number        String?       @db.VarChar
+  anti_phishing_code String?       @db.VarChar
+  user_status        String        @default("") @db.VarChar
+  created_at         DateTime      @default(dbgenerated("('now'::text)::timestamp(6) with time zone")) @db.Timestamp(6)
+  updated_at         DateTime      @default(dbgenerated("('now'::text)::timestamp(6) with time zone")) @db.Timestamp(6)
+  decimal            Decimal?      @db.Decimal
+  money              Decimal?      @db.Money
+  user_details       User_details?
+  roles              Roles         @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a2cecd1a3531c0b041e29ba46e1")
+}

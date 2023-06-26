@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul class="list" onclick="click()">
+      <li>
+        <input type="checkbox" data-index="0" id="item0" />
+        <label for="item0">JS</label>
+      </li>
+
+      <li>
+        <input type="checkbox" data-index="1" id="item1" />
+        <label for="item1">Java</label>
+      </li>
+
+      <li>
+        <input type="checkbox" data-index="2" id="item2" />
+        <label for="item2">Python</label>
+      </li>
+    </ul>
+  </body>
+  <script type="text/javascript">
+    function toggleDone(event) {
+      if (!event.target.matches('input')) return;
+      console.log(event.target);
+      // Event Delegation: giúp cho một đối tượng để xử lý một sự kiện, mà không yêu cầu đối tượng đó được gắn với sự kiện. 
+      // Điều này cho phép cho các đối tượng có thể chia sẻ các sự kiện của họ với những đối tượng khác mà không phải liên 
+      // kết chúng trực tiếp
+    }
+    const ul = document.querySelector('.list');
+    ul.addEventListener('click', toggleDone); // add nhiều đc, k như set thẳng vào sẽ bị ghi đè
+  </script>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head><title>My First Chrome Extension</title></head>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="font-awesome.css">
+  <style>
+    body {
+      font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+      font-size: 100%;
+    }
+    a, a:focus {
+      display: inline-block;
+      outline: none;
+    }
+    #tag {
+      min-width: 200px;
+    }
+    .image {
+      max-width: 200px;
+    }
+    #content {
+      text-align: center;
+    }
+  </style>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <input id="tag" value="funny"/>
+        </div>
+        <div class="col-md-4">
+          <button id="getGif">Get</button>
+        </div>
+        <div class="col-md-12">
+          <div id="content"></div>
+        </div>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

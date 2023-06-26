@@ -1,0 +1,30 @@
+:root {
+  --color-default: #efefef; }
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit; }
+
+html {
+  font-size: 62.5%; }
+  html body .header {
+    background-color: linear-gradient(to right bottom, rgba(0, 132, 255, 0.8), rgba(98, 177, 251, 0.8));
+    color: var(--color-default); }
+  @media (max-width: 600px) {
+    html body .test-mixin {
+      color: blue; } }
+  @media (max-width: 1500px) {
+    html body .test-mixin {
+      font-size: 75%; } }
+  @media (max-width: 1200px) {
+    html body .test-mixin {
+      font-size: 62.5%; } }
+  @media (max-width: 900px) {
+    html body .test-mixin {
+      font-size: 50%; } }
+  @media (max-width: 600px) {
+    html body .test-mixin {
+      font-size: 37.5%; } }

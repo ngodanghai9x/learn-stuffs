@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<!-- saved from url=(0067)https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js -->
+<html ng-app="app" class="ng-scope mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}</style>
+    <!-- Standard Meta -->
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+      <meta name="description" content="Node.js, về cơ bản, là một môi trường đơn luồng (singlethreaded) để thực thi các mã code JavaScript ở phía server (serverside). Code JavaScript mà ...">
+  <meta property="og:title" content="Xử lí bất đồng bộ song song trong Node.js">
+  <meta property="og:site_name" content="kipalog.com">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js">
+  <meta property="og:description" content="Node.js, về cơ bản, là một môi trường đơn luồng (singlethreaded) để thực thi các mã code JavaScript ở phía server (serverside). Code JavaScript mà ...">
+    <meta property="og:image" content="https://s3-ap-southeast-1.amazonaws.com/kipalog.com/tt138jj5a5_parallel-process.jpg">
+
+    <!-- Site Properities -->
+    <title>
+        Xử lí bất đồng bộ song song trong Node.js
+
+    </title>
+    <link rel="stylesheet" media="all" href="./Xử lí bất đồng bộ song song trong Node.js_files/application-9815c6983322fbc9f3673223bc3a4824.css" data-turbolinks-track="true">
+      <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/github_customized-baa81a062c703084f6468af7ed11abcf.css">
+  <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.atwho-1dda4d2e26a7a1bf5135a2d0d89af6ba.css">
+  <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/post-2a9ed4a27200fd71d1ebf2aa725ba675.css">
+  <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/gist-b512c4e789c4485b5c42b996e94292ee.css">
+  <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/minEmoji-3f954e52b4faa0c55774f68aae196093.css">
+  <link rel="stylesheet" media="screen" href="./Xử lí bất đồng bộ song song trong Node.js_files/fluidbox.min-b7d59935dca521e96ed0387752c78939.css">
+
+    <script src="./Xử lí bất đồng bộ song song trong Node.js_files/sdk.js.download" async="" crossorigin="anonymous"></script><script id="facebook-jssdk" src="./Xử lí bất đồng bộ song song trong Node.js_files/sdk.js(1).download"></script><script async="" src="./Xử lí bất đồng bộ song song trong Node.js_files/analytics.js.download"></script><script src="./Xử lí bất đồng bộ song song trong Node.js_files/application-661818bc49d4d02e2c2c2cda76c5fc54.js.download" data-turbolinks-track="true"></script>
+      <script src="./Xử lí bất đồng bộ song song trong Node.js_files/highlight.pack-218330d372ffaf1488f3fd3e9573b544.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/marked-26e713452b72ffd02010080f84aae3f4.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.autosize.min-b2791112cce3a44a65afe861d8e80235.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.caret-08593f1b5104cd9f4323d118bda85474.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.atwho-6d15e21c0412811cf60b20d67802d37e.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/toc-1b4d605d732b024e8fb0468b4e59142b.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jMinEmoji-e205dd4a7ac9045932a6ab36d6889d25.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.ba-throttle-debounce.min-a537dbf157d354ac27e3ae4ae10077f7.js.download"></script>
+  <script src="./Xử lí bất đồng bộ song song trong Node.js_files/jquery.fluidbox.min-4602a49ec97fdb924e62125fee4299c6.js.download"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://kipalog.com/assets/common/icon/favicon-0012be545f31d78afbebf7519fe41219.ico">
+
+    <!-- GA -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-53121223-2', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    <!-- GA -->
+  <style type="text/css" data-styled-components="FiaaB gTcftA caPIRE" data-styled-components-is-local="true">
+/* sc-component-id: sc-keyframes-FiaaB */
+@-webkit-keyframes FiaaB{100%{-webkit-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg);}}@keyframes FiaaB{100%{-webkit-transform:rotate(360deg);-ms-transform:rotate(360deg);transform:rotate(360deg);}}
+/* sc-component-id: sc-keyframes-gTcftA */
+@-webkit-keyframes gTcftA{10%,90%{-webkit-transform:translate3d(-1px,0,0);-ms-transform:translate3d(-1px,0,0);transform:translate3d(-1px,0,0);}20%,80%{-webkit-transform:translate3d(2px,0,0);-ms-transform:translate3d(2px,0,0);transform:translate3d(2px,0,0);}30%,50%,70%{-webkit-transform:translate3d(-4px,0,0);-ms-transform:translate3d(-4px,0,0);transform:translate3d(-4px,0,0);}40%,60%{-webkit-transform:translate3d(4px,0,0);-ms-transform:translate3d(4px,0,0);transform:translate3d(4px,0,0);}}@keyframes gTcftA{10%,90%{-webkit-transform:translate3d(-1px,0,0);-ms-transform:translate3d(-1px,0,0);transform:translate3d(-1px,0,0);}20%,80%{-webkit-transform:translate3d(2px,0,0);-ms-transform:translate3d(2px,0,0);transform:translate3d(2px,0,0);}30%,50%,70%{-webkit-transform:translate3d(-4px,0,0);-ms-transform:translate3d(-4px,0,0);transform:translate3d(-4px,0,0);}40%,60%{-webkit-transform:translate3d(4px,0,0);-ms-transform:translate3d(4px,0,0);transform:translate3d(4px,0,0);}}
+/* sc-component-id: sc-keyframes-caPIRE */
+@-webkit-keyframes caPIRE{0%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}20%{-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}40%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}60%{-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}80%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}100%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}}@keyframes caPIRE{0%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}20%{-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}40%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}60%{-webkit-transform:scale(1);-ms-transform:scale(1);transform:scale(1);}80%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}100%{-webkit-transform:scale(.75);-ms-transform:scale(.75);transform:scale(.75);}}</style><style>@-webkit-keyframes swal2-show{0%{-webkit-transform:scale(.7);transform:scale(.7)}45%{-webkit-transform:scale(1.05);transform:scale(1.05)}80%{-webkit-transform:scale(.95);transform:scale(.95)}100%{-webkit-transform:scale(1);transform:scale(1)}}@keyframes swal2-show{0%{-webkit-transform:scale(.7);transform:scale(.7)}45%{-webkit-transform:scale(1.05);transform:scale(1.05)}80%{-webkit-transform:scale(.95);transform:scale(.95)}100%{-webkit-transform:scale(1);transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(.5);transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{-webkit-transform:scale(1);transform:scale(1);opacity:1}100%{-webkit-transform:scale(.5);transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}5%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}12%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}100%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}5%{-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}12%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}100%{-webkit-transform:rotate(-405deg);transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}50%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}80%{margin-top:-.375em;-webkit-transform:scale(1.15);transform:scale(1.15)}100%{margin-top:0;-webkit-transform:scale(1);transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}50%{margin-top:1.625em;-webkit-transform:scale(.4);transform:scale(.4);opacity:0}80%{margin-top:-.375em;-webkit-transform:scale(1.15);transform:scale(1.15)}100%{margin-top:0;-webkit-transform:scale(1);transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{-webkit-transform:rotateX(100deg);transform:rotateX(100deg);opacity:0}100%{-webkit-transform:rotateX(0);transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{-webkit-transform:rotateX(100deg);transform:rotateX(100deg);opacity:0}100%{-webkit-transform:rotateX(0);transform:rotateX(0);opacity:1}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{flex-direction:column;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}.swal2-popup.swal2-toast{flex-direction:row;align-items:center;width:auto;padding:.625em;box-shadow:0 0 .625em #d9d9d9;overflow-y:hidden}.swal2-popup.swal2-toast .swal2-header{flex-direction:row}.swal2-popup.swal2-toast .swal2-title{flex-grow:1;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:initial;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon-text{font-size:2em;font-weight:700;line-height:1em}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:2em;height:2.8125em;-webkit-transform:rotate(45deg);transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.25em;left:-.9375em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:2em 2em;transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;-webkit-transform-origin:0 2em;transform-origin:0 2em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:showSweetToast .5s;animation:showSweetToast .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:hideSweetToast .2s forwards;animation:hideSweetToast .2s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:animate-toast-success-tip .75s;animation:animate-toast-success-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:animate-toast-success-long .75s;animation:animate-toast-success-long .75s}@-webkit-keyframes showSweetToast{0%{-webkit-transform:translateY(-.625em) rotateZ(2deg);transform:translateY(-.625em) rotateZ(2deg);opacity:0}33%{-webkit-transform:translateY(0) rotateZ(-2deg);transform:translateY(0) rotateZ(-2deg);opacity:.5}66%{-webkit-transform:translateY(.3125em) rotateZ(2deg);transform:translateY(.3125em) rotateZ(2deg);opacity:.7}100%{-webkit-transform:translateY(0) rotateZ(0);transform:translateY(0) rotateZ(0);opacity:1}}@keyframes showSweetToast{0%{-webkit-transform:translateY(-.625em) rotateZ(2deg);transform:translateY(-.625em) rotateZ(2deg);opacity:0}33%{-webkit-transform:translateY(0) rotateZ(-2deg);transform:translateY(0) rotateZ(-2deg);opacity:.5}66%{-webkit-transform:translateY(.3125em) rotateZ(2deg);transform:translateY(.3125em) rotateZ(2deg);opacity:.7}100%{-webkit-transform:translateY(0) rotateZ(0);transform:translateY(0) rotateZ(0);opacity:1}}@-webkit-keyframes hideSweetToast{0%{opacity:1}33%{opacity:.5}100%{-webkit-transform:rotateZ(1deg);transform:rotateZ(1deg);opacity:0}}@keyframes hideSweetToast{0%{opacity:1}33%{opacity:.5}100%{-webkit-transform:rotateZ(1deg);transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes animate-toast-success-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes animate-toast-success-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes animate-toast-success-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes animate-toast-success-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;-webkit-transform:translateY(-50%);transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;-webkit-transform:translateX(-50%);transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}.swal2-container{display:flex;position:fixed;top:0;right:0;bottom:0;left:0;flex-direction:row;align-items:center;justify-content:center;padding:10px;background-color:transparent;z-index:1060;overflow-x:hidden;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{align-items:flex-start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{align-items:flex-start;justify-content:flex-end}.swal2-container.swal2-center{align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{align-items:center;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{align-items:center;justify-content:flex-end}.swal2-container.swal2-bottom{align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{align-items:flex-end;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{align-items:flex-end;justify-content:flex-end}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:flex!important;flex:1;align-self:stretch;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container.swal2-grow-column{flex:1;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-fade{transition:background-color .1s}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;flex-direction:column;justify-content:center;width:32em;max-width:100%;padding:1.25em;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem;box-sizing:border-box}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-popup .swal2-header{display:flex;flex-direction:column;align-items:center}.swal2-popup .swal2-title{display:block;position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-popup .swal2-actions{flex-wrap:wrap;align-items:center;justify-content:center;margin:1.25em auto 0;z-index:1}.swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-popup .swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-popup .swal2-actions.swal2-loading .swal2-styled.swal2-confirm{width:2.5em;height:2.5em;margin:.46875em;padding:0;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;box-sizing:border-box;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-popup .swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-popup .swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{display:inline-block;width:15px;height:15px;margin-left:5px;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff;content:'';-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal}.swal2-popup .swal2-styled{margin:.3125em;padding:.625em 2em;font-weight:500;box-shadow:none}.swal2-popup .swal2-styled:not([disabled]){cursor:pointer}.swal2-popup .swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-popup .swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-popup .swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-popup .swal2-styled::-moz-focus-inner{border:0}.swal2-popup .swal2-footer{justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-popup .swal2-image{max-width:100%;margin:1.25em auto}.swal2-popup .swal2-close{position:absolute;top:0;right:0;justify-content:center;width:1.2em;height:1.2em;padding:0;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer;overflow:hidden}.swal2-popup .swal2-close:hover{-webkit-transform:none;transform:none;color:#f27474}.swal2-popup>.swal2-checkbox,.swal2-popup>.swal2-file,.swal2-popup>.swal2-input,.swal2-popup>.swal2-radio,.swal2-popup>.swal2-select,.swal2-popup>.swal2-textarea{display:none}.swal2-popup .swal2-content{justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:300;line-height:normal;z-index:1;word-wrap:break-word}.swal2-popup #swal2-content{text-align:center}.swal2-popup .swal2-checkbox,.swal2-popup .swal2-file,.swal2-popup .swal2-input,.swal2-popup .swal2-radio,.swal2-popup .swal2-select,.swal2-popup .swal2-textarea{margin:1em auto}.swal2-popup .swal2-file,.swal2-popup .swal2-input,.swal2-popup .swal2-textarea{width:100%;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;font-size:1.125em;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);box-sizing:border-box}.swal2-popup .swal2-file.swal2-inputerror,.swal2-popup .swal2-input.swal2-inputerror,.swal2-popup .swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-popup .swal2-file:focus,.swal2-popup .swal2-input:focus,.swal2-popup .swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-popup .swal2-file::-webkit-input-placeholder,.swal2-popup .swal2-input::-webkit-input-placeholder,.swal2-popup .swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-popup .swal2-file:-ms-input-placeholder,.swal2-popup .swal2-input:-ms-input-placeholder,.swal2-popup .swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-popup .swal2-file::-ms-input-placeholder,.swal2-popup .swal2-input::-ms-input-placeholder,.swal2-popup .swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-popup .swal2-file::placeholder,.swal2-popup .swal2-input::placeholder,.swal2-popup .swal2-textarea::placeholder{color:#ccc}.swal2-popup .swal2-range input{width:80%}.swal2-popup .swal2-range output{width:20%;font-weight:600;text-align:center}.swal2-popup .swal2-range input,.swal2-popup .swal2-range output{height:2.625em;margin:1em auto;padding:0;font-size:1.125em;line-height:2.625em}.swal2-popup .swal2-input{height:2.625em;padding:0 .75em}.swal2-popup .swal2-input[type=number]{max-width:10em}.swal2-popup .swal2-file{font-size:1.125em}.swal2-popup .swal2-textarea{height:6.75em;padding:.75em}.swal2-popup .swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;color:#545454;font-size:1.125em}.swal2-popup .swal2-checkbox,.swal2-popup .swal2-radio{align-items:center;justify-content:center}.swal2-popup .swal2-checkbox label,.swal2-popup .swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-popup .swal2-checkbox input,.swal2-popup .swal2-radio input{margin:0 .4em}.swal2-popup .swal2-validation-message{display:none;align-items:center;justify-content:center;padding:.625em;background:#f0f0f0;color:#666;font-size:1em;font-weight:300;overflow:hidden}.swal2-popup .swal2-validation-message::before{display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center;content:'!';zoom:normal}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}.swal2-icon{position:relative;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;border:.25em solid transparent;border-radius:50%;line-height:5em;cursor:default;box-sizing:content-box;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;zoom:normal}.swal2-icon-text{font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;-webkit-transform:rotate(45deg);transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:3.75em 3.75em;transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);-webkit-transform-origin:0 3.75em;transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;top:-.25em;left:-.25em;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%;z-index:2;box-sizing:content-box}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;top:.5em;left:1.625em;width:.4375em;height:5.625em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);z-index:1}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;height:.3125em;border-radius:.125em;background-color:#a5dc86;z-index:2}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;-webkit-transform:rotate(-45deg);transform:rotate(-45deg)}.swal2-progresssteps{align-items:center;margin:0 0 1.25em;padding:0;font-weight:600}.swal2-progresssteps li{display:inline-block;position:relative}.swal2-progresssteps .swal2-progresscircle{width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center;z-index:20}.swal2-progresssteps .swal2-progresscircle:first-child{margin-left:0}.swal2-progresssteps .swal2-progresscircle:last-child{margin-right:0}.swal2-progresssteps .swal2-progresscircle.swal2-activeprogressstep{background:#3085d6}.swal2-progresssteps .swal2-progresscircle.swal2-activeprogressstep~.swal2-progresscircle{background:#add8e6}.swal2-progresssteps .swal2-progresscircle.swal2-activeprogressstep~.swal2-progressline{background:#add8e6}.swal2-progresssteps .swal2-progressline{width:2.5em;height:.4em;margin:0 -1px;background:#3085d6;z-index:10}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@-webkit-keyframes swal2-rotate-loading{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:initial!important}}</style><style>
+      .ejoy-sub-active{
+        color: #1296ba !important;
+      }
+      
+      .ejoy-sub-hovered{
+        color: #1296ba !important;
+      }
+      .ejoy-sub-clzz{
+        cursor: pointer;
+        
+        lineHeight: 1.2;
+          font-size: 28px;
+          color: #FFCC00; background: rgba(17, 17, 17, 0.7);
+        
+      }
+      .ejoy-sub-clzz:hover{
+        color: #1296ba !important;
+      }
+      .ej-trans-sub{
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999999;
+        cursor: move;
+      }
+      .ej-trans-sub > span{
+        color: #3CF9ED;
+        font-size: 18px;
+        text-align: center;
+        padding: 0 16px;
+        line-height: 1.5;
+        background: rgba(32, 26, 25, 0.8);
+        // text-shadow: 0px 1px 4px black;
+        padding: 0 8px;
+        
+        lineHeight: 1.2;
+        font-size: 16px;
+        color: #0CB1C7; background: rgba(67, 65, 65, 0.7);
+      
+      }
+      .ej-main-sub{
+        position: absolute;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999999;
+        cursor: move;
+        padding: 0 8px;
+      }
+      .ej-main-sub > span{
+        color: white;
+        font-size: 20px;
+        line-height: 1.5;
+        text-align: center;
+        background: rgba(32, 26, 25, 0.8);
+        // text-shadow: 0px 1px 4px black;
+        padding: 2px 8px;
+        
+        lineHeight: 1.2;
+          font-size: 28px;
+          color: #FFCC00; background: rgba(17, 17, 17, 0.7);
+        
+      }
+
+      .ej-main-sub .ejoy-sub-clzz{
+        background: transparent !important
+      }
+
+      .tran-subtitle > span{
+        cursor: pointer;
+        padding-left: 10px;
+        top: 2px;
+        position: relative;
+      }
+
+      .tran-subtitle > span > span{
+        position: absolute;
+        top: -170%;
+        background: rgba(0,0,0,0.5);
+        font-size: 13px;
+        line-height: 20px;
+        padding: 2px 8px;
+        color: white;
+        display: none;
+        border-radius: 4px;
+        white-space: nowrap;
+        left: -50%;
+        font-weight: normal;
+      }
+
+      .view-icon-copy-main-sub:hover > span, .view-icon-edit-sub:hover > span, .view-icon-copy-tran-sub:hover > span {
+        display: block;
+      }
+
+      .tran-subtitle > span > svg{
+        width: 16px;
+        height: 16px;
+        pointer-events: none;
+        display: inline-flex !important;
+        vertical-align: baseline !important;
+      }
+      
+      .view-icon-copy-main-sub > svg{
+        pointer-events: none;
+        color: #FFCC00
+      }
+
+      .view-icon-copy-tran-sub{
+        padding-left: 0 !important;
+        padding-right: 8px !important;
+      }
+      .view-icon-copy-tran-sub > svg{
+        pointer-events: none;
+        color: #0CB1C7
+      }
+
+
+      </style><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css" data-fbcssmodules="css:fb.css.base css:fb.css.dialog css:fb.css.iframewidget css:fb.css.customer_chat_plugin_iframe">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_dialog_advanced{border-radius:8px;padding:10px}.fb_dialog_content{background:#fff;color:#373737}.fb_dialog_close_icon{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{left:5px;right:auto;top:5px}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{height:100%;left:0;margin:0;overflow:visible;position:absolute;top:-10000px;transform:none;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{background:none;height:auto;min-height:initial;min-width:initial;width:auto}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{clear:both;color:#fff;display:block;font-size:18px;padding-top:20px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .4);bottom:0;left:0;min-height:100%;position:absolute;right:0;top:0;width:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_mobile .fb_dialog_iframe{position:sticky;top:0}.fb_dialog_content .dialog_header{background:linear-gradient(from(#738aba), to(#2c4987));border-bottom:1px solid;border-color:#043b87;box-shadow:white 0 1px 1px -1px inset;color:#fff;font:bold 14px Helvetica, sans-serif;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:linear-gradient(from(#4267B2), to(#2a4887));background-clip:padding-box;border:1px solid #29487d;border-radius:3px;display:inline-block;line-height:18px;margin-top:3px;max-width:85px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{background:none;border:none;color:#fff;font:bold 12px Helvetica, sans-serif;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #4a4a4a;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f5f6f7;border:1px solid #4a4a4a;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-position:50% 50%;background-repeat:no-repeat;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}
+.fb_mpn_mobile_landing_page_slide_out{animation-duration:200ms;animation-name:fb_mpn_landing_page_slide_out;transition-timing-function:ease-in}.fb_mpn_mobile_landing_page_slide_out_from_left{animation-duration:200ms;animation-name:fb_mpn_landing_page_slide_out_from_left;transition-timing-function:ease-in}.fb_mpn_mobile_landing_page_slide_up{animation-duration:500ms;animation-name:fb_mpn_landing_page_slide_up;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_in{animation-duration:300ms;animation-name:fb_mpn_bounce_in;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_out{animation-duration:300ms;animation-name:fb_mpn_bounce_out;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_out_v2{animation-duration:300ms;animation-name:fb_mpn_fade_out;transition-timing-function:ease-in}.fb_customer_chat_bounce_in_v2{animation-duration:300ms;animation-name:fb_bounce_in_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_in_from_left{animation-duration:300ms;animation-name:fb_bounce_in_from_left;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_v2{animation-duration:300ms;animation-name:fb_bounce_out_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_from_left{animation-duration:300ms;animation-name:fb_bounce_out_from_left;transition-timing-function:ease-in}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}@keyframes fb_mpn_landing_page_slide_out{0%{margin:0 12px;width:100% - 24px}60%{border-radius:18px}100%{border-radius:50%;margin:0 24px;width:60px}}@keyframes fb_mpn_landing_page_slide_out_from_left{0%{left:12px;width:100% - 24px}60%{border-radius:18px}100%{border-radius:50%;left:12px;width:60px}}@keyframes fb_mpn_landing_page_slide_up{0%{bottom:0;opacity:0}100%{bottom:24px;opacity:1}}@keyframes fb_mpn_bounce_in{0%{opacity:.5;top:100%}100%{opacity:1;top:0}}@keyframes fb_mpn_fade_out{0%{bottom:30px;opacity:1}100%{bottom:0;opacity:0}}@keyframes fb_mpn_bounce_out{0%{opacity:1;top:0}100%{opacity:.5;top:100%}}@keyframes fb_bounce_in_v2{0%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}50%{transform:scale(1.03, 1.03);transform-origin:bottom right}100%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}}@keyframes fb_bounce_in_from_left{0%{opacity:0;transform:scale(0, 0);transform-origin:bottom left}50%{transform:scale(1.03, 1.03);transform-origin:bottom left}100%{opacity:1;transform:scale(1, 1);transform-origin:bottom left}}@keyframes fb_bounce_out_v2{0%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}100%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}}@keyframes fb_bounce_out_from_left{0%{opacity:1;transform:scale(1, 1);transform-origin:bottom left}100%{opacity:0;transform:scale(0, 0);transform-origin:bottom left}}@keyframes slideInFromBottom{0%{opacity:.1;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}@keyframes slideInFromBottomDelay{0%{opacity:0;transform:translateY(100%)}97%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}</style></head>
+  <body data-new-gr-c-s-check-loaded="14.1019.0" data-gr-ext-installed=""><div id="MathJax_Message" style="display: none;"></div>
+
+    <header class="master-header ng-scope" ng-controller="HeaderController">
+  <div class="ui transparent inverted main menu page grid">
+    <div class="middle aligned column header-container">
+      <!-- Left -->
+      <!-- Logo -->
+      <p class="logo item">
+        <a href="https://kipalog.com/">
+          <img class="ui image" src="./Xử lí bất đồng bộ song song trong Node.js_files/logo-ad4139a13c114109ec8c121c7e2b379e.png">
+</a>      </p>
+      <!-- Search filed -->
+      <form id="search-form" class="ui search item ng-pristine ng-valid" method="GET" action="https://kipalog.com/search">
+        <div class="ui icon input">
+          <input id="search-field" name="q" class="focus-popup" type="text" placeholder="Tìm kiếm" autocomplete="off" data-content="&lt;span&gt;Nhập từ và &lt;/span&gt;&lt;div class=&#39;enter-button&#39;&gt;&lt;span&gt;enter &lt;/span&gt;&lt;i class=&#39;clockwise rotated level down icon&#39;&gt;&lt;/i&gt;&lt;/div&gt;&lt;span&gt; để bắt đầu tìm kiếm&lt;/span&gt;" data-position="bottom center" data-offset="7">
+        </div>
+      </form>
+
+      <!-- JS variable of logged-in or guest -->
+      <input type="hidden" ng-init="userLoggedIn=false">
+
+      <!-- Logged in header -->
+      <!-- Anonymous header -->
+        <div class="right menu">
+          <!-- Signin btn -->
+          <div class="anonymous item btn">
+            <a class="ui basic inverted button" href="https://kipalog.com/users/sign_in#login">
+              <i class="sign in icon"></i>
+              Đăng nhập
+</a>          </div>
+          <!-- Signup btn -->
+          <div class="anonymous item btn">
+            <a class="ui green button" href="https://kipalog.com/">
+              <i class="user icon"></i>
+              Đăng ký
+</a>          </div>
+        </div>
+    </div>
+  </div>
+</header>
+
+    <div class="ui small confirm modal" id="semanticAlert">
+  <i class="close icon"></i>
+  <div class="header">
+    Chú ý
+  </div>
+  <div class="content">
+    <div class="left">
+      <i class="orange warning icon"></i>
+    </div>
+    <div class="right">
+      <p class="message">
+      </p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui circular orange button">
+      Ok
+    </div>
+  </div>
+</div>
+
+    <main class="master-body" scrollable-to-top="" data-target=".scroll-top">
+      <!-- Facebook SDK -->
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1403286366560425',
+      xfbml      : true,
+      version    : 'v2.3'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<script type="text/javascript" src="./Xử lí bất đồng bộ song song trong Node.js_files/MathJax.js.download">
+</script>
+<script type="text/x-mathjax-config;executed=true">
+  MathJax.Hub.Config({
+    skipStartupTypeset: true,
+    showProcessingMessages: false,
+    tex2jax: {
+      inlineMath: [['$','$'],['\\(','\\)']]
+    }
+  });
+</script>
+
+<!--post delete modal confirmation-->
+<div class="ui small confirm modal" id="postDelete">
+  <i class="close icon"></i>
+  <div class="header">
+    Xóa bài viết
+  </div>
+  <div class="content">
+    <div class="left">
+      <i class="trash icon"></i>
+    </div>
+    <div class="right">
+      <p>
+        Bạn có chắc chắn muốn xóa bài viết này không ?
+      </p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui circular black button">
+      Không
+    </div>
+    <div class="ui circular positive button">
+      Có
+    </div>
+  </div>
+</div>
+
+<div class="ui small confirm modal" id="commentDelete">
+  <i class="close icon"></i>
+  <div class="header">
+    Xóa bình luận
+  </div>
+  <div class="content">
+    <div class="left">
+      <i class="trash icon"></i>
+    </div>
+    <div class="right">
+      <p>
+        Bạn có chắc chắn muốn xóa bình luận này không ?
+      </p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui circular black button">
+      Không
+    </div>
+    <div class="ui circular positive button">
+      Có
+    </div>
+  </div>
+</div>
+
+<!-- Join Modal-->
+<div class="ui signin modal join-modal" id="login-modal">
+  <i class="close icon"></i>
+  <div class="ui center aligned teal header pc">
+    Chào bạn! Hãy đăng ký hoặc đăng nhập để tiếp tục nhé!
+  </div>
+  <span class="ui center aligned teal header smartphone">
+    Kipalog
+  </span>
+
+  <div class="content">
+
+    <div class="ui two column middle aligned grid basic segment">
+      <div class="equal height row">
+        <!-- Login column -->
+        <div class="column">
+          <!-- SignIn form - place Sign In URL here -->
+          <form class="ui form segment ng-pristine ng-valid" id="new_user" action="https://kipalog.com/users/sign_in" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="1Ti7f3T8mmoGlFw3iJ2pS9L196ZpZHaLMJ/HaWkqmKApwxaZ0WMcm+8wN6TldBrfsJPNB/H3mKRcfzgmva2zAQ==">
+            <input type="hidden" name="from" id="from" value="home">
+            <div class="field">
+              <!-- Place Sign Up URL here -->
+              <input type="hidden" id="signUpURL" value="/users">
+            </div>
+            <div class="field">
+              <div class="ui left labeled icon input">
+                <input autofocus="autofocus" placeholder="Email" type="email" value="" name="user[email]" id="user_email">
+                <i class="mail icon"></i>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui left labeled icon input">
+                <input autocomplete="off" placeholder="Password" type="password" name="user[password]" id="user_password">
+                <i class="lock icon"></i>
+              </div>
+            </div>
+            <div class="two fluid ui buttons">
+              <input class="ui teal submit button" type="submit" id="signin" value="Đăng nhập">
+              <div class="or"></div>
+              <input class="ui orange button signup-kick" type="submit" id="signup" value="Đăng ký" data-target=".ui.form" data-endpoint="#signUpURL">
+            </div>
+</form>        <!-- Divider -->
+        <div class="ui horizontal divider">
+          or
+        </div>
+        </div>
+        <!-- Divider -->
+        <div class="ui vertical divider">
+          or
+        </div>
+        <!-- Social column -->
+        <div class="center aligned column">
+          <!-- facebook -->
+          <a class="ui facebook button" href="https://kipalog.com/users/auth/facebook">
+            <i class="facebook icon"></i>
+            facebook
+</a>          <!-- twitter -->
+          <a class="ui twitter button" href="https://kipalog.com/users/auth/twitter">
+            <i class="twitter icon"></i>
+            twitter
+</a>          <!-- github-->
+          <a class="ui black button" href="https://kipalog.com/users/auth/github">
+            <i class="github icon"></i>
+            github
+</a>        </div>
+      </div>
+    </div>
+    <br>
+    <!-- Info message -->
+    <div class="ui message">
+      <p>
+        <i class="info icon"></i>
+        Bạn luôn có thể lựa chọn email hoặc các tài khoản mạng xã hội để đăng nhập hoặc đăng ký.
+      </p>
+    </div>
+    <br>
+  </div>
+</div>
+
+
+<div class="ui divided page grid ng-scope" ng-controller="PostController">
+  <div class="twelve wide column md-col">
+    <!-- Markdown header here -->
+    <h1 class="ui teal block fluid header">
+      <strong>Xử lí bất đồng bộ song song trong Node.js</strong>
+      <div class="tag">
+            <a class="ui label" href="https://kipalog.com/tags/TIL?count=787">
+              TIL
+              <div class="detail">787</div>
+</a>            <a class="ui label" href="https://kipalog.com/tags/nodejs?count=151">
+              nodejs
+              <div class="detail">151</div>
+</a>            <a class="ui label" href="https://kipalog.com/tags/async?count=11">
+              async
+              <div class="detail">11</div>
+</a>            <a class="ui label" href="https://kipalog.com/tags/Parallel?count=5">
+              Parallel
+              <div class="detail">5</div>
+</a>        <!-- Published date -->
+        <div class="published">
+          <a class="ui small avatar image" href="https://kipalog.com/users/tuhuynh27/mypage">
+            <img class="lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+</a>          <p class="date">
+            Tu Huynh viết ngày 07/02/2019
+          </p>
+        </div>
+      </div>
+    </h1>
+
+    <!-- Markdown content here -->
+    <section id="content" class="ui pilled segment md" ng-non-bindable="">
+      <p>Node.js, về cơ bản, là một môi trường đơn luồng (single-threaded) để thực thi các mã code JavaScript ở phía server (server-side). Code JavaScript mà bạn chạy trên Node.js được thực thi trên một luồng duy nhất. Thế làm sao mà Node.js xử lí hàng loạt các kết nối cùng lúc? <img class="emoji" title=":grinning:" alt=":grinning:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f600.png" height="20" width="20" align="absmiddle"> Câu trả lời là <code>non-blocking asynchronous I/O</code>. Nói thực lòng thì không phải chỉ đơn giản như thế. Có một <code>thread pool</code> của <code>libuv</code> (thư viện được viết bằng C, dùng trong lõi của Node.js), nơi tạo ra những thứ blocking như non-blocking. Bằng cách này hay cách khác, ở Node.js chúng ta xử lí mọi thứ một cách bất đồng bộ, điều sẽ giúp hàng ngàn client được phục vụ ngay lập tức. Có rất nhiều bài viết ngoài kia giải thích chi tiết về vấn đề này, nên tui sẽ không dài dòng viết lại nữa, hỏi Google đi nha <img class="emoji" title=":relieved:" alt=":relieved:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f60c.png" height="20" width="20" align="absmiddle">.</p>
+
+<p><a class="fluidbox fluidbox__instance-1 fluidbox--initialized fluidbox--closed fluidbox--ready" href="./Xử lí bất đồng bộ song song trong Node.js_files/tt138jj5a5_parallel-process.jpg"><div class="fluidbox__wrap" style="z-index: 990;"><img src="./Xử lí bất đồng bộ song song trong Node.js_files/tt138jj5a5_parallel-process.jpg" alt="alt text" class="fluidbox__thumb" style="opacity: 1;"><div class="fluidbox__ghost" style="width: 700px; height: 499px; top: 0px; left: 59.584px;"></div></div></a><a></a></p>
+
+<p>Suy cho cùng, <code>Promises</code> chính là thứ đại diện cho 1 hành động bất đồng bộ nào đó. Vì <code>callbacks</code> có thể dễ dàng được viết lại như 1 <code>Promise</code>, tui sẽ không đi sâu vào việc nên xài cái nào ở bài này. Ở bài này tui sẽ tập trung vào thứ cụ thể hơn: "<strong>xử lí các hành động bất đồng bộ một cách song song với nhau trong Node.js một cách tối ưu và đúng đắn</strong>".</p>
+
+<p>Kể từ Node.js 4 (khi sử dụng với args <code>--harmony</code>), chúng ta đã có thể sử dụng <code>native Promise</code>. MDN mô tả Promise như sau:</p>
+
+<blockquote>
+<p>The Promise object represents the eventual completion (or failure) of an asynchronous operation, and its resulting value.</p>
+</blockquote>
+
+<p>Có 1 điều cần phải nhớ ở đây: <strong>một khi Promise đã được tạo ra, nó đã thực sự bắt đầu được chạy</strong>, không phụ thuộc vào việc bạn có <code>.then</code> hay không. Một khi bạn đã gọi <code>fetch("https://example.com/")</code>, một request đã được tạo ra; <code>.then</code> hay <code>.catch</code> chỉ cần thiết khi bạn cần xử lí response trả về của request đó <img class="emoji" title=":neutral_face:" alt=":neutral_face:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f610.png" height="20" width="20" align="absmiddle">. Bằng cách này, nếu một số Promises được tạo ra (ví dụ ta gọi <code>fetch</code> nhiều lần, cái này đặt dưới cái kia) thì các request sẽ được gọi một cách song song.</p>
+
+<p>Hãy bắt đầu với một đoạn thí dụ nhỏ, giả sử các tham số và hàm có ý nghĩa như bên dưới:</p>
+
+<ul class="ui list">
+<li>
+<code>numberOfOperations</code>: số lượng hành động bất đồng bộ cần được xử lí</li>
+<li>
+<code>listOfArgument</code>: chứa các arguments được truyền vào hàm <code>asyncOperation</code> mỗi lần thực thi.</li>
+<li>
+<code>asyncOperation</code>: một hàm giả lập một hành động bất đồng bộ: trả về một Promise - và sẽ được resolved trong vòng từ 1 đến 10 giây.</li>
+<li>
+<code>listOfDelays</code>: một array chứa số lượng giây để resolve mỗi hàm <code>asyncOperation</code> tương ứng.</li>
+<li>
+<code>watchCounter</code>: một hàm để theo dõi số lượng Promise được thực thi trong cùng một thời điểm, in dữ liệu ra console mỗi giây.</li>
+</ul>
+
+<pre><code class="ui segment hljs coffeescript"><span class="hljs-regexp">//</span> Biến này dùng để theo dõi số Promise đang được thực thi tại một thời điểm
+<span class="hljs-reserved">let</span> counter = <span class="hljs-number">0</span>;
+<span class="hljs-reserved">let</span> interval;
+<span class="hljs-regexp">//</span> Tổng số hành động
+<span class="hljs-reserved">const</span> numberOfOperations = <span class="hljs-number">25</span>;
+<span class="hljs-regexp">//</span> Arguments cho mỗi hành động
+<span class="hljs-reserved">const</span> listOfArguments = [];
+<span class="hljs-regexp">//</span> Delay các hành động để fake bất đồng bộ
+<span class="hljs-reserved">const</span> listOfDelays = [];
+
+<span class="hljs-regexp">//</span> Fill mảng argument và delay cho các hành động được thực thi
+<span class="hljs-regexp">//</span> Mỗi giá trị delay được ngẫu nhiên trong khoảng <span class="hljs-number">1000</span> tới <span class="hljs-number">10000</span> milisecond
+<span class="hljs-keyword">for</span> (<span class="hljs-reserved">let</span> i = <span class="hljs-number">0</span>; i &lt; numberOfOperations; i++) {
+  listOfArguments.push(i);
+  listOfDelays.push(Math.ceil(Math.random() * <span class="hljs-number">9</span>) * <span class="hljs-number">1000</span>);
+}
+
+<span class="hljs-regexp">//</span> Fake bất đồng bộ: resolve một mảng sau một khoảng thời gian tuỳ ý
+<span class="hljs-regexp">//</span> Tăng biến counter để theo dõi số promise được thực thi mỗi giây
+<span class="hljs-reserved">const</span> asyncOperation = index <span class="hljs-function">=&gt;</span> {
+  counter++;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Promise(resolve <span class="hljs-function">=&gt;</span>
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Operation performed:'</span>, index);
+      counter--;
+      resolve(index);
+    }, listOfDelays[index]))
+};
+
+<span class="hljs-regexp">//</span> Hàm <span class="hljs-keyword">in</span> ra số Promise được thực thi mỗi giây (để theo dõi)
+<span class="hljs-reserved">const</span> w<span class="hljs-function"><span class="hljs-title">atchCounter</span> = <span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Promises running in the beginning:'</span>, counter);
+
+  <span class="hljs-keyword">if</span> (interval) {
+    clearInterval(interval);
+  }
+
+  interval = setInterval(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Promises running:'</span>, counter), <span class="hljs-number">1000</span>);
+};
+</code></pre>
+
+<span id="toc-ch-y-song-song-take-0-l-n-th-0-"></span><h2 class="ui dividing header">Chạy song song - Take 0 (lần thử 0)</h2>
+
+<p>Hãy theo dõi các đoạn code dưới đây. Chúng ta chạy hàm <code>asyncOperation</code> và trả về list các <code>results</code>.</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take0</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// Quẩy thôi</span>
+  <span class="hljs-keyword">const</span> results = [];
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> argument of listOfArguments) {
+    <span class="hljs-keyword">const</span> index = <span class="hljs-function"><span class="hljs-keyword">await</span> <span class="hljs-title">asyncOperation</span><span class="hljs-params">(argument)</span></span>;
+    results.push(index);
+  }
+  <span class="hljs-keyword">return</span> results;
+}
+</code></pre>
+
+<p>Thành thực mà nói, nó không hề chạy song song. Chúng ta tuần tự đợi cho mỗi hàm <code>asyncOperation</code> được hoàn thành, bởi vì danh sách các <code>results</code> được trả về theo đúng thứ tự. Chúng ta tạo ra Promise ở mỗi vòng lặp và đợi nó chạy xong. Ở mỗi thời điểm chỉ có một Promise đang được thực thi.</p>
+
+<p><a class="fluidbox fluidbox__instance-2 fluidbox--initialized fluidbox--closed fluidbox--ready" href="./Xử lí bất đồng bộ song song trong Node.js_files/1_Qbgd2xNI9cbS4W-9hTqMWA.png"><div class="fluidbox__wrap" style="z-index: 990;"><img src="./Xử lí bất đồng bộ song song trong Node.js_files/1_Qbgd2xNI9cbS4W-9hTqMWA.png" alt="take 0" class="fluidbox__thumb" style="opacity: 1;"><div class="fluidbox__ghost" style="width: 718px; height: 444px; top: 0px; left: 50.584px;"></div></div></a><a></a></p>
+
+<p>Kiểu thực thi như trên mất tới 142 giây để hoàn thành. Thời gian thực thi là tổng của tất cả những lần thực thi của mỗi Promise được tạo ra. Có vẻ như đây không phải là giải pháp tốt (chạy lâu vl <img class="emoji" title=":disappointed:" alt=":disappointed:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f61e.png" height="20" width="20" align="absmiddle">).</p>
+
+<span id="toc-ch-y-song-song-take-1"></span><h2 class="ui dividing header">Chạy song song - Take 1</h2>
+
+<p>Tui thề là nó sẽ chạy song song được trong lần này, hãy thử thay đổi một chút trong đoạn code ở trên. Thay vì gọi và <code>await</code> các hàm <code>asyncOperation</code> mỗi vòng lặp, hãy gọi tất cả trước đó luôn thông qua hàm <code>map</code>. Nó sẽ trả về list Promise sẵn sàng được <code>awaited</code>:</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take1</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// Running Promises in parallel</span>
+  <span class="hljs-keyword">const</span> listOfPromises = listOfArguments.map(asyncOperation);
+  <span class="hljs-comment">// Harvesting</span>
+  <span class="hljs-keyword">const</span> results = [];
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> promise of listOfPromises) {
+    <span class="hljs-keyword">const</span> index = <span class="hljs-keyword">await</span> promise;
+    results.push(index);
+  }
+  <span class="hljs-keyword">return</span> results;
+}
+</code></pre>
+
+<p>Giờ thì chúng ta có tất cả mọi hành động được thực thi một cách song song, kết quả được trả về thông qua <code>awaiting</code> mỗi Promise.</p>
+
+<p>Số lượng Promise được thực thi tại một thời điểm giảm dần theo thời gian:</p>
+
+<p><a class="fluidbox fluidbox__instance-3 fluidbox--initialized fluidbox--closed fluidbox--ready" href="./Xử lí bất đồng bộ song song trong Node.js_files/1_krHJUkUPYkpmYviRpcZ2Kg.png"><div class="fluidbox__wrap" style="z-index: 990;"><img src="./Xử lí bất đồng bộ song song trong Node.js_files/1_krHJUkUPYkpmYviRpcZ2Kg.png" alt="take 1" class="fluidbox__thumb" style="opacity: 1;"><div class="fluidbox__ghost" style="width: 718px; height: 444px; top: 0px; left: 50.584px;"></div></div></a><a></a></p>
+
+<p>Kiểu thực thi như này thì chỉ mất 9 giây chạy, có vẻ ngon hơn rồi đó, bây giờ tổng thời gian thực thi bằng với thời gian thực thi của Promise chạy lâu nhất.</p>
+
+<span id="toc-ch-y-song-song-take-2"></span><h2 class="ui dividing header">Chạy song song - Take 2</h2>
+
+<p>Chúng ta có thể rút ngắn đoạn code ở <code>take 1</code> bằng cách xài <code>Promise.all</code>. Nó nhận vào một <code>array</code> của các <code>Promise</code> và sẽ resolve ngay khi tất cả các Promise trong array được resolved hoặc rejected nếu một trong các Promise trong array rejected.</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take2</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// Chạy promise song song</span>
+  <span class="hljs-keyword">const</span> listOfPromises = listOfArguments.map(asyncOperation);
+  <span class="hljs-comment">// Lấy kết quả trả về</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> Promise.all(listOfPromises);
+}
+</code></pre>
+
+<p>Kết quả y chang như lần chạy của <code>take 2</code>, có vẻ mọi thứ đang ổn. Tuy nhiên có một mối đe doạ mà chúng ta cần phải để tâm <img class="emoji" title=":confused:" alt=":confused:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f615.png" height="20" width="20" align="absmiddle">.</p>
+
+<span id="toc-ch-y-song-song-take-3"></span><h2 class="ui dividing header">Chạy song song - Take 3</h2>
+
+<p>Ở các lần thử trước chúng ta đã làm được thứ mà mình muốn: chạy các Promise một cách song song với nhau. Nhưng, nó chạy <strong>tất cả</strong> các Promise mà bạn đưa cho một cách song song và cùng một thời điểm, điều này có thể gây ra một số vấn đề như sau.</p>
+
+<p>Chuyện gì xảy ra nếu <code>asyncOperation</code> request tới một API của bên thứ ba, và API này có <code>rate limiting</code>? (Rate Limit: là giới hạn số kết nối tại một thời điểm từ phía server). Có lẽ sẽ phụ thuộc vào số Promise bạn muốn gọi.</p>
+
+<p><strong>Mấu chốt là</strong>: thực hiện các hành động một cách song song sẽ nhanh hơn nhưng bạn nên xem xét kĩ lưỡng về số kết nối song song có thể chạy trong thực tế cũng như những vấn đề tác dụng phụ có thể xảy ra (giới hạn kết nối, giới hạn tài nguyên) khi chạy song song nhiều tác vụ. Tốt hơn hết nên thêm vào logic để kiểm soát số lượng tác vụ chạy song song cùng một thời điểm.</p>
+
+<span id="toc-subtake-0"></span><h3 class="ui dividing header">Subtake - 0</h3>
+
+<p>Thứ đơn giản mà chúng ta có thể làm đó là chia số tác vụ chạy song song cùng lúc ra ngay từ đầu. Hãy sét ngưỡng (threhold) là tối đa 5 Promise chạy song song tại một thời điểm, ở đây ta làm giống kiểu phân trang, là chia ra thành các <code>batches</code>, <code>batchesCount</code> là số lần thực thi làm tròn, ví dụ có 32 promise thì sẽ chạy tổng cộng là 32/5 ~ 7 lần, với lần chạy cuối chạy 2 promise song song.</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take3subtake0</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">const</span> concurrencyLimit = <span class="hljs-number">5</span>;
+  <span class="hljs-keyword">let</span> results = [];
+  <span class="hljs-keyword">const</span> batchesCount = Math.ceil(numberOfOperations / concurrencyLimit);
+
+  <span class="hljs-comment">// Chạy Promise song song trong từng vòng lặp batch</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; batchesCount; i++) {
+    <span class="hljs-keyword">const</span> batchStart = i * concurrencyLimit;
+    <span class="hljs-keyword">const</span> batchArguments = listOfArguments.slice(batchStart, batchStart + concurrencyLimit);
+    <span class="hljs-keyword">const</span> batchPromises = batchArguments.map(asyncOperation);
+    <span class="hljs-comment">// Harvesting</span>
+    <span class="hljs-keyword">const</span> batchResults = <span class="hljs-keyword">await</span> Promise.all(batchPromises);
+    results = results.concat(batchResults);
+  }
+  <span class="hljs-keyword">return</span> results;
+}
+</code></pre>
+
+<p>Kết quả đúng như mong đợi, có tổng cộng 5 <code>batches</code>, các Promise chạy song song không quá 5 cái mỗi thời điểm, và quá trình chạy mất tổng cộng 40 giây, nhiều hơn 9 giây (chạy tất cả 1 lần) nhưng vẫn tốt hơn 142 giây nhiều <img class="emoji" title=":relieved:" alt=":relieved:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f60c.png" height="20" width="20" align="absmiddle">.</p>
+
+<p><a class="fluidbox fluidbox__instance-4 fluidbox--initialized fluidbox--closed fluidbox--ready" href="./Xử lí bất đồng bộ song song trong Node.js_files/1_f8ilNzozt727klGDflzt_Q.png"><div class="fluidbox__wrap" style="z-index: 990;"><img src="./Xử lí bất đồng bộ song song trong Node.js_files/1_f8ilNzozt727klGDflzt_Q.png" alt="take3-subtake0" class="fluidbox__thumb" style="opacity: 1;"><div class="fluidbox__ghost" style="width: 718px; height: 444px; top: 0px; left: 50.584px;"></div></div></a><a></a></p>
+
+<p>Nhìn vào biểu đồ có thể thấy có khá nhiều "đỉnh" Promise, có nghĩa là việc phân bố tải (load) của các <code>Batches</code> chưa được đồng đều và sẽ có một số thời điểm resource được ngồi chơi <img class="emoji" title=":neutral_face:" alt=":neutral_face:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f610.png" height="20" width="20" align="absmiddle">, như vậy là chưa tối ưu hoá lắm. Vấn đề ở đây là một <code>batch</code> sẽ có thời gian chạy là thời gian chạy của promise lâu nhất trong <code>batch</code> đó. Để dễ hiểu hơn, <code>batch</code> có thể gồm 5 promises, 4 promise chạy mất 1 giây và 1 cái còn lại chạy mất 10 giây -&gt; <code>batch</code> này mất 10 giây để resolved, bởi vì chúng ta đang dùng <code>Promise.all</code> và nó sẽ chỉ resolved khi tất cả đã resolved.</p>
+
+<span id="toc-subtake-1"></span><h3 class="ui dividing header">Subtake - 1</h3>
+
+<p>Để giải quyết vấn đề này, cần phải có một hướng tiếp cận khác. Thay vì chia array Promise ra thành các <code>batch</code> để chạy, hãy xử lí dữ liệu theo kiểu <code>Promise-by-Promise</code>. Ở lần subtake trước, logic là:</p>
+
+<ul class="ui list">
+<li>Lấy số lượng Promise chia cho ngưỡng (threhold), để ra tổng số <code>batch</code> cần chạy</li>
+<li>Tạo một vòng lặp dựa trên số lượng <code>batch</code>  và chạy promise song song theo từng đợt <code>batch</code>
+</li>
+<li>Đặt <code>await</code> ở mỗi vòng lặp để chạy tuần tự từng <code>batch</code>
+</li>
+</ul>
+
+<p>Giờ ta đổi logic tí nhé:</p>
+
+<ul class="ui list">
+<li>Lấy promise tiếp theo từ list (số lượng đúng bằng số tối đa của ngưỡng)</li>
+<li>Gọi hàm <code>asyncOperation</code>
+</li>
+<li>Xâu chuỗi các bước tương tự để return về Promise (nếu có promise để chạy)</li>
+</ul>
+
+<p>Bằng cách này, giải thích ngắn gọn thì khi số Promise đang chạy trong mỗi <code>batch</code> nhỏ hơn ngưỡng (threhold) thì ta sẽ đấy thêm một promise vào đó, cứ cái này xong thì cái khác vào, và số tối đa tại một thời điểm đúng bằng ngưỡng. Triển khai bằng code như sau:</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take3subtake1part0</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">const</span> concurrencyLimit = <span class="hljs-number">5</span>;
+  <span class="hljs-keyword">const</span> argsCopy = listOfArguments.slice();
+  <span class="hljs-keyword">const</span> promises = <span class="hljs-keyword">new</span> Array(concurrencyLimit).fill(Promise.resolve());
+  <span class="hljs-comment">// Đưa promise liên tiếp vào chuỗi thực thi</span>
+  <span class="hljs-function">function <span class="hljs-title">chainNext</span><span class="hljs-params">(p)</span> </span>{
+    <span class="hljs-keyword">if</span> (argsCopy.length) {
+      <span class="hljs-keyword">const</span> arg = argsCopy.shift();
+      <span class="hljs-keyword">return</span> p.then(() =&gt; {
+        <span class="hljs-keyword">const</span> operationPromise = asyncOperation(arg);
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">chainNext</span><span class="hljs-params">(operationPromise)</span></span>;
+      })
+    }
+    <span class="hljs-keyword">return</span> p;
+  }
+
+  <span class="hljs-keyword">await</span> Promise.all(promises.map(chainNext));
+}
+</code></pre>
+
+<p>Xong, bằng cách này ta sẽ tối ưu được thời gian chạy, không còn các <code>đỉnh</code> Promise nữa, load sẽ tốt hơn.</p>
+
+<p><a class="fluidbox fluidbox__instance-5 fluidbox--initialized fluidbox--closed fluidbox--ready" href="./Xử lí bất đồng bộ song song trong Node.js_files/1_9ALZyVsGbX53c_JOrhZ10g.png"><div class="fluidbox__wrap" style="z-index: 990;"><img src="./Xử lí bất đồng bộ song song trong Node.js_files/1_9ALZyVsGbX53c_JOrhZ10g.png" alt="take3-subtake1" class="fluidbox__thumb" style="opacity: 1;"><div class="fluidbox__ghost" style="width: 718px; height: 444px; top: 0px; left: 50.584px;"></div></div></a><a></a></p>
+
+<p>Kết quả là toàn bộ quá trình chạy mất 33 giây, ít hơn lần trước 7 giây -&gt; chạy nhanh hơn rồi còn gì <img class="emoji" title=":sunglasses:" alt=":sunglasses:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f60e.png" height="20" width="20" align="absmiddle">.</p>
+
+<p>Ngon lành cành đào rồi, ờ mà khoan đã... có vẻ như tui đã quên mất gì đó <img class="emoji" title=":joy:" alt=":joy:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f602.png" height="20" width="20" align="absmiddle">. Chưa có cái gì để chứa mảng kết quả trả về <img class="emoji" title=":smiley:" alt=":smiley:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f603.png" height="20" width="20" align="absmiddle">, có nhiều cách để xử lí việc này. Thực tế là chúng ta đã biết trước có bao nhiêu phần tử trong array kết quả, vậy hãy tạo một mảng rỗng từ đầu và fill vào mảng đó mỗi khi promise được resolved, đơn giản như sau:</p>
+
+<pre><code class="ui segment hljs cs"><span class="hljs-function"><span class="hljs-keyword">async</span> function <span class="hljs-title">take3subtake1part1</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-keyword">const</span> concurrencyLimit = <span class="hljs-number">5</span>;
+  <span class="hljs-comment">// Tạo index cho array</span>
+  <span class="hljs-keyword">const</span> argsCopy = [].concat(listOfArguments.map((val, ind) =&gt; ({ val, ind })));
+  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">new</span> Array(listOfArguments.length);
+  <span class="hljs-keyword">const</span> promises = <span class="hljs-keyword">new</span> Array(concurrencyLimit).fill(Promise.resolve());
+  <span class="hljs-comment">// Đưa promise liên tiếp vào chuỗi thực thi</span>
+  <span class="hljs-function">function <span class="hljs-title">chainNext</span><span class="hljs-params">(p)</span> </span>{
+    <span class="hljs-keyword">if</span> (argsCopy.length) {
+      <span class="hljs-keyword">const</span> arg = argsCopy.shift();
+      <span class="hljs-keyword">return</span> p.then(() =&gt; {
+        <span class="hljs-comment">// Lưu kết quả vào array khi Promise chạy xong</span>
+        <span class="hljs-keyword">const</span> operationPromise = asyncOperation(arg.val).then(r =&gt; { result[arg.ind] = r; });
+        <span class="hljs-function"><span class="hljs-keyword">return</span> <span class="hljs-title">chainNext</span><span class="hljs-params">(operationPromise)</span></span>;
+      });
+    }
+    <span class="hljs-keyword">return</span> p;
+  }
+
+  <span class="hljs-keyword">await</span> Promise.all(promises.map(chainNext));
+  <span class="hljs-keyword">return</span> result;
+}
+</code></pre>
+
+<p>Cuối cùng cũng xong, vậy là chúng ta đã hoàn thành được những gì đặt ra: <strong>chạy các request bất đồng bộ một cách song song và kiểm soát chúng <img class="emoji" title=":smile:" alt=":smile:" src="./Xử lí bất đồng bộ song song trong Node.js_files/1f604.png" height="20" width="20" align="absmiddle"></strong>.</p>
+
+<p><em>Reference from <a href="https://medium.com/@denis.fatkhudinov/node-js-handling-asynchronous-operations-in-parallel-69679dfae3fc">@denis.fatkhudinov</a></em></p>
+
+    </section>
+    <!-- Markdown end here -->
+
+    <!-- Social share -->
+    <div class="meta-social-share ng-scope" ng-controller="SocialController">
+      <div class="hidden-meta">
+        <input type="hidden" id="share-url" value="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js">
+        <input type="hidden" id="share-content" value="Xử lí bất đồng bộ song song trong Node.js">
+      </div>
+      <div class="suggest-title">
+        <i class="small forward mail icon"></i>
+        Chia sẻ bài viết với bạn bè nữa nhé!
+      </div>
+      <a class="ui icon small facebook button" ng-click="shareFacebook()">
+        <i class="facebook icon"></i>
+        <span>
+          facebook
+        </span>
+      </a>
+      <a class="ui icon small google plus button" ng-click="share(&#39;gg&#39;)">
+        <i class="google plus icon"></i>
+        <span>
+          google plus
+        </span>
+      </a>
+      <a class="ui icon small twitter button" ng-click="share(&#39;tw&#39;)">
+        <i class="twitter icon"></i>
+        <span>
+          twitter
+        </span>
+      </a>
+    </div>
+
+    <!-- Meta -->
+    <div class="hidden-meta">
+      <input type="hidden" ng-init="like_endpoint=&#39;/likes&#39;">
+      <input type="hidden" ng-init="unlike_endpoint=&#39;/likes/vvp93cOb7D0O1sbrey0N1A&#39;">
+      <input type="hidden" ng-init="follow_endpoint=&#39;/users/follow&#39;">
+      <input type="hidden" ng-init="unfollow_endpoint=&#39;/users/unfollow&#39;">
+      <input type="hidden" ng-init="postId=&#39;vvp93cOb7D0O1sbrey0N1A&#39;">
+      <input type="hidden" ng-init="other_id=&#39;pErVTvlTpp_gScrH0cI89A&#39;">
+      <input type="hidden" ng-init="like_count=16">
+      <input type="hidden" ng-init="liked=false">
+      <input type="hidden" ng-init="followerCount=87">
+      <input type="hidden" ng-init="userFollowed=false">
+      <input type="hidden" ng-init="userLoggedIn=false">
+      <input type="hidden" ng-init="mentionable_path=&#39;/users/mentionable&#39;">
+    </div>
+
+    <!-- Comments -->
+    <div id="cmts" class="ui threaded comments segment ng-scope" ng-controller="CommentController">
+      <div class="ui huge ribbon label">
+        Bình luận
+      </div>
+      <br><br>
+      <!-- ngRepeat: comment in comments --><div class="comment ng-scope" ng-repeat="comment in comments">
+        <a class="avatar" href="https://kipalog.com/users/fix09/mypage">
+          <img class="lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/2143-200.png">
+        </a>
+        <div class="content">
+          <a class="author ng-binding" href="https://kipalog.com/users/fix09/mypage">Lậu Chủ</a>
+          <div class="metadata">
+            <span class="date ng-binding">hơn 3 năm</span>
+            <!-- ngIf: comment.own_comment -->
+          </div>
+          <div class="text cmts-md ng-binding" ng-bind-html="trustAsHtml(comment.content)"><p><a href="https://caolan.github.io/async/docs.html">https://caolan.github.io/async/docs.html</a> là vô đối khi làm việc với async.</p>
+</div>
+          <div class="actions">
+            <a class="cmts-link ng-hide" ng-show="comment.liked" ng-click="like_toggle($index)">Bỏ hay</a>
+            <a class="cmts-link" ng-hide="comment.liked" ng-click="like_toggle($index)">Hay</a>
+            <div class="cmts-meta ng-binding">
+              <i ng-class="{&#39;thumbs up outline icon&#39;: !comment.liked, &#39;thumbs up icon&#39;: comment.liked}" class="thumbs up outline icon"></i>
+              0
+            </div>
+          </div>
+        </div>
+      </div><!-- end ngRepeat: comment in comments -->
+
+      <!-- My comment -->
+      <div class="comment" id="my-comment">
+        <div class="hidden-meta">
+          <input type="hidden" ng-init="isCmtsPreviewing=false">
+          <input type="hidden" ng-init="isCmtsAreaFocused=false">
+        </div>
+        <a class="avatar">
+          <img class="lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/male_avatar-a3595e02f088823874c2cdeeccc14d04.png">
+        </a>
+        <form ng-submit="send_comment($event)" class="content ng-pristine ng-valid" id="new_comment" action="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js/comments" accept-charset="UTF-8" method="post"><input name="utf8" type="hidden" value="✓"><input type="hidden" name="authenticity_token" value="Ml1xj4YpUt5GABjPGybe281m+vLSbydirx9NOb9nMorOptxpI7bUL6+kc1x2z21PrwDAU0r8yU3D/7J2a+AZKw==">
+          <!-- ngIf: comment_error -->
+          <i class="large smile icon cmts-emoji"></i>
+          <textarea id="my-cmts" class="cmts-area ng-pristine ng-untouched ng-valid" spellcheck="false" placeholder="Đăng nhập để bình luận :)" ng-model="content" ng-show="!isCmtsPreviewing" name="comment[content]" style="overflow: hidden; overflow-wrap: break-word; height: 58px;"></textarea>
+          <div class="ui raised segment cmts-show ng-hide" ng-show="isCmtsPreviewing"></div>
+          <div class="equal height row cmts-action ng-hide" ng-show="isCmtsAreaFocused">
+            <input type="submit" value="Gửi" class="ui mini button green submit cmts-reset" data-area=".cmts-area">
+            <div class="ui mini button cmts-reset" data-area=".cmts-area">Hủy</div>
+            &nbsp;&nbsp;&nbsp;
+            <div class="ui text shape cmts-pv">
+              <div class="sides">
+                <p class="side pv show-preview active" ng-class="{&#39;active&#39;:!isCmtsPreviewing}" data-shape=".ui.text.shape" data-area=".cmts-area" data-show=".cmts-show">Hiển thị thử</p>
+                <p class="side pv hide-pv" ng-class="{&#39;active&#39;:isCmtsPreviewing}" data-shape=".ui.text.shape" data-area=".cmts-area" data-show=".cmts-show">Chỉnh sửa</p>
+              </div>
+            </div>
+          </div>
+</form>      </div>
+    </div>
+
+    <!-- Smartphone area -->
+    <div class="ui center aligned basic segment smartphone-area">
+      <a class="ui bigger avatar image" href="https://kipalog.com/users/tuhuynh27/mypage">
+        <img class="lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+</a>      <a class="author-name" href="https://kipalog.com/users/tuhuynh27/mypage">
+        <h3 class="ui header caption">
+          Tu Huynh
+        </h3>
+</a>      <div class="ui two column grid segment">
+        <!-- Info -->
+        <div class="equal height row">
+          <div class="right aligned column">
+            <a href="https://kipalog.com/users/tuhuynh27/mypage">12</a>
+            bài viết.
+          </div>
+          <div class="left aligned column">
+            <a href="https://kipalog.com/users/tuhuynh27/mypage">87</a>
+            người follow
+          </div>
+        </div>
+        <!-- Button -->
+        <div class="equal height row action-btn">
+          <div class="right aligned column">
+            <div class="ui circular toggle basic button" id="smart-like-button" ng-class="{&#39;active&#39;:liked}" ng-click="like()">
+              <i class="icon empty bookmark" ng-class="liked ? &#39;checkmark&#39; : &#39;empty bookmark&#39; "></i>
+              <span>Kipalog</span>
+            </div>
+          </div>
+          <div class="left aligned column ng-scope" ng-controller="UserFollowController">
+            <div class="ui circular toggle basic button" ng-class="{&#39;active&#39;:userFollowed}" id="smart-follow-button" ng-click="followUser();">
+              <i class="rss icon teal outline" ng-class="{&#39;teal outline&#39;:!userFollowed}"></i>
+              <span class="ng-binding">Follow</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggest posts list -->
+    <div class="suggest posts list">
+
+      <!-- Same author posts -->
+      <div class="ui huge ribbon label">
+        Cùng một tác giả
+      </div>
+      <div class="ui massive list feed-list">
+        <div class="item">
+          <img class="ui avatar image lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+          <div class="right floated feed-date">
+            56
+            <i class="bookmark icon"></i>
+            11
+            <i class="comment icon"></i>
+          </div>
+          <div class="content">
+            <div class="header">
+              <a href="https://kipalog.com/posts/Thiet-ke-React-App-tu-dau">Thiết kế React App từ đầu</a>
+              <div class="tag">
+                <a href="https://kipalog.com/tags/reactjs" class="ui label">
+                  reactjs
+                </a>
+                <a href="https://kipalog.com/tags/Architecture" class="ui label">
+                  Architecture
+                </a>
+                <a href="https://kipalog.com/tags/scaleable" class="ui label">
+                  scaleable
+                </a>
+              </div>
+            </div>
+            <div class="detail">
+              Ngày nay khi mà MVC dần trở thành một thứ nhà quê "lạc hậu", APIs được thiết kế chung cho nhiều client app khác nhau (web app, mobile app or deskto...
+            </div>
+            <div class="meta">
+              <a href="https://kipalog.com/users/tuhuynh27/mypage">
+                Tu Huynh
+              </a>
+              viết
+              hơn 3 năm
+              trước
+            </div>
+            <div class="smart-meta">
+              56
+              <i class="bookmark icon"></i>
+              11
+              <i class="comment icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img class="ui avatar image lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+          <div class="right floated feed-date">
+            31
+            <i class="bookmark icon"></i>
+            4
+            <i class="comment icon"></i>
+          </div>
+          <div class="content">
+            <div class="header">
+              <a href="https://kipalog.com/posts/Micro-Frontends---microservice-hoa-cho-phia-front-end">Micro Frontends - microservice hoá cho phía front-end</a>
+              <div class="tag">
+                <a href="https://kipalog.com/tags/micro-frontends" class="ui label">
+                  micro-frontends
+                </a>
+                <a href="https://kipalog.com/tags/frontend" class="ui label">
+                  frontend
+                </a>
+                <a href="https://kipalog.com/tags/microservices" class="ui label">
+                  microservices
+                </a>
+                <a href="https://kipalog.com/tags/framework" class="ui label">
+                  framework
+                </a>
+              </div>
+            </div>
+            <div class="detail">
+              Việc phát triển web frontend side ở một số hệ thống lớn lâu nay vẫn được làm theo kiểu monoliths (dù có thể backend đã được microservice hoá), ai c...
+            </div>
+            <div class="meta">
+              <a href="https://kipalog.com/users/tuhuynh27/mypage">
+                Tu Huynh
+              </a>
+              viết
+              hơn 3 năm
+              trước
+            </div>
+            <div class="smart-meta">
+              31
+              <i class="bookmark icon"></i>
+              4
+              <i class="comment icon"></i>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img class="ui avatar image lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+          <div class="right floated feed-date">
+            23
+            <i class="bookmark icon"></i>
+            3
+            <i class="comment icon"></i>
+          </div>
+          <div class="content">
+            <div class="header">
+              <a href="https://kipalog.com/posts/Complete-Guide-to-React-Rendering-Behavior">Complete Guide to React Rendering Behavior</a>
+              <div class="tag">
+                <a href="https://kipalog.com/tags/reactjs" class="ui label">
+                  reactjs
+                </a>
+                <a href="https://kipalog.com/tags/react-hooks" class="ui label">
+                  react-hooks
+                </a>
+              </div>
+            </div>
+            <div class="detail">
+              Bài viết cung cấp chi tiết về cách mà React render hoạt động, và việc sử dụng Context và Redux ảnh hưởng thế nào tới quá trình render của React.   ...
+            </div>
+            <div class="meta">
+              <a href="https://kipalog.com/users/tuhuynh27/mypage">
+                Tu Huynh
+              </a>
+              viết
+              hơn 1 năm
+              trước
+            </div>
+            <div class="smart-meta">
+              23
+              <i class="bookmark icon"></i>
+              3
+              <i class="comment icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related posts -->
+      <div class="ui huge ribbon label">
+        Bài viết liên quan
+      </div>
+      <div class="ui massive list feed-list">
+        <div class="item">
+          <img class="ui avatar image lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+          <div class="right floated feed-date">
+            2
+            <i class="bookmark icon"></i>
+            0
+            <i class="comment icon"></i>
+          </div>
+          <div class="content">
+            <div class="header">
+              <a href="https://kipalog.com/posts/Experimenting-with-Project-Loom-EAP-and-Jiny">Experimenting with Project Loom EAP and Jiny</a>
+              <div class="tag">
+                <a href="https://kipalog.com/tags/Java" class="ui label">
+                  Java
+                </a>
+                <a href="https://kipalog.com/tags/project%20loom" class="ui label">
+                  project loom
+                </a>
+                <a href="https://kipalog.com/tags/fiber" class="ui label">
+                  fiber
+                </a>
+                <a href="https://kipalog.com/tags/async" class="ui label">
+                  async
+                </a>
+              </div>
+            </div>
+            <div class="detail">
+              (Ảnh)  (Link) changes the existing Thread implementation from the mapping of an OS thread, to an abstraction that can either represent such a threa...
+            </div>
+            <div class="meta">
+              <a href="https://kipalog.com/users/tuhuynh27/mypage">
+                Tu Huynh
+              </a>
+              viết
+              hơn 1 năm
+              trước
+            </div>
+            <div class="smart-meta">
+              2
+              <i class="bookmark icon"></i>
+              0
+              <i class="comment icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- From here is right column -->
+  <div class="four wide column meta-col">
+    <div class="sticky stick" ng-class="{stick:pinStick}" style="width: 250px; top: 0px; bottom: initial;">
+      <!-- Info -->
+      <div class="row meta-info">
+        <div class="ui two column middle aligned grid celled segment meta-info">
+          <div class="center aligned column">
+            <span>
+              <a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js" class="ng-binding">16</a>
+            </span>
+            <p>kipalog</p>
+          </div>
+          <div class="center aligned column">
+            <span>
+              <a class="go-to-comments ng-binding" data-target="#cmts" href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#">1</a>
+            </span>
+            <p>bình luận</p>
+          </div>
+        </div>
+      </div>
+      <!-- Like -->
+      <div class="row ui circular toggle teal basic fluid button" id="pc-like-button" ng-class="{&#39;active&#39;:liked}" ng-click="like()">
+        <i class="left aligned icon bookmark" ng-class="liked ? &#39;checkmark&#39; : &#39;bookmark&#39; "></i>
+        <span class="ng-binding">Kipalog</span>
+      </div>
+      <br><br>
+      <!-- Profile -->
+      <div class="row meta-profile item">
+        <a class="left floated ui bigger avatar image" href="https://kipalog.com/users/tuhuynh27/mypage">
+          <img class="lazy" src="./Xử lí bất đồng bộ song song trong Node.js_files/wBrdpOa.jpg">
+</a>        <div ng-controller="UserFollowController" class="ng-scope">
+          <div class="right floated ui mini circular toggle basic button" ng-class="{&#39;active&#39;:userFollowed}" id="pc-follow-button" ng-click="followUser();">
+            <i class="rss icon teal outline" ng-class="{&#39;teal outline&#39;:!userFollowed}"></i>
+            <span class="ng-binding">Follow</span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="name">
+            <a href="https://kipalog.com/users/tuhuynh27/mypage">
+              <h3 class="ui header caption">
+              Tu Huynh
+              </h3>
+</a>          </div>
+          <div class="extra">
+            <a href="https://kipalog.com/users/tuhuynh27/mypage">12</a>
+            bài viết.
+            <br>
+            <a href="https://kipalog.com/users/tuhuynh27/mypage">87</a>
+            người follow
+          </div>
+        </div>
+      </div>
+      <!-- Table of content -->
+      <div class="row meta-toc">
+        <p class="toc-title">
+          <i class="green hand right icon"></i>
+          &nbsp;Đầu mục bài viết
+        </p>
+        <div id="toc" class="toc-fly"><ul class="ui link list"><li class="toc-h2 toc-active"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-ch-y-song-song-take-0-l-n-th-0-">Chạy song song - Take 0 (lần thử 0)</a></li><li class="toc-h2"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-ch-y-song-song-take-1">Chạy song song - Take 1</a></li><li class="toc-h2"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-ch-y-song-song-take-2">Chạy song song - Take 2</a></li><li class="toc-h2"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-ch-y-song-song-take-3">Chạy song song - Take 3</a></li><li class="toc-h3"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-subtake-0">Subtake - 0</a></li><li class="toc-h3"><a href="https://kipalog.com/posts/Xu-li-bat-dong-bo-song-song-trong-Node-js#toc-subtake-1">Subtake - 1</a></li></ul></div>
+      </div>
+    </div>
+    <!-- Remind popup -->
+    <div class="anonymous-remind-block" ng-show="!userLoggedIn">
+      <div class="ui basic segment anonymous remind">
+        <p class="ui dividing header">
+        Vẫn còn nữa!
+          <span id="remind_dismiss" class="dismiss">x</span>
+        </p>
+        <p class="description">
+          Kipalog vẫn còn rất nhiều bài viết hay và chủ đề thú vị chờ bạn khám phá!
+        </p>
+        <a href="https://kipalog.com/" class="ui signup circular green button">
+          Khám phá
+        </a>
+        <a href="https://kipalog.com/users/sign_in" class="signin">
+          Đăng nhập
+        </a>
+      </div>
+    </div>
+    <!-- Remind popup -->
+  </div>
+</div>
+
+    </main>
+      <!-- Footer -->
+<footer class="master-footer ui page grid">
+  <div class="row">
+    <div class="column">
+      <div class="ui horizontal divider">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="twelve wide main column">
+      <div class="links">
+        <a target="_blank" href="http://kipalog.com/tos">
+          Điều khoản
+        </a>
+        <a target="_blank" href="https://www.facebook.com/groups/1466126020344500/">
+          Phản hồi
+        </a>
+        <a target="_blank" href="https://github.com/Kipalog/Issue-tracker">
+          Yêu cầu
+        </a>
+        <a target="_blank" href="https://www.facebook.com/pages/Kipalog/486208978117754">
+          Fanpage
+        </a>
+      </div>
+    </div>
+    <div class="four wide right column">
+      <div class="copyright">
+        <span>
+          Copyright © 2018 Kipalog
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+
+<textarea tabindex="-1" class="autosizejs" id="autosizejs" style="position: absolute; inset: -999px auto auto 0px; border: 0px; padding: 0px; box-sizing: content-box; overflow-wrap: break-word; overflow: hidden; transition: none 0s ease 0s; height: 0px !important; min-height: 0px !important; font-family: monospace; font-size: 14.4px; font-weight: 400; font-style: normal; letter-spacing: 0px; text-transform: none; word-spacing: 0px; text-indent: 0px; white-space: pre-wrap; line-height: normal; width: 694.795px;"></textarea><div class="atwho-container"><div id="atwho-ground-my-cmts"><div class="atwho-view" id="at-view-58"><ul class="atwho-view-ul"></ul></div></div></div><iframe id="nr-ext-rsicon" style="position: absolute; display: none; width: 50px; height: 50px; z-index: 2147483647; border-style: none; background: transparent;" src="./Xử lí bất đồng bộ song song trong Node.js_files/saved_resource.html"></iframe><div id="eJOY__extension_root" class="eJOY__extension_root_class" style="all: unset;"></div><div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; width: 0px; height: 0px;"><div></div></div></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

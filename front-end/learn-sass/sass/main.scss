@@ -1,0 +1,75 @@
+:root {
+  --color-default: #efefef;
+}
+
+$color-primary: #0084ff;
+$color-primary-light: #62b1fb;
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+@mixin respond-phone {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin respond($param) {
+  @if $param == phone {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+  @if $param == tab-port {
+    @media (max-width: 900px) {
+      @content;
+    }
+  }
+  @if $param == tab-land {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  }
+  @if $param == big-desktop {
+    @media (max-width: 1500px) {
+      @content;
+    }
+  }
+}
+
+html {
+  font-size: 62.5%; //1rem = 10px, 10/16
+  body {
+    .header {
+      background-color: linear-gradient(
+        to right bottom,
+        rgba($color-primary, 0.8),
+        rgba($color-primary-light, 0.8)
+      );
+      color: var(--color-default);
+    }
+
+    .test-mixin {
+      @include respond-phone {
+        color: blue;
+      }
+      @include respond(big-desktop) {
+        font-size: 75%; //1rem = 12px
+      }
+      @include respond(tab-land) {
+        font-size: 62.5%; //1rem = 10px
+      }
+      @include respond(tab-port) {
+        font-size: 50%; //1rem = 8px
+      }
+      @include respond(phone) {
+        font-size: 37.5%; //1rem = 6px
+      }
+    }
+  }
+}

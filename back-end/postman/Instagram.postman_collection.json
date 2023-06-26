@@ -1,0 +1,109 @@
+{
+	"info": {
+		"_postman_id": "20e95e8b-8674-47f5-bb0e-5641f7203876",
+		"name": "Instagram",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/friendships/2989212782/following/?count=100&max_id=100",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authority",
+						"value": "i.instagram.com"
+					},
+					{
+						"key": "sec-ch-ua",
+						"value": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"99\", \"Microsoft Edge\";v=\"99\""
+					},
+					{
+						"key": "x-ig-www-claim",
+						"value": "hmac.AR1PQis0c4KLgWpcQ7zJIehLQGjiAeV0noEJXMuVSwN_Uf8X"
+					},
+					{
+						"key": "sec-ch-ua-mobile",
+						"value": "?0"
+					},
+					{
+						"key": "user-agent",
+						"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.46"
+					},
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "x-asbd-id",
+						"value": "198387"
+					},
+					{
+						"key": "sec-ch-ua-platform",
+						"value": "\"Windows\""
+					},
+					{
+						"key": "x-ig-app-id",
+						"value": "936619743392459"
+					},
+					{
+						"key": "origin",
+						"value": "https://www.instagram.com"
+					},
+					{
+						"key": "sec-fetch-site",
+						"value": "same-site"
+					},
+					{
+						"key": "sec-fetch-mode",
+						"value": "cors"
+					},
+					{
+						"key": "sec-fetch-dest",
+						"value": "empty"
+					},
+					{
+						"key": "referer",
+						"value": "https://www.instagram.com/"
+					},
+					{
+						"key": "accept-language",
+						"value": "en-US,en;q=0.9,vi;q=0.8,en-GB;q=0.7"
+					},
+					{
+						"key": "cookie",
+						"value": "ig_did=0D9AA8AF-6F8C-4E2C-8D2E-3355F17859FA; mid=YFSvFQALAAHlnH8idxvi5B0QV866; fbm_124024574287414=base_domain=.instagram.com; shbid=\"1043305429892127820541679294206:01f7407fc4854bb932fd803dbcb935d7b7b438d40a236568fb33c6edd284a67469633957\"; shbts=\"164775820605429892127820541679294206:01f7eaacc1bda854d5f5053860369caabf2b9fcc6d36db38ff63504b014c5c23873e4db3\"; ig_nrcb=1; fbsr_124024574287414=Mm607o9L632BAQ0mXUq17I87sAwFCqhaaTUNH7lo0XI.eyJ1c2VyX2lkIjoiMTAwMDA2NjMxNjYwMjM0IiwiY29kZSI6IkFRQ1VpamJ3cTk1N2xDVnJVcnZyN0NxQ3QxRnhmb01mcmIwYWtaMnRWTWlFVzVJZTRqWkp2QjBBR0QxMFpqekFDckVXRlNFLVVXX1huUDYwQ3d1ZEw0QjY2TFloWDlDa0RVNHhvLWFzb0drcGJCNWZaOThKbVp0VGtVRkxDSGQwMTM3MzNpbzZtQUdmRHEyaFhINlVsUE9NN2NCUGY4eHc3bGptcjdTcFl2N0dPc3d5LXlQTDZlSkN1V21XSmFpVDMtUnBjaGQ4YW9xZzRTcnQ3Q1ZxcGFCM3U5azR3bVU1NlRERGhCNkRKU2ZXM3g3MVlUbGpWdnZyQWpITHYya3FFeUJjRzlrekQzdTBmcXpZaUVObDBYYXFNeXRXS0pRd09sT25ueWlwMkk3QlN1WEVtS3hEb0JhQ0hHTGlFd1pHRDZxbEN5aU0xajJ3aG5sVzV4Ukc5LU8yVE0zS3Y0dkhteHR0WjdBQi0zSXRmZyIsIm9hdXRoX3Rva2VuIjoiRUFBQnd6TGl4bmpZQkFEMmlxZG1oQU45dlh6NzROVWliWkJFRW92ZVVrSE8xbTdsWXBSSEZRZnoyZHNXUlJmN1dDTlZrUGw0VlFMQmdlSFpBaFVmTVcyUHBWWGVlTGppbFZyeFV3ZG9pVkNVcFlPWkFaQllJMXdMS2xoWFl3ZTZKQm9qeDZwTWY5aGhTOE05UlBDYUdaQW1vcUsyUlNzdlpBdGo1b1dMQUtwWWxrcGJyZDFwWkJkWkJtaHQ4UTBFOWZzWkJYWEVDREE2d1pBWkJRWkRaRCIsImFsZ29yaXRobSI6IkhNQUMtU0hBMjU2IiwiaXNzdWVkX2F0IjoxNjQ3NzU4OTIzfQ; csrftoken=nZRla1bPmIjocoqrt6xGPCDQH8unVOmy; ds_user_id=2989212782; sessionid=2989212782%3AhJC2LbjDf35HXW%3A6; rur=\"EAG05429892127820541679295054:01f750931609f3bdc05825e6b28521daba03da12fa4299de3d006f6bce9788061055ae51\""
+					}
+				],
+				"url": {
+					"raw": "https://i.instagram.com/api/v1/friendships/2989212782/following/?count=60&max_id=1",
+					"protocol": "https",
+					"host": [
+						"i",
+						"instagram",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"friendships",
+						"2989212782",
+						"following",
+						""
+					],
+					"query": [
+						{
+							"key": "count",
+							"value": "60"
+						},
+						{
+							"key": "max_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

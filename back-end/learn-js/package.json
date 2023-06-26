@@ -1,0 +1,38 @@
+{
+  "name": "learn-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rmdir /s /q src\\sap\\generated",
+    "clean2": "rimraf src\\sap\\generated",
+    "gen": "npm run generate-sap",
+    "generate-sap": "mkdir src\\sap\\generated && npx generate-odata-client -i src/sap/seed -o src/sap/generated --forceOverwrite --clearOutputDir --generateJs false",
+    "generate-sap2": "mkdir -p src\\sap\\generated && make && npx generate-odata-client -i src/sap/seed -o src/sap/generated --forceOverwrite --clearOutputDir --generateJs false"
+  },
+  "author": "NDH",
+  "license": "ISC",
+  "dependencies": {
+    "@sap-cloud-sdk/connectivity": "^2.9.0",
+    "@sap-cloud-sdk/odata-common": "^2.9.0",
+    "@sap-cloud-sdk/odata-v4": "^2.9.0",
+    "@sap/cloud-sdk-op-vdm-task-service": "^2.1.0",
+    "archiver": "^5.3.1",
+    "bluebird": "^3.7.2",
+    "csv-parser": "^3.0.0",
+    "csv-stringify": "^6.3.2",
+    "flatted": "^3.2.7",
+    "fs": "0.0.1-security",
+    "mixpanel": "^0.17.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.34",
+    "mongoose": "5.9.3",
+    "node-cron": "^3.0.2",
+    "path": "^0.12.7",
+    "rxjs": "^7.5.7"
+  },
+  "devDependencies": {
+    "@sap-cloud-sdk/generator": "^2.9.0",
+    "ts-node": "^10.9.1"
+  }
+}

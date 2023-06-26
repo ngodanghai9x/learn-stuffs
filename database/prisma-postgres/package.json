@@ -1,0 +1,25 @@
+{
+  "name": "prisma-postgres",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "Hai Ngo",
+  "license": "MIT",
+  "scripts": {
+    "db:reset": "prisma migrate reset",
+    "db:generate&apply": "prisma migrate dev --name init2134",
+    "db:generate": "prisma migrate dev --create-only --name init2134",
+    "db:apply": "prisma migrate dev",
+    "db:pull": "prisma db pull --schema=./schemas/nestjs/schema.prisma",
+    "dbClient:generate": "prisma generate",
+    "init:seeds": "ts-node ./prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.9.0",
+    "prisma": "^4.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
