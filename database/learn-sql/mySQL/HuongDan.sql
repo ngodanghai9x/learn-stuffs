@@ -1,30 +1,35 @@
 DROP DATABASE if EXISTS Quanlysinhvien;
-CREATE  DATABASE  Quanlysinhvien;
+
+CREATE DATABASE Quanlysinhvien;
+
 use Quanlysinhvien;
 
 create table Sinhvien (
-Masv int not null primary key auto_increment,
-Tensv nvarchar(50) not null,
-Gioitinh nvarchar(5),
-Ngaysinh nvarchar(50),
-Que nvarchar(50),
-Lop nvarchar(5)
+  Masv int not null primary key auto_increment,
+  Tensv nvarchar(50) not null,
+  Gioitinh nvarchar(5),
+  Ngaysinh nvarchar(50),
+  Que nvarchar(50),
+  Lop nvarchar(5)
 );
 
 create table Monhoc (
-Mamh int not null primary key auto_increment,
-Tenmh nvarchar(50),
-DVHT int
+  Mamh int not null primary key auto_increment,
+  Tenmh nvarchar(50),
+  DVHT int
 );
 
 create table Ketqua (
-Masv int,
-Mamh int,
-Diem int,
-constraint check_Diem check (Diem between 0 and 10),
-constraint primary_key primary key (Masv, Mamh),
-constraint khoaNgoai_SV_KQ foreign key (Masv) references Sinhvien (Masv),
-constraint khoaNgoai_MH_KQ foreign key (Mamh) references Monhoc (Mamh)
+  Masv int,
+  Mamh int,
+  Diem int,
+  constraint check_Diem check (
+    Diem between 0
+    and 10
+  ),
+  constraint primary_key primary key (Masv, Mamh),
+  constraint khoaNgoai_SV_KQ foreign key (Masv) references Sinhvien (Masv),
+  constraint khoaNgoai_MH_KQ foreign key (Mamh) references Monhoc (Mamh)
 );
 
 INSERT Sinhvien(Tensv, Gioitinh, Ngaysinh, Que, Lop) VALUES 
@@ -37,9 +42,11 @@ INSERT Sinhvien(Tensv, Gioitinh, Ngaysinh, Que, Lop) VALUES
 		(N'Lê Thành Đạt', 'Nam', '4/15/1993', N'Phú Thọ', 'L04'),
       (N'Phạm Trung Tính', 'Nam', '03/30/1996', 'Quảng Ninh', 'L01');
 
-INSERT Monhoc(Tenmh, DVHT) VALUES (N'Toán cao cấp', 3),(N'Mạng máy tính', 3),(N'Tin học đại cương', 4),(N'Hệ quản trị cơ sở dữ liệu', 2),(N'Cơ sở dữ liệu', 2);
+INSERT Monhoc(Tenmh, DVHT) 
+VALUES (N'Toán cao cấp', 3),(N'Mạng máy tính', 3),(N'Tin học đại cương', 4),(N'Hệ quản trị cơ sở dữ liệu', 2),(N'Cơ sở dữ liệu', 2);
 
-INSERT Ketqua VALUES (1,1,8),(1,2,5),(2,2,1),(3,2,7),(4,2,3),(1,3,7),(2,1,9),(4,1,2),(3,1,4),(2,3,2),(5,1,4),(6,1,2),(6,3,9),(6,2,7),(6,5,10);
+INSERT Ketqua 
+VALUES (1,1,8),(1,2,5),(2,2,1),(3,2,7),(4,2,3),(1,3,7),(2,1,9),(4,1,2),(3,1,4),(2,3,2),(5,1,4),(6,1,2),(6,3,9),(6,2,7),(6,5,10);
 
 select * from Sinhvien;
 select * from Monhoc;
