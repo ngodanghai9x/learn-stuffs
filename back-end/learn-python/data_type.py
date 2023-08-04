@@ -39,3 +39,8 @@ x = bool(5)	#bool
 x = bytes(5)	#bytes	
 x = bytearray(5)	#bytearray	
 x = memoryview(bytes(5))	#memoryview
+
+x: int = 0
+y: int = 0 
+z: int = 0
+print(x,y,z)

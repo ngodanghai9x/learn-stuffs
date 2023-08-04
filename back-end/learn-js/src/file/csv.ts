@@ -104,3 +104,71 @@ function run() {
 }
 
 run();
+
+export const importChildrenTable = async (tableName, file) =>
+  new Promise(async (resolve, reject) => {
+    const columns = [];
+    const labelColumnMap = new Map();
+    columns?.forEach((column) => {
+      labelColumnMap.set(column.label, column);
+    });
+    const inserted = [];
+    const { createReadStream, ...fileInfo } = file;
+    let fileSize = 0;
+    const stream = createReadStream();
+    stream
+      .on('data', (chunk) => {
+        fileSize += chunk.length;
+        if (fileSize > MAX_SIZE) {
+          reject(new Error(trans.exception.maxSize?.replace('{fileSize}', '${MAX_SIZE} MB')));
+          stream.destroy();
+        }
+      })
+      .pipe(
+        csvParser({
+          separator: ',',
+          // mapHeaders: ({ header, index }) => {
+          //     const label = escapeString(header);
+          //     const columnName = escapeString(labelColumnMap.get(label)?.name);
+          //     return columnName || header;
+          // },
+        }),
+      )
+      .on('data', (record) => {
+        const data = {};
+        Object.keys(record).forEach((_label) => {
+          const label = escapeString(_label);
+          const col = labelColumnMap.get(label) || labelColumnMap.get(label.replace(/"/gi, ''));
+          const columnName = escapeString(col?.name);
+          if (columnName) {
+            data[columnName] = record[_label];
+          }
+        });
+
+        if (Object.keys(data).length) {
+          inserted.push(data);
+        }
+      })
+      .on('end', async () => {
+        const output = await ChildrenTable.create(inserted);
+        const outputIds = output?.map((item) => item?._id);
+        console.log('Done insert:', {
+          insert0: inserted[0],
+          fileInfo,
+          input: inserted?.length,
+          output: output?.length || output,
+          fileSize,
+        });
+
+        if (!output || !output?.length) {
+          reject(new Error(`fail`));
+        }
+
+        resolve({ fileInfo, importedNum: output?.length ?? 0 });
+        stream.destroy();
+      })
+      .on('error', function (error) {
+        reject(new Error('Something went wrong'));
+        stream.destroy();
+      });
+  });
