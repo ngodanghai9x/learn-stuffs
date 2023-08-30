@@ -17,6 +17,7 @@
     "@sap-cloud-sdk/odata-common": "^2.9.0",
     "@sap-cloud-sdk/odata-v4": "^2.9.0",
     "@sap/cloud-sdk-op-vdm-task-service": "^2.1.0",
+    "aes-js": "^3.1.2",
     "archiver": "^5.3.1",
     "bluebird": "^3.7.2",
     "csv-parser": "^3.0.0",
@@ -29,6 +30,7 @@
     "mongoose": "5.9.3",
     "node-cron": "^3.0.2",
     "path": "^0.12.7",
+    "pbkdf2": "^3.1.2",
     "rxjs": "^7.5.7"
   },
   "devDependencies": {
