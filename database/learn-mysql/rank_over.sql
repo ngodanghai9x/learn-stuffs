@@ -42,7 +42,8 @@ SELECT
   *,  
   PERCENT_RANK() OVER (PARTITION BY fiscal_year ORDER BY sale DESC) sales_rank, -- (rank-1) / ( total_rows-1)  
   SUM(sale) OVER (PARTITION BY fiscal_year) AS 'total_sale', 
-  RANK() OVER (PARTITION BY fiscal_year ORDER BY sale DESC)-1 AS 'rank-1', 
+  RANK() OVER (PARTITION BY fiscal_year ORDER BY sale DESC)-1 AS 'RANK-1', 
+  ROW_NUMBER() OVER (PARTITION BY fiscal_year ORDER BY sale DESC)-1 AS 'ROW_NUMBER-1', 
   COUNT(*) OVER (PARTITION BY fiscal_year)-1 AS 'total_rows-1'
 FROM sales;
     
