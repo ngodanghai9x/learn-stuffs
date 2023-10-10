@@ -1,6 +1,6 @@
 const Mixpanel = require('mixpanel');
 
-const token = '515be421a26583816763d65f4b78d1a9';
+const token = '515be421_a26583816763d_65f4b78d1a9';
 // initialize mixpanel client configured to communicate over http instead of https
 const mixpanel = Mixpanel.init(token, {
   protocol: 'http',

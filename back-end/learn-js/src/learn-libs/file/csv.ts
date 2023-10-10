@@ -38,7 +38,7 @@ function writeFile2(outputPath: string, data: any[]) {
 }
 
 function run() {
-  const inputPath = join(__dirname, '..', 'assert', 'data.csv');
+  const inputPath = join(__dirname, '..', '..', 'assert', 'data.csv');
   const labelColumnMap: any = {};
   const headers = [
     'Full Name',
@@ -81,9 +81,16 @@ function run() {
       console.log('🚀 Done read stream.', { rawData, insertData });
 
       // write
-      const outputPath = join(__dirname, '..', 'assert_output', `data_${new Date().getTime()}.csv`);
+      const outputPath = join(
+        __dirname,
+        '..',
+        '..',
+        'assert_output',
+        `data_${new Date().getTime()}.csv`,
+      );
       const outputPath2 = join(
         __dirname,
+        '..',
         '..',
         'assert_output',
         `data2_${new Date().getTime()}.csv`,
