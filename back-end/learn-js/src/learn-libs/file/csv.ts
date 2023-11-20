@@ -39,7 +39,17 @@ function writeFile2(outputPath: string, data: any[]) {
 
 function run() {
   const inputPath = join(__dirname, '..', '..', 'assert', 'data.csv');
-  const labelColumnMap: any = {};
+  const labelColumnMap: Record<string, { name: string }> = {};
+  // || {
+  //   'Full Name': { name: 'full_name' },
+  //   Type: { name: 'type' },
+  //   Group: { name: 'group' },
+  //   Domain: { name: 'domain' },
+  //   Email: { name: 'email' },
+  //   Department: { name: 'department' },
+  //   Telephone: { name: 'telephone' },
+  //   Role: { name: 'role' },
+  // };
   const headers = [
     'Full Name',
     'Type',

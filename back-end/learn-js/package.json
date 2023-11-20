@@ -24,6 +24,8 @@
     "csv-stringify": "^6.3.2",
     "flatted": "^3.2.7",
     "fs": "0.0.1-security",
+    "ldap-authentication": "^3.0.3",
+    "ldapjs": "^3.0.6",
     "mixpanel": "^0.17.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.34",
