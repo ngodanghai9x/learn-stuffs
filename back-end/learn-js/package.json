@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@sap-cloud-sdk/generator": "^2.9.0",
+    "@types/ldapjs": "^3.0.4",
     "ts-node": "^10.9.1"
   }
 }

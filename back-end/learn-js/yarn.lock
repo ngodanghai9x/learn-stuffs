@@ -359,6 +359,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/ldapjs@^3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/ldapjs/-/ldapjs-3.0.4.tgz#baceba5cafa20ec63f12566c924f8e52e450ed5f"
+  integrity sha512-q1ily6ZSWsLijrsHZJdtOfS3qwfanV0h+nxkyeVSSxbFohxCId3SBJeJcf1CcEkBNRfhtnl+uyZPMc9xz2Zs6A==
+  dependencies:
+    "@types/node" "*"
+
 "@types/node@*":
   version "18.11.18"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.18.tgz#8dfb97f0da23c2293e554c5a50d61ef134d7697f"

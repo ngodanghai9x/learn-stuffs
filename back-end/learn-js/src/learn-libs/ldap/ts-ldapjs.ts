@@ -1,4 +1,4 @@
-const ldap = require('ldapjs');
+import ldap, { SearchOptions, Client } from 'ldapjs';
 
 // ldap.Attribute.settings.guid_format = ldap.GUID_FORMAT_B;
 /**
@@ -17,9 +17,9 @@ const ldap = require('ldapjs');
  * ldapsearch -H ldaps://ldap.jumpcloud.com:636 -x -b "ou=Users,o=655ac719379db736a9574bc3,dc=jumpcloud,dc=com" -D "uid=haind1,ou=Users,o=655ac719379db736a9574bc3,dc=jumpcloud,dc=com" -W "(objectClass=*)"
  */
 
-const list = [];
+const list: any[] = [];
 
-function logEntry(entry) {
+function logEntry(entry: any) {
   // console.log('entry: ' + JSON.stringify(entry.pojo));
   const { messageId, protocolOp, type, ...item } = entry?.pojo || entry || {};
   list.push(item);
@@ -27,7 +27,7 @@ function logEntry(entry) {
   console.log('🚀 ~ item:', JSON.stringify(item || {}));
 }
 
-async function onDone(result) {
+async function onDone(result: any, client: Client | null = null) {
   const { status, matchedDN, diagnosticMessage, referrals, ...res } = result || {};
   console.log('🚀 ~ result:', { status, matchedDN, diagnosticMessage, referrals });
   // console.log('🚀 ~ result2:', res);
@@ -36,6 +36,7 @@ async function onDone(result) {
     list.length,
     // JSON.stringify(list)
   );
+  client?.unbind(console.error);
   process.exit(0);
 }
 
@@ -44,7 +45,7 @@ function func1() {
     url: 'ldap://ldap.forumsys.com',
   });
 
-  const opts = {
+  const opts: SearchOptions = {
     // filter: '(objectClass=inetOrgPerson)',
     filter: '(&(objectClass=inetOrgPerson)(!(cn=read-only-admin))',
     scope: 'sub',
@@ -60,10 +61,10 @@ function func1() {
   const userDn = `uid=einstein,${baseDn}`;
   const password = 'password';
 
-  client.bind(userDn, password, (err) => {
+  client.bind(userDn, password, (err: any) => {
     console.log('🚀 err1:', err);
 
-    client.search(baseDn, opts, (err, res) => {
+    client.search(baseDn, opts, (err: any, res) => {
       console.log('🚀 err2:', err);
 
       res.on('searchRequest', (searchRequest) => {
@@ -103,7 +104,7 @@ function func2() {
     url: 'ldap://ldap.jumpcloud.com:389',
   });
 
-  const opts = {
+  const opts: SearchOptions = {
     // filter: '(objectClass=*)',
     filter: '(objectClass=inetOrgPerson)',
     scope: 'sub',
@@ -114,10 +115,10 @@ function func2() {
   const userDn = `uid=haind1,${baseDn}`;
   const password = '!Hai1234567890';
 
-  client.bind(userDn, password, (err) => {
+  client.bind(userDn, password, (err: any) => {
     console.log('🚀 err1:', err);
 
-    client.search(baseDn, opts, (err, res) => {
+    client.search(baseDn, opts, (err: any, res) => {
       console.log('🚀 err2:', err);
 
       res.on('searchRequest', (searchRequest) => {
