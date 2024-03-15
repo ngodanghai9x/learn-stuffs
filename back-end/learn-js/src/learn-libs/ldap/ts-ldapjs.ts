@@ -5,6 +5,8 @@ import ldap, { SearchOptions, Client } from 'ldapjs';
  * REFS:
  * https://console.jumpcloud.com/#/users
  * http://ldapjs.org/client.html#search
+ * https://www.forumsys.com/2022/05/10/online-ldap-test-server/
+ * https://www.npmjs.com/package/ldap-authentication
  *
  * https://jumpcloud.com/support/use-ldapsearch-with-jumpcloud
  * ldapsearch
@@ -99,7 +101,7 @@ function func1() {
   });
 }
 
-function func2() {
+async function func2() {
   const client = ldap.createClient({
     url: 'ldap://ldap.jumpcloud.com:389',
   });
@@ -117,9 +119,10 @@ function func2() {
 
   client.bind(userDn, password, (err: any) => {
     console.log('🚀 err1:', err);
-
+    Promise.reject(err);
     client.search(baseDn, opts, (err: any, res) => {
       console.log('🚀 err2:', err);
+      Promise.reject(err);
 
       res.on('searchRequest', (searchRequest) => {
         console.log('searchRequest: ', searchRequest.messageId);
@@ -146,4 +149,4 @@ function func2() {
   });
 }
 
-func1();
+func2();
