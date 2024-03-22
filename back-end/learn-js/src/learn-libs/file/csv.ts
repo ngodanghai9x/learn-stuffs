@@ -38,7 +38,8 @@ function writeFile2(outputPath: string, data: any[]) {
 }
 
 function run() {
-  const inputPath = join(__dirname, '..', '..', 'assert', 'data.csv');
+  // const inputPath = join(__dirname, '..', '..', 'assert', 'data.csv');
+  const inputPath = `/home/gem/Downloads/import_domains_template2.csv`;
   const labelColumnMap: Record<string, { name: string }> = {};
   // || {
   //   'Full Name': { name: 'full_name' },
@@ -81,11 +82,12 @@ function run() {
     .on('data', (record) => {
       const data: any = {};
       Object.keys(record).forEach((label) => {
-        const columnName = labelColumnMap[label].name;
+        const columnName = labelColumnMap[label]?.name;
         data[columnName] = record[label];
       });
       insertData.push(data);
       rawData.push(record);
+      console.log('🚀 ~ .on ~ recordlength:', record['Customer ID']?.length);
     })
     .on('end', async () => {
       console.log('🚀 Done read stream.', { rawData, insertData });
@@ -110,8 +112,9 @@ function run() {
         outputPath,
         outputPath2,
       });
-      writeFile(outputPath, insertData);
-      writeFile2(outputPath2, insertData);
+      writeFile(outputPath, rawData);
+      // writeFile(outputPath, insertData);
+      // writeFile2(outputPath2, insertData);
 
       // end
     })
@@ -189,3 +192,64 @@ export const importChildrenTable = async (tableName, file) =>
         stream.destroy();
       });
   });
+
+async function parseCsv<T>(
+  inputPath: string,
+  headers: string[],
+  // labelColumnMap: Record<string, { name: string }>
+): Promise<T[]> {
+  // const labelColumnMap: Record<string, { name: string }> = {};
+  // || {
+  //   'Full Name': { name: 'full_name' },
+  //   Type: { name: 'type' },
+  //   Group: { name: 'group' },
+  //   Domain: { name: 'domain' },
+  //   Email: { name: 'email' },
+  //   Department: { name: 'department' },
+  //   Telephone: { name: 'telephone' },
+  //   Role: { name: 'role' },
+  // };
+  return new Promise(async (resolve, reject) => {
+    const stream = createReadStream(inputPath, 'utf8');
+    const insertData: T[] = [];
+    const rawData: T[] = [];
+    const parser = parse({
+      separator: ',',
+      headers,
+      skipLines: 1,
+    });
+    const debug = true;
+
+    // read
+    stream
+      .pipe(parser)
+      .on('data', (record) => {
+        // const data: any = {};
+        // Object.keys(record).forEach((label) => {
+        //   const columnName = labelColumnMap[label]?.name;
+        //   data[columnName] = record[label];
+        // });
+        // insertData.push(data);
+        rawData.push(record);
+
+      })
+      .on('end', async () => {
+        debug && console.log('🚀 Done read stream.', { rawData, insertData });
+
+        // write
+
+        // if (!rawData || !rawData?.length) {
+        //   reject(new BadRequestException('abc.csv_file_empty'));
+        // }
+
+        // resolve(insertData);
+        resolve(rawData);
+        stream.destroy();
+      })
+      .on('error', function (error) {
+        console.error(`ParseCsvError: ${error.message}`);
+        stream.destroy();
+        reject(error);
+      });
+  });
+}
