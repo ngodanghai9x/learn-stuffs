@@ -18,16 +18,18 @@ separate()
 
 
 # Access tuple
-print('index 0', my_tuple[0])
-print('index -2', my_tuple[-2])
-print('index -1', my_tuple[-1])
-print('index len - 1', my_tuple[len(my_tuple) - 1])
-print('index range [1:4]', my_tuple[1:4])
-print('index range [-1:-4]', my_tuple[-1:-4])
-print("Yes, 1 in my_tuple", 1 in my_tuple)
+print("# Access tuple")
+print('index 0=', my_tuple[0])
+print('index -2=', my_tuple[-2])
+print('index -1=', my_tuple[-1])
+print('index len - 1=', my_tuple[len(my_tuple) - 1])
+print('index range [1:4]=', my_tuple[1:4])
+print('index range [-1:-4]=', my_tuple[-1:-4])
+print("Yes, 1 in my_tuple=", 1 in my_tuple)
 separate()
 
-# Unpack & Asterisk
+# Unpack & Asterisk: like rest, spread in js (...)
+print("# Unpack & Asterisk")
 (x, y, *z) = my_tuple
 print(x, y, z)
 separate()
@@ -41,6 +43,7 @@ print(x, y, z)
 separate()
 
 # Update
+print("# Update: only by create new tuple")
 temp = list(my_tuple)
 temp[1] = "kiwi"
 new_tuple = tuple(temp)
@@ -53,6 +56,7 @@ print(temp_tuple)
 separate()
 
 # Join tuple
+print("# Join tuple")
 tuple1 = ("a", "b" , "c")
 tuple2 = (1, 2, 3)
 tuple3 = tuple1 + tuple2

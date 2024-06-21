@@ -12,4 +12,5 @@ print(json.dumps(False))
 print(json.dumps(None))
 
 print(json.loads('42'))
+print(json.loads('{"name": "John", "age": 30}'))
 

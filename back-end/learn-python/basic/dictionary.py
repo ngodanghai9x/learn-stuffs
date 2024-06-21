@@ -20,3 +20,8 @@ thisdict = {
 print(thisdict["brand"])
 # print(thisdict["abc"]) // error
 print(thisdict.get("abc"))
+
+new_name = "haind"
+
+thisdict = dict(new_name = new_name, name = "John", age = 36, country = "Norway")
+print(thisdict)
