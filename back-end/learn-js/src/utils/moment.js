@@ -1,12 +1,14 @@
-const moment = require('moment')
+const moment = require('moment');
 console.log({
+  a1: moment(),
+  a2: moment().utcOffset(-2.5),
   abc: moment(`2022-07-03T23:44:51.000Z`).format(`DD/MM/YYYY`),
   abc2: moment(`2022-07-03T23:44:51.000Z`).utc().format(`DD/MM/YYYY`),
   abc3: moment(`2022-07-02T12:21:09.000Z`).format(`DD/MM/YYYY`),
   abc4: moment(`2022-07-02T12:21:09.000Z`).utc().format(`DD/MM/YYYY`),
   abc5: moment(`2022-07-01T23:42:17.000Z`).format(`DD/MM/YYYY`),
   abc6: moment(`2022-07-01T23:42:17.000Z`).utc().format(`DD/MM/YYYY`),
-})
+});
 // {
 //   "date": "2022-07-03T23:44:51.000Z",
 //   "data_completeness": 0.961136379,

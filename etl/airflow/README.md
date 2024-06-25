@@ -1,3 +1,9 @@
+## REFs:
+- https://vivekjadhavr.medium.com/how-to-easily-install-apache-airflow-on-windows-6f041c9c80d2
+- https://www.geeksforgeeks.org/how-to-create-first-dag-in-airflow/
+- https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/operators.html
+- https://airflow.apache.org/docs/apache-airflow-providers-sftp/stable/_api/airflow/providers/sftp/operators/sftp/index.html
+
 ## Install guide:
 ````bash
 nano ~/.bashrc
