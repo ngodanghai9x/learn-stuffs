@@ -4,6 +4,10 @@
 - https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/operators.html
 - https://airflow.apache.org/docs/apache-airflow-providers-sftp/stable/_api/airflow/providers/sftp/operators/sftp/index.html
 
+## Requirements:
+- lấy dữ liệu từ SFTP server
+- Sử dụng pandas để lấy dữ liệu từ CSV file đẩy lên postgres
+
 ## Install guide:
 ````bash
 nano ~/.bashrc
