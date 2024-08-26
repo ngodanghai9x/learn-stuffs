@@ -96,4 +96,19 @@ async function mySortedSet() {
     return redis.disconnect();
 }
 
-mySortedSet();
+async function myAppend() {
+    // await redis.rpush('my_rpush', ...[12,33]);
+    // // await redis.rpush('my_rpush', 123);
+    // // await redis.rpush('my_rpush', 12);
+    // const array = await redis.lrange('my_rpush', 0, -1);
+    // console.log("🚀 ~ my_rpush ~ array:", array)
+
+    await redis.sadd('my_sadd', ...[12, 33]);
+    await redis.sadd('my_sadd', 123);
+    await redis.sadd('my_sadd', 12);
+    await redis.srem('my_sadd', 33);
+    const array2 = await redis.smembers('my_sadd');
+    console.log('🚀 ~ myAppend ~ array:', array2);
+}
+
+myAppend();
