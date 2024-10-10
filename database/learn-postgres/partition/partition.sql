@@ -1,3 +1,4 @@
+-- === RANGE PARTITION ===
 -- Tạo Sequence (nếu chưa tồn tại)
 CREATE SEQUENCE IF NOT EXISTS reward_metrics_id_seq;
 
@@ -25,7 +26,7 @@ CREATE TABLE IF NOT EXISTS reward_metrics_2024_02 PARTITION OF "reward_metrics"
 CREATE TABLE IF NOT EXISTS reward_metrics_2024_03 PARTITION OF "reward_metrics"
     FOR VALUES FROM ('2024-03-01 00:00:00') TO ('2024-04-01 00:00:00');
 
-
+-- === HASH PARTITION ===
 CREATE TABLE trader (
     name TEXT,
     poolId VARCHAR,  -- cột poolId là chuỗi (string)
@@ -66,4 +67,45 @@ CREATE TABLE trader_part_7 PARTITION OF trader
 -- Giải thích:
 -- MODULUS 8: Chỉ định rằng bảng sẽ được chia thành 8 phân vùng.
 -- REMAINDER: Mỗi phân vùng sẽ lưu trữ các giá trị poolId có giá trị băm tương ứng với phần dư cụ thể khi chia giá trị băm cho 8.
+
+-- === MIXED PARTITION ===
+-- Tạo bảng chính với partitioning theo range
+CREATE TABLE trader (
+    name TEXT NOT NULL,
+    poolId TEXT NOT NULL,
+    balance NUMERIC NULL,
+    pnl NUMERIC NULL,
+    sold NUMERIC NULL,
+    created_at TIMESTAMP DEFAULT now() NOT NULL,
+    poolCreatedAt TIMESTAMP DEFAULT now() NOT NULL
+) PARTITION BY RANGE (poolCreatedAt);
+
+-- Tạo partition theo năm 2023
+CREATE TABLE trader_2023 PARTITION OF trader
+    FOR VALUES FROM ('2023-01-01') TO ('2024-01-01')
+    PARTITION BY HASH (poolId);
+
+-- Tạo partition hash cho năm 2023, hash theo poolId với module 10
+CREATE TABLE trader_2023_hash_0 PARTITION OF trader_2023
+    FOR VALUES WITH (MODULUS 10, REMAINDER 0);
+
+CREATE TABLE trader_2023_hash_1 PARTITION OF trader_2023
+    FOR VALUES WITH (MODULUS 10, REMAINDER 1);
+
+-- Tương tự cho các giá trị từ 2 đến 9
+CREATE TABLE trader_2023_hash_2 PARTITION OF trader_2023
+    FOR VALUES WITH (MODULUS 10, REMAINDER 2);
+
+-- Lặp lại cho tất cả các năm bạn muốn phân vùng
+CREATE TABLE trader_2024 PARTITION OF trader
+    FOR VALUES FROM ('2024-01-01') TO ('2025-01-01')
+    PARTITION BY HASH (poolId);
+
+CREATE TABLE trader_2024_hash_0 PARTITION OF trader_2024
+    FOR VALUES WITH (MODULUS 10, REMAINDER 0);
+
+-- Và tiếp tục cho các phần còn lại...
+
+-- Bạn có thể tiếp tục thêm partition theo năm và hash theo poolId cho các năm tiếp theo.
+
 
