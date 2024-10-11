@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import * as moment from 'moment';
 
-export class CreateTableSolanaTradersV21727929441015 implements MigrationInterface {
+export class CreateTableTradersV21727929412345 implements MigrationInterface {
     private tableNameV1 = 'traders';
 
-    private tableName = 'traders_v21';
+    private tableName = 'traders_v2';
 
     private partitionNumber = 3;
 
@@ -17,18 +17,18 @@ export class CreateTableSolanaTradersV21727929441015 implements MigrationInterfa
             CREATE TABLE IF NOT EXISTS "${this.tableName}" (
                 id                   serial,
                 pool_id                 text not null,
-                maker_address                text not null,
+                trader_address                text not null,
                 bought_val         numeric   default '0'::numeric,
                 sold_val           numeric   default '0'::numeric,
                 pnl                  numeric,
                 balance              numeric   default '0'::numeric,
                 created_at           timestamp default CURRENT_TIMESTAMP,
-                PRIMARY KEY (pool_id, maker_address)
+                PRIMARY KEY (pool_id, trader_address)
             ) PARTITION BY HASH (pool_id);
         `);
 
-        // await queryRunner.query(`CREATE UNIQUE INDEX ${this.tableName}_pair_maker_unique_index ON trader (pair, maker)`);
-        // await this.createIndex(queryRunner, this.tableName, 'pair_maker_index', ['pair', 'maker']);
+        // await queryRunner.query(`CREATE UNIQUE INDEX ${this.tableName}_pool_id_trader_address_unique_index ON trader (pool_id, trader_address)`);
+        // await this.createIndex(queryRunner, this.tableName, 'pool_id_trader_address_index', ['pool_id', 'trader_address']);
         await this.createIndex(queryRunner, this.tableName, 'pnl_index', ['pnl']);
         await this.createIndex(queryRunner, this.tableName, 'balance_index', ['balance']);
 
@@ -50,10 +50,10 @@ export class CreateTableSolanaTradersV21727929441015 implements MigrationInterfa
 
         await queryRunner.query(`INSERT INTO ${
             this.tableName
-        } (pair, maker, bought_val, sold_val, pnl, balance, created_at, updated_at, pool_created_at
+        } (pool_id, trader_address, bought_val, sold_val, pnl, balance, created_at, updated_at, pool_created_at
             ) SELECT 
-                t1.pair, 
-                t1.maker, 
+                t1.pool_id, 
+                t1.trader_address, 
                 t1.bought_val, 
                 t1.sold_val, 
                 t1.pnl, 
@@ -61,7 +61,7 @@ export class CreateTableSolanaTradersV21727929441015 implements MigrationInterfa
                 t1.updated_at,
                 p.created_at
             FROM ${this.tableNameV1} t1
-            JOIN pools p ON t1.pair = p.id
+            JOIN pools p ON t1.pool_id = p.id
             ${this.limitRecord ? 'LIMIT 1000' : ''};
         `);
     }

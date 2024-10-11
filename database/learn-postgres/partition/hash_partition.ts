@@ -10,18 +10,18 @@ export class CreateTableTradersV21727929412345 implements MigrationInterface {
             CREATE TABLE IF NOT EXISTS "${this.tableName}" (
                 id                   serial,
                 pool_id                 text not null,
-                maker_address                text not null,
+                trader_address                text not null,
                 bought_val         numeric   default '0'::numeric,
                 sold_val           numeric   default '0'::numeric,
                 pnl                  numeric,
                 balance              numeric   default '0'::numeric,
                 created_at           timestamp default CURRENT_TIMESTAMP,
-                PRIMARY KEY (pool_id, maker_address)
+                PRIMARY KEY (pool_id, trader_address)
             ) PARTITION BY HASH (pool_id);
         `);
 
-        // await queryRunner.query(`CREATE UNIQUE INDEX ${this.tableName}_pool_id_maker_address_unique_idx ON trader (pool_id, maker_address)`);
-        // await this.createIndex(queryRunner, this.tableName, 'pool_id_maker_address_idx', ['pool_id', 'maker_address']);
+        // await queryRunner.query(`CREATE UNIQUE INDEX ${this.tableName}_pool_id_trader_address_unique_idx ON trader (pool_id, trader_address)`);
+        // await this.createIndex(queryRunner, this.tableName, 'pool_id_trader_address_idx', ['pool_id', 'trader_address']);
         await this.createIndex(queryRunner, this.tableName, 'pnl_idx', ['pnl']);
         await this.createIndex(queryRunner, this.tableName, 'balance_idx', ['balance']);
 
