@@ -23,6 +23,7 @@ async function usePipeline() {
     //   [null, 1],    // Kết quả của lệnh INCR counter (giá trị sau khi tăng)
     //   [null, 'value1'] // Kết quả của lệnh GET key1
     // ]
+    return redis.disconnect();
 }
 
 usePipeline().catch(console.error);

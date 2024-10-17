@@ -30,6 +30,7 @@ const docsSample = () => {
     // The format is: redis[SOME_REDIS_COMMAND_IN_LOWERCASE](ARGUMENTS_ARE_JOINED_INTO_COMMAND_STRING)
     // so the following statement is equivalent to the CLI: `redis> SET mykey hello EX 10`
     redis.set('mykey', 'hello', 'EX', 10);
+    return redis.disconnect();
 };
 function safeParse(item: any) {
     try {
@@ -64,5 +65,3 @@ const myMultiAdd = async () => {
 
     return redis.disconnect();
 };
-
-

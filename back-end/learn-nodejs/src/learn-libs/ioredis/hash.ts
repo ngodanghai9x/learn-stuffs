@@ -4,6 +4,7 @@ const redis = new Redis(`0.0.0.0:6379`);
 
 async function useHash() {
     // Sử dụng HSET để thiết lập các field và giá trị cho hash "user:1000"
+    await redis.hset('user:1000', { class: '10A4', school: 'LienHa' });
     await redis.hset('user:1000', 'name', 'John Doe');
     await redis.hset('user:1000', 'age', 30);
     await redis.hset('user:1000', 'email', 'john@example.com');
@@ -21,11 +22,13 @@ async function useHash() {
     // Lấy giá trị không tồn tại (sẽ trả về null)
     const address = await redis.hget('user:1000', 'address');
     console.log('Address:', address); // Kết quả sẽ là null
-    
+
     await redis.hdel('user:1000', 'age');
 
     const obj = await redis.hgetall('user:1000');
-    console.log('obj:', obj); // { name: 'John Doe', age: '30', email: 'john@example.com' }
+    console.log('The whole object:', obj); // { name: 'John Doe', age: '30', email: 'john@example.com' }
+
+    return redis.disconnect();
 }
 
 useHash().catch(console.error);

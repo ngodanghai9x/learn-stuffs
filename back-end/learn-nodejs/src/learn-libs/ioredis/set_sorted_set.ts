@@ -48,6 +48,7 @@ async function myAppendSet() {
     await redis.srem('my_sadd', 33);
     const array2 = await redis.smembers('my_sadd');
     console.log('🚀 ~ myAppendSet ~ array:', array2);
+    return redis.disconnect();
 }
 
 myAppendSet();
