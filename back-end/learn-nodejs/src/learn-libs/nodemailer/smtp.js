@@ -21,15 +21,15 @@ var nodemailer = require('nodemailer');
 //   },
 // });
 var transport = nodemailer.createTransport({
-  host: 'email-smtp.ap-northeast-1.amazonaws.com',
+  host: 'smtp-relay.brevo.com',
   // port: 25,
   // port: 587,
-  port: 465,
-  secure: true,
+  port: 587,
+  // secure: true,
   auth: {
     type: 'login',
-    user: 'AKIA***',
-    pass: 'BDuEv***',
+    user: '7**1@smtp-brevo.com',
+    pass: 'DI**TQ',
   },
 });
 // var transport2 = nodemailer.createTransport({
@@ -44,14 +44,14 @@ var transport = nodemailer.createTransport({
 // console.log('🚀 ~ file: sendMail.js:20 ~ transport:', transport);
 
 var mailOptions = {
-  from: 'tlt@gmail.com',
+  from: 'ndh.developer@gmail.com',
   // from: 'haind@gmail.co',
   // from: 'sender@demo.com',
-  to: ['haind@yopmail.com'],
-  // to: ['haind@yopmail.com', 'haind1@yopmail.com'],
-  subject: 'subjet123',
-  html: '1HTML message123',
-  text: 'Texte message123',
+  // to: ['haind@yopmail.com'],
+  to: ['haind@yopmail.com', 'haind1@yopmail.com'],
+  subject: 'subject name 22',
+  html: 'HTML message 22',
+  text: 'Text message 22',
   //headers: []
 };
 
@@ -86,4 +86,47 @@ transport.close();
 //   response: '250 Ok 0106018e41a803c0-b9de4bba-a7df-46ed-b4cb-9f8d1ef6e535-000000',
 //   envelope: { from: 'tlt@gmail.com', to: [ 'haind@yopmail.com' ] },
 //   messageId: '<d8844260-9527-d8d4-15b2-65a1ff0d1b61@gmail.com>'
+// }
+
+// {
+//   accepted: [ 'haind@yopmail.com', 'haind1@yopmail.com' ],
+//   rejected: [],
+//   ehlo: [
+//     'PIPELINING',
+//     '8BITMIME',
+//     'ENHANCEDSTATUSCODES',
+//     'CHUNKING',
+//     'AUTH CRAM-MD5 PLAIN LOGIN',
+//     'SIZE 20971520'
+//   ],
+//   envelopeTime: 398,
+//   messageTime: 240,
+//   messageSize: 601,
+//   response: '250 2.0.0 OK: queued as <bfe63294-2acc-1c8b-dc55-0b24619e7921@gmail.com>',
+//   envelope: {
+//     from: 'ndh.developer@gmail.com',
+//     to: [ 'haind@yopmail.com', 'haind1@yopmail.com' ]
+//   },
+//   messageId: '<bfe63294-2acc-1c8b-dc55-0b24619e7921@gmail.com>'
+// }
+// {
+//   accepted: [ 'haind@yopmail.com', 'haind1@yopmail.com' ],
+//   rejected: [],
+//   ehlo: [
+//     'PIPELINING',
+//     '8BITMIME',
+//     'ENHANCEDSTATUSCODES',
+//     'CHUNKING',
+//     'AUTH CRAM-MD5 PLAIN LOGIN',
+//     'SIZE 20971520'
+//   ],
+//   envelopeTime: 410,
+//   messageTime: 245,
+//   messageSize: 625,
+//   response: '250 2.0.0 OK: queued as <9d0b13f9-75c6-1d78-819c-52e561a49a18@8317887.brevosend.com>',
+//   envelope: {
+//     from: 'ndh.developer@8317887.brevosend.com',
+//     to: [ 'haind@yopmail.com', 'haind1@yopmail.com' ]
+//   },
+//   messageId: '<9d0b13f9-75c6-1d78-819c-52e561a49a18@8317887.brevosend.com>'
 // }
