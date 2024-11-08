@@ -45,6 +45,8 @@ except:
 
 ages = [5, 12, 17, 18, 24, 32]
 
+# FILTER
+
 def myFunc(x):
   if x < 18:
     return False

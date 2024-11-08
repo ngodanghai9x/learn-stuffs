@@ -12,12 +12,11 @@ y = int(3)    # y will be 3
 z = float(3)  # z will be 3.0
 print(x, y, z)
 print(type(x), type(y), type(z))
-print(type(x) == "<class 'str'>")
+print(type(x) == "<class 'str'>") # False
+print(type(x) == 'str') # False
 
 x, y, z = "Orange", "Banana", "Cherry"
-print(x)
-print(y)
-print(z)
+print(x, y, z)
 
 x = y = 123
 print(x)
@@ -25,8 +24,6 @@ print(y)
 
 fruits = ["apple", "banana", "cherry"]
 x, y, z = fruits
-print(x)
-print(y)
-print(z)
+print(x, y, z)
 
 exit()

@@ -5,6 +5,7 @@ const redis = new Redis(`0.0.0.0:6379`);
 async function mySortedSet() {
     const scores = [
         { name: 'Bob', score: 80 },
+        { name: 'Bob', score: 90 },
         { name: 'Jeff', score: 59.5 },
         { name: 'Tom', score: 100 },
         { name: 'Alex', score: 99.5 },
@@ -15,6 +16,11 @@ async function mySortedSet() {
     const scoreMembers = scores.map(({ name, score }) => [score, name]);
     await redis.zadd('user-zset', ...(scoreMembers as any));
     // await redis.zadd('user-zset', ...scoreMembers.flat());
+
+    console.log(await redis.zrank('user-zset', 'Bob1')); // null
+    console.log(await redis.zrank('user-zset', 'Bob')); // 1
+    console.log(await redis.zscore('user-zset', 'Bob1')); // null
+    console.log(await redis.zscore('user-zset', 'Bob')); // 90
 
     console.log(await redis.zrange('user-zset', 0, scores.length - 1)); // [ 'Jeff', 'Bob', 'Alex', 'Tom' ]
     console.log(await redis.zrangebyscore('user-zset', '-inf', '+inf')); // [ 'Jeff', 'Bob', 'Alex', 'Tom' ]
@@ -51,4 +57,4 @@ async function myAppendSet() {
     return redis.disconnect();
 }
 
-myAppendSet();
+mySortedSet();

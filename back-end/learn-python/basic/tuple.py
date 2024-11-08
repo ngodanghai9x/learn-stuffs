@@ -5,7 +5,7 @@
 # Tuple items are ordered, unchangeable, and allow duplicate values.
 # Tuple items are indexed, the first item has index [0], the second item has index [1] etc.
 
-def separate():
+def _separate():
   print('----------------------------------------')
 
 my_tuple = (0, 1, 2, 1, 4, 5)
@@ -14,7 +14,7 @@ print(my_tuple)
 print('len= ' + str(len(my_tuple)))
 print('count 1=', my_tuple.count(1))
 print('index 1=', my_tuple.index(1))
-separate()
+_separate()
 
 
 # Access tuple
@@ -26,21 +26,21 @@ print('index len - 1=', my_tuple[len(my_tuple) - 1])
 print('index range [1:4]=', my_tuple[1:4])
 print('index range [-1:-4]=', my_tuple[-1:-4])
 print("Yes, 1 in my_tuple=", 1 in my_tuple)
-separate()
+_separate()
 
 # Unpack & Asterisk: like rest, spread in js (...)
 print("# Unpack & Asterisk")
 (x, y, *z) = my_tuple
 print(x, y, z)
-separate()
+_separate()
 
 (x, *y, z) = my_tuple
 print(x, y, z)
-separate()
+_separate()
 
 (*x, y, z) = my_tuple
 print(x, y, z)
-separate()
+_separate()
 
 # Update
 print("# Update: only by create new tuple")
@@ -53,7 +53,7 @@ temp_tuple = ("apple", "banana", "cherry")
 y = ("orange",)
 temp_tuple += y
 print(temp_tuple)
-separate()
+_separate()
 
 # Join tuple
 print("# Join tuple")
@@ -61,12 +61,12 @@ tuple1 = ("a", "b" , "c")
 tuple2 = (1, 2, 3)
 tuple3 = tuple1 + tuple2
 print(tuple3)
-separate()
+_separate()
 
 tuple1 = ("apple", "banana", "cherry")
 tuple2 = tuple1 * 2
 print(tuple2)
-separate()
+_separate()
 
 
 
