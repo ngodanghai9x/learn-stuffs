@@ -7,3 +7,14 @@ export const listImageTypeSlash = ["/png", "/jpeg", "/webp", "/gif", "/jpg"]; //
 
 export const FILE_VALID_TYPE = ['png', 'jpeg', 'webp', 'gif', 'jpg', 'mp4', '3gpp', 'wmv', 'avi', 'mov', '3gp', 'pdf'];
 export const ACCEPT_ONLY_SUPPORTED_FILE = '.png, .jpeg, .webp, .gif, .jpg, .mp4, .3gpp, .wmv, .avi, .mov, .3gp, .pdf';
+
+export const MIME_TYPE_DICT = {
+    'image/jpeg': '.jpeg',
+    'image/png': '.png',
+    'image/webp': '.webp',
+    'image/gif': '.gif',
+    'image/jpg': '.jpg',
+    'application/pdf': '.pdf',
+    'text/html': '.html',
+    'application/json': '.json',
+}

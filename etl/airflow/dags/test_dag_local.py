@@ -20,8 +20,8 @@ dag = DAG(
     default_args={
         'owner': 'airflow',
         'depends_on_past': False,
-        # 'start_date': datetime(2024, 6, 25, tzinfo=local_tz),
-        'start_date': datetime(2024, 6, 25),
+        'start_date': datetime(2024, 7, 25, tzinfo=local_tz),
+        # 'start_date': datetime(2024, 6, 25),
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
     },
@@ -53,3 +53,4 @@ task3 = PythonOperator(
 )
 
 task1 >> task2 >> task3
+task3.trigger_rule = 'one_success'

@@ -104,12 +104,12 @@ local_path = '/home/gem/Documents/MyRepo/learn-stuffs/etl/airflow/dags/temp'
 
 def download_csv_by_sftp():
     print('get csv')
-    # sftp_url = os.environ.get("SFTPTOGO_URL")
+    # sftp_url = os.environ.get("SFTP_URL")
     sftp_url = "sftp://data_training:training123a@!@172.16.10.117:22"
     # sftp_url = "sftp://data_training:'training123a@!'@172.16.10.117:22"
 
     if not sftp_url:
-        print("First, please set environment variable SFTPTOGO_URL and try again.")
+        print("First, please set environment variable SFTP_URL and try again.")
         exit(0)
 
     parsed_url = urlparse(sftp_url)
