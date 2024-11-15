@@ -95,18 +95,19 @@ class Sftp:
         except Exception as err:
             raise Exception(err)
 
-
+global_dfs = []
 local_tz = timezone('Asia/Ho_Chi_Minh')
-remote_path = "/home/data_training/DATA"
-local_path = os.getcwd() + '/temp'
+# remote_path = "/home/data_training/DATA"
+remote_path = "./share"
+# local_path = os.getcwd() + '/temp'
 local_path = '/home/gem/Documents/MyRepo/learn-stuffs/etl/airflow/dags/temp'
 
 
 def download_csv_by_sftp():
     print('get csv')
     # sftp_url = os.environ.get("SFTP_URL")
-    sftp_url = "sftp://data_training:training123a@!@172.16.10.117:22"
-    # sftp_url = "sftp://data_training:'training123a@!'@172.16.10.117:22"
+    # sftp_url = "sftp://data_training:training123a@!@172.16.10.117:22"
+    sftp_url = "sftp://sftpuser:123456@172.16.13.251:22"
 
     if not sftp_url:
         print("First, please set environment variable SFTP_URL and try again.")
@@ -145,6 +146,8 @@ def download_csv_by_sftp():
 
 
 def transform_data():
+    global global_dfs
+    global_dfs = []
     print('transform data')
     csv_files = os.listdir(local_path)
     print("🐍 local_listdir", csv_files)
@@ -152,20 +155,43 @@ def transform_data():
         print("🐍 File:ir", file_name)
         try:
             df = pd.read_csv(os.path.join(local_path, str(file_name)))
+            global_dfs.append(df)
             print(df.head(3))
         except:
             print('file_name_err', file_name)
-
+transform_data()
+# exit()
 
 def save_to_postgres():
+    global global_dfs
+    if global_dfs is None:
+        print("No data to save.")
+        return
+
     # https://stackoverflow.com/questions/23103962/how-to-write-dataframe-to-postgres-table
-    print('save data')
-    postgres_url = 'postgresql://postgres:w65DKtEOa8@172.16.12.105:5432/postgres'
-    # postgres_url = 'postgresql://postgres:w65DKtEOa8@172.16.12.105:5432/public'
+    print('Saving data to PostgreSQL')
+    postgres_url = 'postgresql://postgres:postgres@0.0.0.0:5432/postgres'
     engine = create_engine(postgres_url)
-    # df.to_sql('table_name', engine, if_exists='replace', index=False)
+    table_name = 'users'
+    dtypes_list = []
+
+    for i, df in enumerate(global_dfs):
+        dtypes_list.append(df.dtypes.rename(f"DataFrame_{i}"))
+        # Sử dụng to_sql với if_exists='replace' để tạo bảng dựa trên schema của DataFrame
+        try:
+            # print('df.dtypes', df.dtypes)
+            # df.to_sql(table_name, engine, if_exists='append', index=False)
+            print(f"Data saved to table '{table_name}' successfully.")
+        except Exception as e:
+            print("Error saving data to PostgreSQL:", e)
+
+    dtypes_df = pd.DataFrame(dtypes_list)
+    print(dtypes_df.head(3))
+    dtypes_df.to_csv(f"{local_path}/dataframes_schema/list.csv", index=True, mode='w')
+    print("Schemas saved to dataframes_schema.csv.")
+
 save_to_postgres()
-exit()
+# exit()
 
 
 dag = DAG(
