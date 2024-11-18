@@ -1,0 +1,10 @@
+Tiêu chí,Procedure (Oracle),Procedure (PostgreSQL),Function (Oracle),Function (PostgreSQL)
+Mục đích chính,Thực thi các tác vụ (thường không trả về giá trị).,Thực thi các tác vụ (không trả về giá trị).,Tính toán và trả về một giá trị.,Tính toán và trả về một giá trị (hoặc bảng).
+Cách gọi,EXEC hoặc gọi trực tiếp trong PL/SQL block.,CALL hoặc từ PL/pgSQL block.,Dùng trong biểu thức SQL hoặc gọi từ PL/SQL block.,Dùng trong biểu thức SQL hoặc từ PL/pgSQL block.
+Giá trị trả về,Không trả về giá trị.,Không trả về giá trị.,Bắt buộc trả về một giá trị (kiểu dữ liệu được chỉ định).,Bắt buộc trả về một giá trị (hoặc bảng).
+Tham số,"IN, OUT, IN OUT.","IN, INOUT, OUT (PostgreSQL sử dụng INOUT thay thế IN OUT).",Chỉ IN (tất cả tham số là đầu vào).,Chỉ IN (tất cả tham số là đầu vào).
+Dùng trong SQL,Không thể gọi trực tiếp từ câu lệnh SQL.,Không thể gọi trực tiếp từ câu lệnh SQL.,Có thể gọi trực tiếp từ câu lệnh SQL.,Có thể gọi trực tiếp từ câu lệnh SQL.
+Trả về bảng (table),Không hỗ trợ.,Không hỗ trợ.,"Không trực tiếp, cần dùng REF CURSOR (cần thiết kế thêm).",Có thể trả về bảng bằng RETURNS TABLE.
+Kết thúc,END;,END;,RETURN <giá trị>; END;,RETURN <giá trị>; END;
+Ví dụ khai báo,sql CREATE OR REPLACE PROCEDURE proc_example(param IN NUMBER) IS BEGIN NULL; END; /,sql CREATE PROCEDURE proc_example(param INT) LANGUAGE plpgsql AS $$ BEGIN NULL; END; $$;,sql CREATE OR REPLACE FUNCTION func_example(param IN NUMBER) RETURN VARCHAR2 IS BEGIN RETURN 'Hello'; END; /,sql CREATE FUNCTION func_example(param INT) RETURNS TEXT LANGUAGE plpgsql AS $$ BEGIN RETURN 'Hello'; END; $$;
+Điểm đặc biệt khác,- Kết hợp dễ dàng với các tính năng PL/SQL.,"- Hỗ trợ OUT và INOUT, phù hợp cho logic phức tạp.",- Thường sử dụng cho các phép tính toán nhỏ gọn.,"- Có thể dùng trong SQL, linh hoạt hơn khi thao tác dữ liệu."
