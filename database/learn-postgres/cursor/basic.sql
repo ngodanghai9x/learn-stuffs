@@ -9,7 +9,7 @@ BEGIN
     OPEN user_cursor;
 
     LOOP
-        FETCH user_cursor INTO user_record;
+        FETCH user_cursor INTO user_record; -- # INTO
         EXIT WHEN NOT FOUND;
 
         RAISE NOTICE 'User ID: %, Name: %', user_record.id, user_record.name;
