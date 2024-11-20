@@ -43,7 +43,12 @@ assert_output
 etl/learn-pyspark/data/*
 **/generated
 **/private
-**/node_modules
+**/node_modules/
+/node_modules/**
+__pycache__
+__pycache__/**
+**/__pycache__
+# **.pyc
 back-end/learn-js/src/sap/generated1
 
 package-lock.json
