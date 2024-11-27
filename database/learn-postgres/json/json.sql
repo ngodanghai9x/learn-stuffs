@@ -42,7 +42,7 @@ WHERE (attributes->'dimensions'->>'length')::INT = '10';
 
 -- update a field
 UPDATE products
-SET attributes = jsonb_set(attributes, '{color}', '"new color: green"')
+SET attributes = jsonb_set(attributes, '{color}', '"new color green"')
 WHERE name = 'Product 1';
 
 -- add a new field
@@ -67,5 +67,19 @@ WHERE attributes->'tags' @> '["new","popular"]';
 SELECT name, jsonb_array_elements(attributes->'tags') AS tag
 FROM products
 WHERE name = 'Product 4';
+
+DO $$
+DECLARE
+    evt_params JSONB := '{"existing_key": "value"}'; -- Khởi tạo biến JSONB
+    num INTEGER := 123; 
+BEGIN
+    -- Cập nhật giá trị của key 'p_key'
+    evt_params := evt_params || '{"p_key": 123}';
+    evt_params := evt_params || jsonb_build_object('p_num', num, 'another_key', 'value2');
+
+    -- Hiển thị giá trị mới
+    RAISE NOTICE 'Updated JSONB: %', evt_params;
+END $$;
+
 
 
