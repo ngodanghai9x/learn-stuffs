@@ -1,9 +1,13 @@
 from typing import Union
-
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+from modules.user import router as user_router
 
 app = FastAPI()
+app.include_router(user_router)
 
+app.mount("/static", StaticFiles(directory="public"), name="public")
 
 @app.get("/")
 async def read_root():
