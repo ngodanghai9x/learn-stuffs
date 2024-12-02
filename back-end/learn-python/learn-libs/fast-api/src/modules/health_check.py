@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from typing import Union
 from fastapi import (
     APIRouter,
     Depends,
@@ -10,7 +11,7 @@ from fastapi import (
     status,
     Security,
 )
-from typing import Union
+from configs.env_setting import env
 
 router = APIRouter(
     # include_in_schema=True,
@@ -22,7 +23,11 @@ router = APIRouter(
 
 @router.get("/")
 async def read_root():
-    return {"Hello": "World"}
+    return {
+            "app_name": env.app_name,
+            "debug": env.debug,
+            "secret_key": env.secret_key.get_secret_value()
+        }
 
 
 @router.get("/items/{item_id}")
