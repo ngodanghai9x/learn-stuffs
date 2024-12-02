@@ -1,6 +1,6 @@
-APP_NAME=app.main
+APP_NAME=main
 HOST=0.0.0.0
-PORT=8002
+PORT=8010
 # Sử dụng Bash shell
 SHELL := /bin/bash
 
@@ -18,11 +18,12 @@ install:
 	pip install -r requirements.txt
 
 dev:
-	fastapi dev ./main.py
+	fastapi dev ./src/main.py
 
 # Chạy ứng dụng FastAPI
 run:
 	uvicorn $(APP_NAME):app --host $(HOST) --port $(PORT) --reload
+# uvicorn --app-dir src main:app --host 0.0.0.0 --port 8010 --reload
 
 # Kiểm tra format code với black
 format:
