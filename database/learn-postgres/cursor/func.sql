@@ -1,3 +1,31 @@
+-- 0.
+CREATE OR REPLACE FUNCTION get_products_below_threshold(threshold_quantity INTEGER)
+RETURNS TABLE(product_id INT, product_name TEXT, product_quantity INT) AS $$
+DECLARE
+    product_cursor CURSOR(threshold INTEGER) FOR
+        SELECT id, name, quantity
+        FROM products
+        WHERE quantity < threshold;
+BEGIN
+    -- Mở cursor với tham số truyền vào
+    OPEN product_cursor(threshold_quantity);
+
+    -- Lặp qua từng dòng dữ liệu trong cursor
+    LOOP
+        FETCH product_cursor INTO product_id, product_name, product_quantity;
+        EXIT WHEN NOT FOUND;
+        
+        -- Trả về từng dòng
+        RETURN NEXT;
+    END LOOP;
+
+    -- Đóng cursor
+    CLOSE product_cursor;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM get_products_below_threshold(10);
+
 -- 1. Tạo Hàm Trả Về Cursor
 CREATE OR REPLACE FUNCTION get_users_cursor(threshold_balance NUMERIC)
 RETURNS REFCURSOR 
