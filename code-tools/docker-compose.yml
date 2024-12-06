@@ -1,0 +1,14 @@
+# version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4567:4567" # Map cổng 4567 của container ra cổng 4567 của host
+    volumes:
+      - .:/usr/src/app # Đồng bộ mã nguồn để hỗ trợ phát triển
+      - /usr/src/app/node_modules # Loại trừ node_modules để tránh xung đột
+    command: npm run start # Chạy ở chế độ phát triển nếu cần
+    restart: unless-stop # Tự động khởi động lại nếu container dừng

@@ -54,11 +54,10 @@ const typed = (type) => {
 };
 
 const formatNum = (str) => {
-  return Number.isNaN(+str) ? `'${str}'` : +str
+  return Number.isNaN(+str) ? `'${str}'` : +str;
 };
 
-
-app.post("/", upload.single("oracleSql"), async (req, res) => {
+app.post("/clm", upload.single("oracleSql"), async (req, res) => {
   const filePath = req?.file?.path;
   try {
     let { pkgName } = req.body;
@@ -67,7 +66,15 @@ app.post("/", upload.single("oracleSql"), async (req, res) => {
     if (!pkgName || !req.file) {
       return res.status(400).send({ error: "pkgName and a file are required" });
     }
-    const oracleSql = await fs.readFile(filePath, { encoding: "utf8" });
+    // const oracleSql = await fs.readFile(filePath, { encoding: "utf8" });
+    const oracleSql = `
+    CREATE OR REPLACE PACKAGE emp_pkg as
+
+    JOB_SALE  CONSTANT  VARCHAR2(50) := 'emp_pkg.sales';
+    ZERO      CONSTANT  VARCHAR2(1)  := '0';
+
+    `;
+
     const { transformed, schemaName } = parseConstants(oracleSql);
     console.log(
       "🚀 ~ transformed:",
@@ -104,6 +111,62 @@ $$ LANGUAGE plpgsql;
     console.log("🚀 ~ app.post ~ error:", error);
   } finally {
     fs.unlink(filePath).catch(console.error);
+  }
+});
+
+app.get("/clm", (req, res) => {
+  try {
+    let { pkgName } = req.query;
+    pkgName = '';
+
+    const oracleSql = `
+    CREATE OR REPLACE PACKAGE emp_pkg as
+
+    JOB_SALE  CONSTANT  VARCHAR2(50) := 'emp_pkg.sales';
+    ZERO             CONSTANT  VARCHAR2(1)  := '0';
+
+    `;
+
+    if (!oracleSql) {
+      return res.status(400).send({ error: "pkgName and a file are required" });
+    }
+    const { transformed, schemaName } = parseConstants(oracleSql);
+    console.log(
+      "🚀 ~ transformed:",
+      transformed,
+      schemaName,
+      transformed.length
+    );
+    pkgName = schemaName || pkgName;
+
+    if (!pkgName || !oracleSql) {
+      return res.status(400).send({ error: "pkgName and a file are required" });
+    }
+    const output = transformed.map((item) => {
+      return `
+CREATE OR REPLACE FUNCTION ${pkgName}.${item.constant_name}()
+RETURNS ${typed(item.constant_type)} AS
+$$
+BEGIN
+RETURN  ${formatNum(item.constant_val)};
+END;
+$$ LANGUAGE plpgsql;
+`;
+    });
+    const header = {
+      transformed_length: transformed.length,
+      schemaName,
+      pkgName,
+    };
+    output.unshift(
+      schemaName ? `CREATE SCHEMA IF NOT EXISTS ${schemaName};\n` : "\n"
+    );
+    output.unshift(JSON.stringify(header) + "\n");
+
+    res.set(header);
+    res.send(output.join(""));
+  } catch (error) {
+    console.log("🚀 ~ app.post ~ error:", error);
   }
 });
 
