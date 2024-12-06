@@ -7,12 +7,12 @@
 - https://viblo.asia/p/bai-viet-ve-airflow-cho-nguoi-moi-nhu-minh-Ny0VGdaE4PA
 - https://viblo.asia/p/cu-thuc-hanh-airflow-de-hieu-va-don-gian-da-chua-lam-gi-phuc-tap-ca-2oKLnxog4QO
 
-## Requirements:
-- lấy dữ liệu từ SFTP server
-- Sử dụng pandas để lấy dữ liệu từ CSV file đẩy lên postgres
+## Mô tả pipeline:
+- Step 1 (Extract): Dùng PySpark đọc file CSV từ S3 (sử dụng pyspark.sql và s3a:// URL).
+- Step 2 (Transform): Làm sạch dữ liệu, thêm cột year_month, và tổng hợp dữ liệu.
+- Step 3 (Load): Kết nối và ghi kết quả vào AWS Redshift thông qua JDBC.
 
 ## Install guide:
-![Alt text](image.png)
 ````bash
 nano ~/.bashrc
 
@@ -27,20 +27,9 @@ source ~/.bashrc
 ````
 
 ````bash
-# Step 4: Install Apache Airflow
-pip install apache-airflow
-pip freeze > requirements.txt
-pip install -r requirements.txt
-# AIRFLOW_HOME=~/.local/lib/python3.10/site-packages/airflow
-# export PATH=$PATH:$AIRFLOW_HOME
-# source ~/.bashrc
-# Step 5: Initialize the Database
 airflow db init
 # Step 6: Create an Admin User
 airflow users create    --username admin    --password admin     --firstname hai    --lastname ngo   --role Admin   --email haind@yopmail.com
 # Step 7: Run the Web Server and Scheduler
 airflow scheduler & airflow webserver --port 8050
-# airflow webserver --port 8080
-# # different terminal
-# airflow scheduler
 ````
