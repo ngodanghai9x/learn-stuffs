@@ -5,11 +5,15 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from datetime import datetime, timedelta
 
 ETL_PATH = f"/home/gem/Documents/MyRepo/learn-stuffs/etl"
-PROJECT_PATH = f"/home/gem/Documents/MyRepo/learn-stuffs/etl/pyspark_airflow"
+PROJECT_PATH = f"/home/gem/Documents/MyRepo/learn-stuffs/etl/projects/pyspark_airflow"
 
 PYSPARK_SCRIPT_PATH = f"{PROJECT_PATH}/scripts/etl_pyspark_script.py"
 JDBC_JAR_PATH = f"{ETL_PATH}/libs/postgresql-42.7.4.jar"
 
+env_vars={
+    "HADOOP_CONF_DIR": "/etc/hadoop/conf",
+    "YARN_CONF_DIR": "/etc/hadoop/conf",
+}
 # Định nghĩa DAG
 default_args = {
     "owner": "airflow",
@@ -39,6 +43,7 @@ with DAG(
     transform_task = SparkSubmitOperator(
         task_id="transform_data",
         application=PYSPARK_SCRIPT_PATH,
+        env_vars=env_vars,
         name="transform_data_job",
         conn_id="spark_default",
         jars=JDBC_JAR_PATH,
@@ -62,6 +67,7 @@ with DAG(
     write_task = SparkSubmitOperator(
         task_id="write_data",
         application=PYSPARK_SCRIPT_PATH,
+        env_vars=env_vars,
         name="write_data_job",
         conn_id="spark_default",
         jars=JDBC_JAR_PATH,
