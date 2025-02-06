@@ -1,4 +1,6 @@
 import argparse
+import sys
+from pprint import pprint
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_timestamp
 
@@ -76,7 +78,9 @@ if __name__ == "__main__":
     parser.add_argument("--mode", required=True,
                         help="Mode to run: extract, transform, load")
     args = parser.parse_args()
-
+    pprint('args', args)
+    pprint('sys.argv', sys.argv)
+    # sys.argv[1]
     if args.mode == "extract":
         extract_data()
     elif args.mode == "transform":

@@ -27,13 +27,13 @@ BEGIN
     EXCEPTION
         WHEN division_by_zero THEN
             -- Nếu gặp lỗi chia cho 0, thông báo lỗi và trả về NULL
-            RAISE NOTICE 'Cannot divide by zero!';
+            RAISE NOTICE 'Cannot divide by zero! errorCode: %, error: %', SQLSTATE, SQLERRM;
             result := NULL;
         WHEN others THEN
             -- Xử lý khi có lỗi xảy ra
-            RAISE NOTICE 'Error updating balance for user ID %', user_id;
+            RAISE NOTICE 'Error updating balance for user ID %: errorCode: %, error: %', user_id, SQLSTATE, SQLERRM;
             result := NULL;
-            RAISE EXCEPTION ' Ném lỗi để dừng thực thi user ID %', user_id;;  -- Ném lỗi để dừng thực thi
+            RAISE EXCEPTION ' Ném lỗi để dừng thực thi user ID %: errorCode: %, error: %', user_id, SQLSTATE, SQLERRM;  -- Ném lỗi để dừng thực thi
     END;
     -- Trả về kết quả
     RETURN result;
