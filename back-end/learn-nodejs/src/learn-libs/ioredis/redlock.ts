@@ -41,7 +41,7 @@ async function performTaskWithLock() {
     const key = 'haind2_resource_name1';
     const lock = await redlock.acquire([`locks:${key}`], 10000);
     console.log('111 Lock acquired! Performing task...');
-
+    /// 111 lock theo key => 222 sẽ k chạy mà throw error => chạy vào catch => new test case
     try {
         const lock2 = await redlock.acquire([`locks:${key}`], 10000);
         console.log('222 Lock acquired! Performing task...');
