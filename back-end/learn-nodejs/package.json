@@ -16,6 +16,7 @@
         "node": "18.x"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.750.0",
         "@sap-cloud-sdk/connectivity": "^2.9.0",
         "@sap-cloud-sdk/odata-common": "^2.9.0",
         "@sap-cloud-sdk/odata-v4": "^2.9.0",
