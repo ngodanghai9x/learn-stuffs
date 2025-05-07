@@ -1,0 +1,16 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@haind2/my-lib": "^1.0.0",
+    "@haind2/my-lib_LOCAL": "file:../my-lib"
+  },
+  "author": "",
+  "license": "ISC"
+}
