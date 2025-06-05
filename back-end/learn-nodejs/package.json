@@ -13,14 +13,10 @@
     "author": "NDH",
     "license": "ISC",
     "engines": {
-        "node": "18.x"
+        "node": ">18.x"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.750.0",
-        "@sap-cloud-sdk/connectivity": "^2.9.0",
-        "@sap-cloud-sdk/odata-common": "^2.9.0",
-        "@sap-cloud-sdk/odata-v4": "^2.9.0",
-        "@sap/cloud-sdk-op-vdm-task-service": "^2.1.0",
         "@sentry/cli": "^2.33.1",
         "@sentry/node": "^8.25.0",
         "@sentry/profiling-node": "^8.25.0",
@@ -54,10 +50,10 @@
         "pbkdf2": "^3.1.2",
         "redlock": "^5.0.0-beta.2",
         "retry": "^0.13.1",
-        "rxjs": "^7.5.7"
+        "rxjs": "^7.5.7",
+        "sharp": "^0.34.2"
     },
     "devDependencies": {
-        "@sap-cloud-sdk/generator": "^2.9.0",
         "@types/ldapjs": "^3.0.4",
         "@types/retry": "^0.12.5",
         "ts-node": "^10.9.1"
