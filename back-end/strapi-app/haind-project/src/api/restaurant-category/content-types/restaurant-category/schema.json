@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "restaurant_categories",
+  "info": {
+    "singularName": "restaurant-category",
+    "pluralName": "restaurant-categories",
+    "displayName": "RestaurantCategory"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "restaurants": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::restaurant.restaurant",
+      "inversedBy": "restaurant_categories"
+    }
+  }
+}
