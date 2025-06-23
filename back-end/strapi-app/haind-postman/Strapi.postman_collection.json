@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "7a692dde-a688-465f-b9ec-dc46a6d6612b",
+		"name": "Strapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9818260"
+	},
+	"item": [
+		{
+			"name": "restaurants",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Proxy-Authorization",
+						"value": "Bearer b887b3eaa02f2bf7b9928b5e0a78e3de9ab7feb91bb559717cea34e885fc46a11cb151704838d404d985828f4648c48547b1689ff79bfd732511feebd03cf2e8f5b0e601a5a8251932f497200d907af44e9611b6ab3a3616548736bbb0c8b7fb03213baf5f417a28c6b58145d0c85f3c4d9afeb9f26069d58719d57ed478e8be",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{apiKeyProd}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{prod}}/api/restaurants",
+					"host": [
+						"{{prod}}"
+					],
+					"path": [
+						"api",
+						"restaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "restaurant-categories",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{local}}/api/restaurant-categories",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"restaurant-categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authors",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{local}}/api/authors",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/articles/summary/:id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{local}}/api/articles/summary/:id",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"articles",
+						"summary",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "articles",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{apiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{local}}/api/articles",
+					"host": [
+						"{{local}}"
+					],
+					"path": [
+						"api",
+						"articles"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
