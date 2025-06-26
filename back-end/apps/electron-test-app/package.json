@@ -1,0 +1,25 @@
+{
+    "name": "electron-test-app",
+    "version": "1.0.0",
+    "main": "dist/main.js",
+    "scripts": {
+        "start": "electron .",
+        "build": "tsc",
+        "dev": "tsc && electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@nut-tree-fork/nut-js": "^4.2.6",
+        "electron": "^37.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^24.0.4",
+        "electron-rebuild": "^3.2.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
+    }
+}
