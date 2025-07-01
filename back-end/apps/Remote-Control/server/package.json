@@ -1,0 +1,34 @@
+{
+  "name": "remote-control-server",
+  "productName": "Remote Control Server",
+  "version": "1.0.0",
+  "description": "An advanced but easy-to-use remote desktop application with cross-platform support",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "t": "echo \"Error: no test specified\" && exit 1",
+    "host": "node ../scripts/executeScript.js --hostServer",
+    "h": "node ../scripts/executeScript.js --hostServer"
+  },
+  "repository": "https://github.com/DinoscapeProgramming/Remote-Control",
+  "keywords": [
+    "remote-control",
+    "remote-desktop",
+    "electron"
+  ],
+  "author": "DinoscapeProgramming",
+  "license": "Apache-2.0",
+  "bin": {
+    "test": "bin/test.js",
+    "t": "bin/test.js",
+    "host": "bin/host.js",
+    "h": "bin/host.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-documentation": "^1.0.81",
+    "peer": "^0.6.1",
+    "socket.io": "^4.7.4"
+  }
+}

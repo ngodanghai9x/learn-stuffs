@@ -1,0 +1,23 @@
+{
+  "name": "tiny-control-client",
+  "productName": "Tiny Control",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@its-forked/peerjs-on-node": "^1.0.3",
+    "@jitsi/robotjs": "^0.6.13",
+    "electron-webrtc": "^0.3.0",
+    "express": "^4.21.2",
+    "peerjs": "^0.3.18",
+    "socket.io-client": "^4.8.1",
+    "ws": "^8.18.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}

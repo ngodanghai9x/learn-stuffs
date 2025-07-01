@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Manage your cross-platform remote desktop settings, permissions, and monitor sessions securely from one centralized interface." />
+    <meta name="theme-color" content="#000000" />
+    <title>Remote Control - Admin</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/ace-builds@1.12.5/src/ace.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/ace-builds@1.12.5/src/theme-monokai.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/ace-builds@1.12.5/src/mode-html.min.js"></script>
+    <script defer src="/pages/admin/script.js"></script>
+    <link rel="icon" href="/assets/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;display=swap"
+      media="print"
+      onload="this.media = 'all';"
+    />
+    <link rel="manifest" href="/adminManifest.json" />
+    <link rel="apple-touch-icon" href="/assets/favicon.ico" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+      }
+
+      .sidebar {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+        height: 100vh;
+        background-color: #024eff;
+        padding: 20px;
+        color: white;
+      }
+
+      .sidebar h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #ffffff;
+      }
+
+      .sidebar a {
+        text-decoration: none;
+        color: #ffffffcc;
+        font-size: 16px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 7.5px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .sidebar a:hover, .sidebar a.active {
+        background-color: #0f5ffdc2;
+        color: white;
+      }
+
+      .mainContent {
+        margin-left: 285px;
+        padding-top: 50px;
+        padding-left: 50px;
+        padding-right: 50px;
+        background-color: #f4f6f9;
+        min-height: calc(100vh - 50px);
+      }
+
+      .mainContent h1 {
+        font-size: 35px;
+        font-weight: 700;
+        color: black;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+
+      .card h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-top: -6.5px;
+        margin-bottom: 20px;
+      }
+
+      .card label {
+        font-size: 16px;
+        color: #333;
+      }
+
+      .card input, .card select, .card textarea, .card button {
+        margin-top: 7.5px;
+        margin-bottom: 12.5px;
+        padding: 12.5px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        resize: vertical;
+      }
+
+      .card input, .card textarea {
+        width: calc(100% - 27.5px);
+      }
+
+      .card input:focus, .card textarea:focus {
+        outline: none;
+        border-width: 2px;
+        border-color: black;
+      }
+
+      .card select {
+        width: 100%;
+        font-size: 15px;
+        padding: 11px;
+      }
+
+      .card textarea {
+        font-family: inherit;
+        padding: 10px 12.5px 12.5px;
+        margin-bottom: 15px;
+        line-height: 17px;
+      }
+
+      .card .editor {
+        width: 100%;
+        height: 250px;
+        border-radius: 7.5px;
+        margin: 7.5px 0px 13.75px;
+        resize: vertical;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 5px;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+      }
+
+      .card button {
+        width: 100%;
+        margin-top: -6.5px;
+        margin-bottom: 0;
+        background-color: #024eff;
+        color: white;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .card button:hover {
+        background-color: #023ac3;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table th, table td {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      table th {
+        background-color: #024eff;
+        color: white;
+        font-weight: 600;
+      }
+
+      table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      .buttonLink {
+        background-color: #024eff;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+
+      .buttonLink:hover {
+        background-color: #023ac3;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 200px;
+        }
+
+        .mainContent {
+          margin-left: 200px;
+          padding: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .sidebar {
+          width: 180px;
+        }
+
+        .mainContent {
+          margin-left: 180px;
+          padding: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body style="background-color: #0000ff1a;">
+    <div
+      id="adminLoginContainer"
+      style="
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+      "
+    >
+      <div class="card" style="padding: 30px;">
+        <h2>Admin Portal Login</h2>
+        <form id="adminLoginForm" method="POST" action="/api/v1/admin/login" style="margin-bottom: -15px;">
+          <label for="adminPasswordInput">Admin Password</label>
+          <input type="password" id="adminPasswordInput" name="password" required />
+          <button type="submit" style="margin-top: -2.5px; margin-bottom: 10px;">Login</button>
+        </form>
+      </div>
+    </div>
+    <div
+      id="adminPortalContainer"
+      style="display: none;"
+    >
+      <div class="sidebar">
+        <h2>Admin Portal</h2>
+        <a href="#newsletter" class="active">
+          <i class="fas fa-paper-plane" style="margin-right: 5px;"></i> Send Newsletter
+        </a>
+        <a href="#contacts">
+          <i class="fas fa-envelope" style="margin-right: 5px;"></i> Contact Messages
+        </a>
+        <a href="#database">
+          <i class="fas fa-database" style="margin-right: 5px;"></i> Manage Databases
+        </a>
+      </div>
+      <div class="mainContent">
+        <div id="newsletter">
+          <h1>Send Newsletter</h1>
+          <div class="card">
+            <div style="height: calc(100vh - 242.5px); padding: 30px; overflow-y: auto;">
+              <h2>Create a New Post</h2>
+              <form
+                id="newsletterForm"
+                method="POST"
+                action="/api/v1/newsletter/send"
+                style="margin-bottom: -15px"
+              >
+                <label for="newsletterSubjectInput">Post Subject</label>
+                <input type="text" id="newsletterSubjectInput" name="subject" required />
+                <label for="newsletterContentTypeSelect">Content Type</label>
+                <select id="newsletterContentTypeSelect" name="type" required>
+                  <option value="text">Plain Text</option>
+                  <option value="html">HTML</option>
+                </select>
+                <label id="newsletterContentLabel" for="newsletterContentInput">Post Content</label>
+                <textarea
+                  id="newsletterContentInput"
+                  rows="8"
+                  required
+                  style="display: block; height: 310px;"
+                ></textarea>
+                <div
+                  id="newsletterContentEditor"
+                  class="editor"
+                  style="display: none; height: 335px;"
+                ></div>
+                <input type="hidden" name="content" id="newsletterHiddenContentInput" />
+                <button type="submit">Send Newsletter</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div id="contacts" style="display: none;">
+          <h1>Contact Messages</h1>
+          <div class="card">
+            <div style="height: calc(100vh - 242.5px); padding: 30px; overflow-y: auto;">
+              <h2>Messages from Users</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>&lt;%= contact.name %&gt;</td>
+                    <td>&lt;%= contact.email %&gt;</td>
+                    <td>&lt;%= contact.message %&gt;</td>
+                    <td>
+                      <a href="/admin/reply/<%= contact.id %>" class="buttonLink"
+                        >Reply</a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="database" style="display: none;">
+          <h1>Manage Databases</h1>
+          <div class="card">
+            <div style="height: calc(100vh - 242.5px); padding: 30px; overflow-y: auto;"></div>
+              <h2>Databases Overview</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Database Name</th>
+                    <th>Records</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>&lt;%= db.name %&gt;</td>
+                    <td>&lt;%= db.records %&gt;</td>
+                    <td>
+                      <a href="/admin/database/<%= db.id %>" class="buttonLink"
+                        >View/Edit</a
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
