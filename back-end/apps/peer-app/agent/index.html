@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Agent</title>
+</head>
+<body>
+  <h3>Agent đang hoạt động...</h3>
+  <script>
+    const agentId = 'agent-1234';
+    const peerConfig = {
+      host: 'your-server-ip',  // đổi thành IP hoặc domain của bạn
+      port: 3000,
+      path: '/peerjs',
+      secure: false // nếu bạn dùng HTTP
+    };
+
+    window.agentAPI.createPeer(agentId, peerConfig);
+  </script>
+</body>
+</html>

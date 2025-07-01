@@ -1,0 +1,28 @@
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script>
+  const peer = new Peer(undefined, {
+    host: 'your-server-ip',
+    port: 3000,
+    path: '/peerjs',
+    secure: false  // nếu dùng http
+  });
+
+  peer.on('open', (id) => {
+    console.log('My peer ID is: ' + id);
+    // Gửi ID này lên server để Agent biết
+  });
+
+  // Khi Agent gọi mình (stream)
+  peer.on('call', (call) => {
+    call.answer(); // mình không gửi lại stream
+    call.on('stream', (remoteStream) => {
+      document.getElementById('video').srcObject = remoteStream;
+    });
+  });
+
+  // Nếu muốn điều khiển chuột/phím
+  const dataConn = peer.connect('agent-peer-id');
+  dataConn.on('open', () => {
+    dataConn.send({ type: 'mouse_click', x: 100, y: 200 });
+  });
+</script>

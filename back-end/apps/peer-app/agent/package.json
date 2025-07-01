@@ -1,0 +1,11 @@
+{
+  "name": "agent-peer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "^25.0.0",
+    "peerjs": "^1.5.2"
+  }
+}
