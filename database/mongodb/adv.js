@@ -127,62 +127,48 @@ db.orderitems.aggregate([
                     "captured": "$captured_product.artwork_separated_by",
                     "match": { $eq: ["$source_product.artwork_separated_by", "$captured_product.artwork_separated_by"] }
                   },
-                  
                   "attr_values_0": {
-                    "source": { $arrayElemAt: [{ $arrayElemAt: ["$source_attributes.values", 0] }, 0] },
-                    "captured": { $arrayElemAt: [{ $arrayElemAt: ["$captured_product.attributes.values", 0] }, 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: [{ $arrayElemAt: ["$source_attributes.values", 0] }, 0] },
-                      { $arrayElemAt: [{ $arrayElemAt: ["$captured_product.attributes.values", 0] }, 0] }
-                    ]}
+                        "source": { $arrayElemAt: [{ $arrayElemAt: ["$source_attributes.values", 0] }, 0] },
+                        "captured": { $arrayElemAt: [{ $arrayElemAt: ["$captured_product.attributes.values", 0] }, 0] },
+                        "match": { $eq: [
+                        { $arrayElemAt: [{ $arrayElemAt: ["$source_attributes.values", 0] }, 0] },
+                        { $arrayElemAt: [{ $arrayElemAt: ["$captured_product.attributes.values", 0] }, 0] }
+                        ]}
+                  },
+                  "attr_values": {
+                    "source": "$source_attributes.values",
+                    "captured": "$captured_product.attributes.values",
+                    "match": { $setEquals: ["$source_attributes.values", "$captured_product.attributes.values"] }
                   },
                   "attr_is_preselected": {
-                    "source": { $arrayElemAt: ["$source_attributes.is_preselected", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.is_preselected", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.is_preselected", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.is_preselected", 0] }
-                    ]}
+                    "source": "$source_attributes.is_preselected",
+                    "captured": "$captured_product.attributes.is_preselected",
+                    "match": { $setEquals: ["$source_attributes.is_preselected", "$captured_product.attributes.is_preselected"] }
                   },
                   "attr_name": {
-                    "source": { $arrayElemAt: ["$source_attributes.name", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.name", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.name", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.name", 0] }
-                    ]}
+                    "source": "$source_attributes.name",
+                    "captured": "$captured_product.attributes.name",
+                    "match": { $setEquals: ["$source_attributes.name", "$captured_product.attributes.name"] }
                   },
                   "attr_slug": {
-                    "source": { $arrayElemAt: ["$source_attributes.slug", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.slug", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.slug", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.slug", 0] }
-                    ]}
+                    "source": "$source_attributes.slug",
+                    "captured": "$captured_product.attributes.slug",
+                    "match": { $setEquals: ["$source_attributes.slug", "$captured_product.attributes.slug"] }
                   },
                   "attr_position": {
-                    "source": { $arrayElemAt: ["$source_attributes.position", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.position", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.position", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.position", 0] }
-                    ]}
+                    "source": "$source_attributes.position",
+                    "captured": "$captured_product.attributes.position",
+                    "match": { $setEquals: ["$source_attributes.position", "$captured_product.attributes.position"] }
                   },
                   "attr_value_type": {
-                    "source": { $arrayElemAt: ["$source_attributes.value_type", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.value_type", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.value_type", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.value_type", 0] }
-                    ]}
+                    "source": "$source_attributes.value_type",
+                    "captured": "$captured_product.attributes.value_type",
+                    "match": { $setEquals: ["$source_attributes.value_type", "$captured_product.attributes.value_type"] }
                   },
                   "attr_created": {
-                    "source": { $arrayElemAt: ["$source_attributes.created", 0] },
-                    "captured": { $arrayElemAt: ["$captured_product.attributes.created", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_attributes.created", 0] },
-                      { $arrayElemAt: ["$captured_product.attributes.created", 0] }
-                    ]}
+                    "source": "$source_attributes.created",
+                    "captured": "$captured_product.attributes.created",
+                    "match": { $setEquals: ["$source_attributes.created", "$captured_product.attributes.created"] }
                   },
                   
                   "type": {
@@ -275,11 +261,22 @@ db.orderitems.aggregate([
                         value: {
                           $arrayElemAt: [
                             {
-                              $filter: {
-                                input: "$$foundAttribute.values",
-                                as: "val",
-                                cond: {
-                                  $eq: ["$$val.slug", "$$opt.slug"]
+                              $map: {
+                                input: {
+                                  $filter: {
+                                    input: "$$foundAttribute.values",
+                                    as: "val",
+                                    cond: {
+                                      $eq: ["$$val.slug", "$$opt.slug"]
+                                    }
+                                  }
+                                },
+                                as: "v",
+                                in: {
+                                  key: "$$v.key",
+                                  value: "$$v.value",
+                                  name: "$$v.name",
+                                  slug: "$$v.slug"
                                 }
                               }
                             },
@@ -345,8 +342,8 @@ db.orderitems.aggregate([
                     "match": { $eq: ["$source_variant.base_cost", "$captured_variant.base_cost"] }
                   },
                   "sides": {
-                    "source": { $arrayElemAt: ["$source_variant.sides", 0] },
-                    "captured": { $arrayElemAt: ["$captured_variant.sides", 0] },
+                    "source": "$source_variant.sides",
+                    "captured": "$captured_variant.sides",
                     "match": { $eq: ["$source_variant.sides", "$captured_variant.sides"] }
                   },
                   "image_uris": {
@@ -503,11 +500,11 @@ db.orderitems.aggregate([
                     ]}
                   },
                   "attr_value": {
-                    "source": { $arrayElemAt: ["$source_variant.options.attribute.value", 0] },
-                    "captured": { $arrayElemAt: ["$captured_variant.options.attribute.value", 0] },
-                    "match": { $eq: [
-                      { $arrayElemAt: ["$source_variant.options.attribute.value", 0] },
-                      { $arrayElemAt: ["$captured_variant.options.attribute.value", 0] }
+                    "source": "$source_variant.options.attribute.value",
+                    "captured": "$captured_variant.options.attribute.value",
+                    "match": { $setEquals: [
+                      "$source_variant.options.attribute.value",
+                      "$captured_variant.options.attribute.value"
                     ]}
                   },
                   "attr_created": {
@@ -531,10 +528,12 @@ db.orderitems.aggregate([
             captured_value: "$$mismatch.v.captured"
           }
         }
-      }
+      },
+      // "source": "$source_variant.options.attribute",
+      // "captured": "$captured_variant.options.attribute",
     }
   }
-])
+]);
 // query kiểm tra đủ các field cũ trong orderitems
 db = db.getSiblingDB("db-3bp");
 db.orderitems.aggregate([

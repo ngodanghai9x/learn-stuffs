@@ -1,10 +1,41 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { keyboard } from '@nut-tree-fork/nut-js';
+import { mouse, keyboard, Button, Key, Point } from "@nut-tree-fork/nut-js";
 import { exec, spawn } from 'child_process';
 import os from 'os';
+import { networkInterfaces } from 'os';
 
+// (Tùy chọn) cấu hình tốc độ di chuyển chuột, delay,...
 keyboard.config.autoDelayMs = 100;
+mouse.config.mouseSpeed = 100;
+
+function getSystemInfo() {
+    const osType = os.type(); // 'Linux', 'Windows_NT', 'Darwin'
+    const hostname = os.hostname(); // Tên máy
+    const nets = os.networkInterfaces();
+
+    const allInterfaces = Object.values(nets).flat();
+
+    const found = allInterfaces.find(
+        (net) =>
+            net &&
+            net.family === 'IPv4' &&
+            !net.internal &&
+            net.mac &&
+            net.mac !== '00:00:00:00:00:00',
+    );
+
+    const macAddress = found?.mac ?? 'unknown';
+
+    return {
+        osType,
+        hostname,
+        macAddress,
+    };
+}
+
+console.log(getSystemInfo());
+
 export const sleep = (msec: number) => new Promise((resolve) => setTimeout(resolve, msec));
 
 function createWindow() {
@@ -25,6 +56,32 @@ app.disableHardwareAcceleration();
 app.whenReady().then(() => {
     createWindow();
 });
+
+
+
+
+async function handleInputMessage(msg: any) {
+    if (msg.type === 'mouse_move') {
+        await mouse.move([new Point(msg.x, msg.y)]);
+    }
+
+    if (msg.type === 'mouse_click') {
+        const button = msg.button === 'left' ? Button.LEFT
+                      : msg.button === 'right' ? Button.RIGHT
+                      : Button.MIDDLE;
+        await mouse.click(button);
+    }
+
+    if (msg.type === 'key_down') {
+        const key = Key[msg.key.toUpperCase()];
+        if (key) {
+            await keyboard.type(key);
+        } else {
+            console.warn(`Unknown key: ${msg.key}`);
+        }
+    }
+}
+
 
 ipcMain.handle('send-key', async (_, text: string) => {
     await sleep(1000);
