@@ -51,11 +51,13 @@
         "redlock": "^5.0.0-beta.2",
         "retry": "^0.13.1",
         "rxjs": "^7.5.7",
+        "openai": "^5.8.2",
         "sharp": "^0.34.2"
     },
     "devDependencies": {
         "@types/ldapjs": "^3.0.4",
         "@types/retry": "^0.12.5",
+        "typescript": "^5.3.3",
         "ts-node": "^10.9.1"
     }
 }

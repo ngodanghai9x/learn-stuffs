@@ -6,10 +6,14 @@
         "start": "electron .",
         "dev": "tsc && electron .",
         "clean": "rm -rf dist",
+        "buildMinify": "esbuild src/* --bundle --minify --platform=node --outdir=dist",
         "build": "tsc",
+        "postbuild": "npm run minify",
+        "minify": "esbuild dist/main.js --minify --outfile=dist/main.js --allow-overwrite",
+        "dist": "electron-builder",
+        "distLinux": "npm run dist -- --linux",
         "buildLinux": "npm run build & npm run dist -- --linux",
         "pack": "electron-builder --dir",
-        "dist": "electron-builder",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "build": {
@@ -46,10 +50,11 @@
         "@nut-tree-fork/nut-js": "^4.2.6"
     },
     "devDependencies": {
-        "electron": "^37.1.0",
         "@types/node": "^24.0.4",
+        "electron": "^37.1.0",
         "electron-builder": "^26.0.12",
         "electron-rebuild": "^3.2.9",
+        "esbuild": "^0.25.5",
         "ts-node": "^10.9.2",
         "typescript": "^5.8.3"
     }
