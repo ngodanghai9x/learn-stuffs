@@ -7,5 +7,8 @@
   "dependencies": {
     "electron": "^25.0.0",
     "peerjs": "^1.5.2"
+  },
+  "devDependencies": {
+    "@types/peerjs": "^0.0.30"
   }
 }

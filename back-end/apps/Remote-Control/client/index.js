@@ -67,6 +67,7 @@ const {
     Tray,
     Menu,
     autoUpdater,
+    globalShortcut,
 } = require('electron');
 const fs = require('fs');
 const os = require('os');
@@ -569,6 +570,11 @@ app.whenReady().then(() => {
     createWindow();
     app.on('activate', () => {
         if (!BrowserWindow.getAllWindows().length) createWindow();
+    });
+
+    globalShortcut.register('F12', () => {
+        const focusedWindow = BrowserWindow.getFocusedWindow();
+        focusedWindow?.webContents.toggleDevTools();
     });
 });
 

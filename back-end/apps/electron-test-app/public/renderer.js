@@ -17,3 +17,9 @@ document.getElementById('test-fake-shutdown')?.addEventListener('click', () => {
 document.getElementById('test-terminal')?.addEventListener('click', () => {
     window.electronAPI.testAction('terminal');
 });
+
+document.getElementById('get-info')?.addEventListener('click', async () => {
+    const info = await window.electronAPI.getSystemInfo();
+    const output = document.getElementById('output');
+    output.textContent = JSON.stringify(info, null, 2);
+});
