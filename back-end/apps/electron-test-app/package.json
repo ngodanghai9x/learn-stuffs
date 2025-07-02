@@ -4,20 +4,51 @@
     "main": "dist/main.js",
     "scripts": {
         "start": "electron .",
-        "build": "tsc",
         "dev": "tsc && electron .",
+        "clean": "rm -rf dist",
+        "build": "tsc",
+        "buildLinux": "npm run build & npm run dist -- --linux",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
         "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "build": {
+        "appId": "com.haind.electronapp",
+        "productName": "HaindApp",
+        "files": [
+            "dist/**/*",
+            "public/**/*",
+            "node_modules/**/*",
+            "package.json"
+        ],
+        "directories": {
+            "buildResources": "assets"
+        },
+        "asar": true,
+        "mac": {
+            "target": "dmg"
+        },
+        "win": {
+            "target": "nsis"
+        },
+        "linux": {
+            "target": "AppImage"
+        }
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "description": "",
+    "engines": {
+        "node": ">=20"
+    },
     "dependencies": {
-        "@nut-tree-fork/nut-js": "^4.2.6",
-        "electron": "^37.1.0"
+        "@nut-tree-fork/nut-js": "^4.2.6"
     },
     "devDependencies": {
+        "electron": "^37.1.0",
         "@types/node": "^24.0.4",
+        "electron-builder": "^26.0.12",
         "electron-rebuild": "^3.2.9",
         "ts-node": "^10.9.2",
         "typescript": "^5.8.3"

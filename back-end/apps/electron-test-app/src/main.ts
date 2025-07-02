@@ -187,7 +187,7 @@ ipcMain.handle('test-action', async (_, action: string) => {
                     exec(`notify-send "Shutdown" "Đây là shutdown giả 😅"`);
                 } else if (platform === 'darwin') {
                     exec(
-                        'osascript -e \'display notification "Fake shutdown" with title "Electron"\'',
+                        'osascript -e \'display notification "Fake shutdown" with title "HaindApp"\'',
                     );
                 }
                 break;

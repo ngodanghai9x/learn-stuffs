@@ -22,7 +22,7 @@
 - ❗ BẮT BUỘC phải cấp quyền Accessibility (Trợ năng) thì mới gõ phím được
 
 - Cụ thể:
-    Chạy app Electron ít nhất 1 lần
+    Chạy app HaindApp ít nhất 1 lần
 
     Vào:
     System Settings → Privacy & Security → Accessibility
@@ -31,4 +31,4 @@
 
     Terminal (nếu chạy từ terminal)
 
-    Hoặc app Electron bạn build (Electron, hoặc tên app của bạn)
+    Hoặc app HaindApp bạn build (HaindApp, hoặc tên app của bạn)
