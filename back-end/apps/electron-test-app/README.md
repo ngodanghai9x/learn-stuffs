@@ -1,3 +1,10 @@
+## Icon
+```sh
+convert favicon.png -resize 512x512 icon-512.png
+magick favicon.png -resize 512x512 icon-512.png
+png2icns favicon.icns icon-512.png
+```
+
 ## Windows
 - ✅ Không cần xin quyền đặc biệt
 
