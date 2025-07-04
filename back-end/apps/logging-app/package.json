@@ -1,0 +1,20 @@
+{
+    "name": "logging-app",
+    "version": "1.0.0",
+    "main": "./allForOne.express.js",
+    "repository": "git@github.com:ngodanghai9x/learn-os-deployments.git",
+    "author": "Hai Ngo <ngodanghai9x@gmail.com>",
+    "private": true,
+    "engines": {
+        "node": "20.15.1 || >=22.2.0"
+    },
+    "scripts": {
+        "start": "node ./allForOne.express.js",
+        "dev": "nodemon ./allForOne.express.js"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "express": "^5.1.0",
+        "mongoose": "^8.13.2"
+    }
+}
