@@ -5,6 +5,19 @@ magick favicon.png -resize 512x512 icon-512.png
 png2icns favicon.icns icon-512.png
 ```
 
+## Diagrams
+```
+[Web Browser]              [Signaling Server]                [Agent (Electron)]
+     |                           |                                   |
+     |------> yêu cầu kết nối -->|                                   |
+     |                           |----> gửi yêu cầu tới Agent ------>|
+     |                           |<---- Agent xác nhận Allow -------|
+     |<---------------- Thiết lập kết nối WebRTC ------------------>|
+     |<========== Nhận video màn hình qua WebRTC ==================|
+     |==== Gửi chuột/phím qua WebRTC DataChannel =================>|
+     |                           |                         robotjs xử lý
+```
+
 ## Windows
 - ✅ Không cần xin quyền đặc biệt
 

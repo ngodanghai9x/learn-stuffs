@@ -1,0 +1,117 @@
+<!-- agent-client.html - Web client đóng vai trò là agent, dùng PeerJS -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Agent Peer</title>
+        <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    </head>
+    <body>
+        <h2>Agent đang chờ kết nối...</h2>
+        <script>
+            // ID này phải trùng với ID mà Web client sẽ connect tới
+            const AGENT_ID = 'agent-1234';
+
+            const peer = new Peer(AGENT_ID, {
+                host: '172.16.13.231',
+                port: 8030,
+                path: '/peerjs',
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        {
+                            urls: 'turn:your.turnserver.com:3478',
+                            username: 'user',
+                            credential: 'pass',
+                        },
+                    ],
+                },
+            });
+
+            peer.on('open', (id) => {
+                console.log('[Agent] Peer ID:', id);
+            });
+
+            peer.on('connection', (conn) => {
+                console.log('[Agent] Web client connected:', conn.peer);
+
+                // thêm vào đây:
+                const pc = conn.peerConnection;
+
+                pc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log('[Agent][ICE Candidate]', event.candidate.candidate);
+                    }
+                };
+
+                pc.oniceconnectionstatechange = () => {
+                    console.log('[Agent][ICE State]', pc.iceConnectionState);
+                };
+
+                setTimeout(() => {
+                    pc.getStats(null).then((stats) => {
+                        stats.forEach((report) => {
+                            if (
+                                report.type === 'candidate-pair' &&
+                                report.state === 'succeeded' &&
+                                report.nominated
+                            ) {
+                                console.log('[✅ ICE] Candidate pair selected:', {
+                                    local: report.localCandidateId,
+                                    remote: report.remoteCandidateId,
+                                });
+                            }
+
+                            if (report.type === 'local-candidate') {
+                                console.log(
+                                    `[LOCAL] type=${report.candidateType}, ip=${report.ip}, port=${report.port}`,
+                                );
+                                if (report.candidateType === 'relay') {
+                                    console.log('🟠 Using TURN server for connection');
+                                } else if (report.candidateType === 'srflx') {
+                                    console.log('🔵 Using STUN (reflexive) for connection');
+                                } else if (report.candidateType === 'host') {
+                                    console.log('🟢 Using direct/local network (host candidate)');
+                                }
+                            }
+
+                            if (report.type === 'remote-candidate') {
+                                console.log(
+                                    `[REMOTE] type=${report.candidateType}, ip=${report.ip}, port=${report.port}`,
+                                );
+                            }
+                        });
+                    });
+                }, 3500); // đủ thời gian để ICE hoàn thành
+
+                conn.on('data', async (data) => {
+                    console.log('[Agent] Received data:', data);
+
+                    try {
+                        const msg = JSON.parse(data);
+                        console.log('🚀 ~ conn.on ~ msg:', msg);
+
+                        if (msg.type === 'mouse_click') {
+                            await fetch('/action', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    action: 'mouse_click',
+                                    button: msg.button || 'left',
+                                }),
+                            });
+                        } else if (msg.type === 'key_press') {
+                            await fetch('/action', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'key_press', key: msg.key }),
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Invalid message:', err);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

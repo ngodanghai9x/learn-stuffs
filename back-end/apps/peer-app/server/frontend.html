@@ -1,0 +1,71 @@
+<!-- controller-client.html - Web client đóng vai trò điều khiển -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Remote Controller</title>
+        <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+        <style>
+            button {
+                margin: 10px;
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Remote Control Panel</h2>
+        <div>
+            <button onclick="sendClick('left')">Click trái</button>
+            <button onclick="sendClick('right')">Click phải</button>
+            <button onclick="sendKey('a')">Nhấn A</button>
+            <button onclick="sendKey('Enter')">Nhấn Enter</button>
+        </div>
+
+        <script>
+            const peer = new Peer(undefined, {
+                host: '172.16.13.231',
+                port: 8030,
+                path: '/peerjs',
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        {
+                            urls: 'turn:your.turnserver.com:3478',
+                            username: 'user',
+                            credential: 'pass',
+                        },
+                    ],
+                },
+            });
+
+            let conn;
+            const AGENT_ID = 'agent-1234';
+
+            peer.on('open', (id) => {
+                console.log('[Controller] My Peer ID:', id);
+                conn = peer.connect(AGENT_ID);
+
+                conn.on('open', () => {
+                    console.log('[Controller] Connected to agent');
+                });
+
+                conn.on('error', (err) => {
+                    console.error('Connection error:', err);
+                });
+            });
+
+            function sendClick(button = 'left') {
+                if (conn && conn.open) {
+                    conn.send(JSON.stringify({ type: 'mouse_click', button }));
+                }
+            }
+
+            function sendKey(key) {
+                if (conn && conn.open) {
+                    conn.send(JSON.stringify({ type: 'key_press', key }));
+                }
+            }
+        </script>
+    </body>
+</html>

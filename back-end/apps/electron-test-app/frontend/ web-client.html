@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Remote Viewer</title>
+        <style>
+            video {
+                width: 100%;
+                border: 1px solid #ccc;
+                background: black;
+                cursor: crosshair;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Remote Desktop Viewer</h2>
+        <video id="remoteVideo" autoplay playsinline></video>
+
+        <!-- PeerJS -->
+        <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+        <script>
+            // Cấu hình PeerJS
+            const peer = new Peer(undefined, {
+                host: 'your-server-ip', // 🔁 đổi thành IP hoặc domain của bạn
+                port: 3000,
+                path: '/peerjs',
+                secure: false, // 🔁 nếu bạn dùng HTTPS, hãy đặt true
+            });
+
+            peer.on('open', (id) => {
+                console.log('Web client peer ID:', id);
+
+                const agentId = 'agent-1234'; // ID của Agent đã biết
+
+                // Gọi lấy màn hình từ Agent
+                const call = peer.call(agentId, null);
+                call.on('stream', (stream) => {
+                    const video = document.getElementById('remoteVideo');
+                    video.srcObject = stream;
+                });
+
+                // Gửi chuột/phím qua DataChannel
+                const conn = peer.connect(agentId);
+                conn.on('open', () => {
+                    const video = document.getElementById('remoteVideo');
+
+                    video.addEventListener('mousemove', (e) => {
+                        const rect = video.getBoundingClientRect();
+                        const x = Math.floor(((e.clientX - rect.left) / rect.width) * 1920); // giả định màn 1920x1080
+                        const y = Math.floor(((e.clientY - rect.top) / rect.height) * 1080);
+                        conn.send(JSON.stringify({ type: 'mouse_move', x, y }));
+                    });
+
+                    video.addEventListener('click', () => {
+                        conn.send(JSON.stringify({ type: 'mouse_click', button: 'left' }));
+                    });
+
+                    document.addEventListener('keydown', (e) => {
+                        conn.send(JSON.stringify({ type: 'key_press', key: e.key }));
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
