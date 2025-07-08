@@ -1,13 +1,16 @@
 export {};
 
-declare global {
-    interface Window {
-        electronAPI: {
-            sendKey: (text: string) => void;
-        };
-    }
-}
+/**
+ * @deprecated: using public/renderer.js
+ */
+// declare global {
+//     interface Window {
+//         electronAPI: {
+//             sendKey: (text: string) => void;
+//         };
+//     }
+// }
 
-document.getElementById('send-key')?.addEventListener('click', () => {
-    window.electronAPI.sendKey('hello');
-});
+// document.getElementById('send-key')?.addEventListener('click', () => {
+//     window.electronAPI.sendKey('hello');
+// });

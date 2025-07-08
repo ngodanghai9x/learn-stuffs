@@ -58,7 +58,8 @@
         "node": ">=20"
     },
     "dependencies": {
-        "@nut-tree-fork/nut-js": "^4.2.6"
+        "@nut-tree-fork/nut-js": "^4.2.6",
+        "peerjs": "^1.5.5"
     },
     "devDependencies": {
         "@types/node": "^24.0.4",

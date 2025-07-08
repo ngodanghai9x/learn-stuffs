@@ -6,6 +6,7 @@
     </head>
     <body>
         <h2>Test hệ thống</h2>
+        <p id="info">A</p>
         <button id="test-notepad">Mở trình soạn thảo</button>
         <button id="test-url">Mở Google</button>
         <button id="test-fake-shutdown">Giả lập shutdown (notify)</button>
@@ -17,10 +18,15 @@
         <button id="get-info">Lấy thông tin hệ thống</button>
         <pre id="output" style="white-space: pre-wrap; background: #f0f0f0; padding: 10px"></pre>
 
-        <script src="renderer.js"></script>
+        <br />
+        <h1>Agent Control Panel</h1>
+        <button id="connectBtn">Kết nối Peer</button>
+        <div id="status"></div>
 
         <!-- Script JS bình thường -->
+        <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
         <script src="renderer.js"></script>
+        <script src="webrtc.js"></script>
 
         <!-- <script src="../dist/renderer.js"></script> -->
     </body>

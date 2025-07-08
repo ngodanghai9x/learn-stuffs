@@ -1,3 +1,7 @@
+const information = document.getElementById('info');
+const versions = window.electronAPI;
+information.innerText = `This app is using Chrome (v${versions.chrome()}), Node.js (v${versions.node()}), and Electron (v${versions.electron()})`;
+
 document.getElementById('send-key')?.addEventListener('click', () => {
     window.electronAPI.sendKey('hello');
 });
@@ -23,3 +27,7 @@ document.getElementById('get-info')?.addEventListener('click', async () => {
     const output = document.getElementById('output');
     output.textContent = JSON.stringify(info, null, 2);
 });
+
+// document.getElementById('connectPeer').addEventListener('click', () => {
+//     window.electronAPI.connectPeer();
+// });

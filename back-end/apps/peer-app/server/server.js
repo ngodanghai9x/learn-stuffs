@@ -9,6 +9,15 @@ const app = express();
 const server = new Server(app);
 const peerServer = ExpressPeerServer(server, { debug: true, path: '/' });
 
+app.use(express.json());
+// Middleware để log signaling requests (ai đang signaling tới ai)
+app.use('/peerjs', (req, res, next) => {
+    if (req.method === 'POST' && req.body?.type === 'OFFER') {
+        console.log(`[Signaling] 📡 ${req.body.src} gửi OFFER tới ${req.body.dst}`);
+    }
+    next();
+});
+
 app.use('/peerjs', peerServer);
 
 const PORT = 8030;
@@ -18,9 +27,11 @@ server.listen(PORT, () => {
 
 // Ghi log kết nối PeerJS
 peerServer.on('connection', (client) => {
-    console.log(`[peerjs] Peer connected: ${client.getId()}`);
+    const peerId = client.getId();
+    console.log(`[PeerServer] ✅ Peer connected: ${peerId}`);
 });
 
 peerServer.on('disconnect', (client) => {
-    console.log(`[peerjs] Peer disconnected: ${client.getId()}`);
+    const peerId = client.getId();
+    console.log(`[PeerServer] ❌ Peer disconnected: ${peerId}`);
 });

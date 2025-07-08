@@ -20,27 +20,34 @@
         <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
         <script>
             // Cấu hình PeerJS
-            const peer = new Peer(undefined, {
-                host: 'your-server-ip', // 🔁 đổi thành IP hoặc domain của bạn
-                port: 3000,
+            const peerClient = new Peer('web-client-haind', {
+                host: '172.16.13.231', // hoặc domain
+                port: 8030,
                 path: '/peerjs',
-                secure: false, // 🔁 nếu bạn dùng HTTPS, hãy đặt true
+                secure: false, // nếu server chạy HTTP
+                config: {
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        // { urls: 'turn:...', credential: '', username: '' }
+                    ],
+                },
             });
+            console.log("🚀 ~ peerClient:", peerClient)
 
-            peer.on('open', (id) => {
+            peerClient.on('open', (id) => {
                 console.log('Web client peer ID:', id);
 
                 const agentId = 'agent-1234'; // ID của Agent đã biết
 
                 // Gọi lấy màn hình từ Agent
-                const call = peer.call(agentId, null);
+                const call = peerClient.call(agentId, null);
                 call.on('stream', (stream) => {
                     const video = document.getElementById('remoteVideo');
                     video.srcObject = stream;
                 });
 
                 // Gửi chuột/phím qua DataChannel
-                const conn = peer.connect(agentId);
+                const conn = peerClient.connect(agentId);
                 conn.on('open', () => {
                     const video = document.getElementById('remoteVideo');
 
@@ -58,6 +65,21 @@
                     document.addEventListener('keydown', (e) => {
                         conn.send(JSON.stringify({ type: 'key_press', key: e.key }));
                     });
+                });
+            });
+        </script>
+
+        <video id="remoteScreen" autoplay playsinline></video>
+        <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+        <script>
+            const peer = new Peer();
+
+            peerClient.on('open', (id) => {
+                const call = peerClient.call('agent-1234', null); // Gọi tới agent
+
+                call.on('stream', (remoteStream) => {
+                    const video = document.getElementById('remoteScreen');
+                    video.srcObject = remoteStream;
                 });
             });
         </script>
