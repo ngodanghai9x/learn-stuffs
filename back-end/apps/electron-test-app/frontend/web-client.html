@@ -14,72 +14,94 @@
     </head>
     <body>
         <h2>Remote Desktop Viewer</h2>
-        <video id="remoteVideo" autoplay playsinline></video>
-
+        <video id="remoteVideo" autoplay playsinline muted style="width: 80%"></video>
+        <button id="startBtn">Start Viewing</button>
         <!-- PeerJS -->
         <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
         <script>
-            // Cấu hình PeerJS
-            const peerClient = new Peer('web-client-haind', {
-                host: '172.16.13.231', // hoặc domain
-                port: 8030,
-                path: '/peerjs',
-                secure: false, // nếu server chạy HTTP
-                config: {
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        // { urls: 'turn:...', credential: '', username: '' }
-                    ],
-                },
-            });
-            console.log("🚀 ~ peerClient:", peerClient)
-
-            peerClient.on('open', (id) => {
-                console.log('Web client peer ID:', id);
-
+            document.getElementById('startBtn').addEventListener('click', () => {
+                // Cấu hình PeerJS
+                // const myID = 'web-client-haind';
+                const myID = undefined;
                 const agentId = 'agent-1234'; // ID của Agent đã biết
-
-                // Gọi lấy màn hình từ Agent
-                const call = peerClient.call(agentId, null);
-                call.on('stream', (stream) => {
-                    const video = document.getElementById('remoteVideo');
-                    video.srcObject = stream;
+                const peerClient = new Peer(myID, {
+                    host: '172.16.13.231', // hoặc domain
+                    port: 8030,
+                    path: '/peerjs',
+                    secure: false, // nếu server chạy HTTP
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            // { urls: 'turn:...', credential: '', username: '' }
+                        ],
+                    },
                 });
+                console.log('🚀 ~ peerClient:', peerClient);
 
-                // Gửi chuột/phím qua DataChannel
-                const conn = peerClient.connect(agentId);
-                conn.on('open', () => {
-                    const video = document.getElementById('remoteVideo');
+                peerClient.on('open', async (id) => {
+                    console.log('Web client peer ID:', id);
 
-                    video.addEventListener('mousemove', (e) => {
-                        const rect = video.getBoundingClientRect();
-                        const x = Math.floor(((e.clientX - rect.left) / rect.width) * 1920); // giả định màn 1920x1080
-                        const y = Math.floor(((e.clientY - rect.top) / rect.height) * 1080);
-                        conn.send(JSON.stringify({ type: 'mouse_move', x, y }));
+                    // Mở DataConnection gửi peerId sang Agent
+                    const conn = peerClient.connect(agentId);
+                    conn.on('open', () => {
+                        console.log('[Viewer] Gửi peerId của mình cho Agent');
+                        conn.send({ peerId: id });
+                    });
+                    // const _stream = new MediaStream()
+                    // Gọi lấy màn hình từ Agent
+                    const call = peerClient.call(agentId, null);
+                    console.log('🚀 ~ call:', call);
+
+                    const commonFunc = (call) => {
+                        console.log('🚀 ~ call22:', call);
+                        if (call) {
+                            call.answer(null); // không gửi stream ngược lại
+                            call.on('stream', (stream) => {
+                                console.log('🚀 ~ call.on ~ stream:', stream);
+                                const video = document.getElementById('remoteVideo');
+                                console.log('🚀 ~ call.on ~ video:', video);
+                                video.srcObject = stream;
+                                video.onloadedmetadata = () => {
+                                    video.play().catch((err) => console.error('Play error:', err));
+                                };
+                            });
+                            call.on('error', (err) => console.error('Call error:', err));
+                        } else {
+                            console.error('Failed to create call: call is undefined');
+                        }
+                    };
+
+                    setTimeout(() => commonFunc(call), 500);
+
+                    peerClient.on('call', async (call) => {
+                        console.log('[Client] Có viewer gọi tới:', call?.peer);
+                        try {
+                            return commonFunc(call);
+                        } catch (err) {
+                            console.error('[Client] Lỗi:', err);
+                        }
                     });
 
-                    video.addEventListener('click', () => {
-                        conn.send(JSON.stringify({ type: 'mouse_click', button: 'left' }));
-                    });
+                    // Gửi chuột/phím qua DataChannel
+                    // const conn = peerClient.connect(agentId);
+                    // conn.on('open', () => {
+                    //     const video = document.getElementById('remoteVideo');
 
-                    document.addEventListener('keydown', (e) => {
-                        conn.send(JSON.stringify({ type: 'key_press', key: e.key }));
-                    });
-                });
-            });
-        </script>
+                    //     video.addEventListener('mousemove', (e) => {
+                    //         const rect = video.getBoundingClientRect();
+                    //         const x = Math.floor(((e.clientX - rect.left) / rect.width) * 1920); // giả định màn 1920x1080
+                    //         const y = Math.floor(((e.clientY - rect.top) / rect.height) * 1080);
+                    //         conn.send(JSON.stringify({ type: 'mouse_move', x, y }));
+                    //     });
 
-        <video id="remoteScreen" autoplay playsinline></video>
-        <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
-        <script>
-            const peer = new Peer();
+                    //     video.addEventListener('click', () => {
+                    //         conn.send(JSON.stringify({ type: 'mouse_click', button: 'left' }));
+                    //     });
 
-            peerClient.on('open', (id) => {
-                const call = peerClient.call('agent-1234', null); // Gọi tới agent
-
-                call.on('stream', (remoteStream) => {
-                    const video = document.getElementById('remoteScreen');
-                    video.srcObject = remoteStream;
+                    //     document.addEventListener('keydown', (e) => {
+                    //         conn.send(JSON.stringify({ type: 'key_press', key: e.key }));
+                    //     });
+                    // });
                 });
             });
         </script>

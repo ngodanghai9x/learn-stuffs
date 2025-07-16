@@ -1,7 +1,7 @@
 import { mouse, keyboard, Button, Key, Point } from '@nut-tree-fork/nut-js';
 import { exec, spawn } from 'child_process';
 import os from 'os';
-import { getSystemInfo, sleep } from './ultis';
+import { getSystemInfo, sleep, captureScreen } from './ultis';
 import {
     app,
     BrowserWindow,
@@ -13,6 +13,7 @@ import {
     Menu,
     autoUpdater,
     globalShortcut,
+    desktopCapturer,
 } from 'electron';
 import path from 'path';
 

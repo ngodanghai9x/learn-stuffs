@@ -131,28 +131,30 @@ export const connectPeer = (event?: IpcMainEvent, agentId = 'agent-1234') => {
 
         call.on('close', () => {
             console.log('[Agent] Viewer disconnected');
-            stream.getTracks().forEach((t) => t.stop());
+            stream?.getTracks()?.forEach((t) => t.stop());
         });
     });
 
     return peer;
 };
 
-/**
- * @deprecated
- */
 // export async function captureScreen(): MediaStream |Promise<Buffer> {
 export async function captureScreen() {
     const sources = await desktopCapturer.getSources({ types: ['screen'] });
 
     const screen = sources[0]; // lấy màn hình chính
 
-    const stream = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getDisplayMedia({
         audio: false,
         video: {
             mandatory: {
                 chromeMediaSource: 'desktop',
                 chromeMediaSourceId: screen.id,
+                // chromeMediaSourceId: 'screen:0:0',
+                // minWidth: (screenWidth / screenHeight) * 1080,
+                // maxWidth: (screenWidth / screenHeight) * 1080,
+                minHeight: 1080,
+                maxHeight: 1080,
             },
         } as any,
     });

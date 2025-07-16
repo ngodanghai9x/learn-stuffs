@@ -5,6 +5,18 @@ magick favicon.png -resize 512x512 icon-512.png
 png2icns favicon.icns icon-512.png
 ```
 
+## Structure
+| File/Thư mục                                                   | Mô tả                                                                                                                                       |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`main.ts`**                                                  | Chạy ở **Main process**. Tạo cửa sổ (`BrowserWindow`), khởi động app, xử lý `ipcMain`, native API (`exec`, `fs`, `autoUpdater`,...)         |
+| **`preload.ts`**                                               | Chạy **trước khi renderer được load**, là cầu nối an toàn giữa main và renderer. Dùng `contextBridge` để expose hàm ra `window.electronAPI` |
+| **`renderer.ts`**                                              | Chạy ở **Renderer process**. Xử lý tương tác người dùng, DOM, WebRTC, v.v. Không được `require('electron')` trừ khi có preload              |
+| **`public/index.html`**                                        | HTML của giao diện chính. Import `renderer.js` tại đây                                                                                      |
+| **`dist/`**                                                    | Nơi chứa JS đã transpile từ TS (sau `tsc`)                                                                                                  |
+| **`package.json`**                                             | Scripts, dependencies và cấu hình build (electron-builder)                                                                                  |
+| **`electron-builder.yml`** (hoặc `build` trong `package.json`) | Cấu hình cho build đa nền tảng (AppImage, .exe, .dmg, etc.)                                                                                 |
+
+
 ## Diagrams
 ```
 [Web Browser]              [Signaling Server]                [Agent (Electron)]

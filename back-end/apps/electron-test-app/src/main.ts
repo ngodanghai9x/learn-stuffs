@@ -20,17 +20,22 @@ function createWindow() {
     const window = new BrowserWindow({
         width: 1000,
         height: 600,
+        icon: path.join(__dirname, '../assets/favicon.ico'),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
+            // nodeIntegrationInWorker: true,
             nodeIntegration: false,
         },
+        title: 'Haind App Control',
+        autoHideMenuBar: true,
     });
 
     window.minimizable = true;
     window.center();
     // window.maximize();
-    window.loadFile(path.join(__dirname, '../public/index.html'));
+    window.loadFile(path.join(__dirname, '../pages/setting/index.html'));
+    // window.loadFile(path.join(__dirname, '../pages/home/index.html'));
 
     // if (
     //     tray ||
@@ -68,13 +73,21 @@ function createWindow() {
     //         ]),
     //     );
     // }
+
+    return window;
 }
 
 app.disableHardwareAcceleration();
 
 app.whenReady().then(() => {
-    createWindow();
+    const window = createWindow();
 
+    ipcMain.handle('calling', async (_, peerId) => {
+        console.log('🚀 ~ ipcMain.handle ~ peerId:', peerId);
+        // const { stream, screen } = await captureScreen();
+        window.webContents.send('start-capture', peerId);
+        return 200;
+    });
     // app.on('activate', () => {
     //     if (!BrowserWindow.getAllWindows().length) createWindow();
     // });

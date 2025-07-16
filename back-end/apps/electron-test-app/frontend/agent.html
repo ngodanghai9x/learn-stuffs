@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Agent - Share Screen</title>
+        <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    </head>
+    <body>
+        <h2>Agent đang sẵn sàng chia sẻ màn hình</h2>
+        <p id="status">Khởi động...</p>
+
+        <script>
+            (async () => {
+                const agentId = 'agent-1234';
+                const peerAgent = new Peer(agentId, {
+                    host: '172.16.13.231', // hoặc domain
+                    port: 8030,
+                    path: '/peerjs',
+                    secure: false, // nếu server chạy HTTP
+                    config: {
+                        iceServers: [
+                            { urls: 'stun:stun.l.google.com:19302' },
+                            // { urls: 'turn:...', credential: '', username: '' }
+                        ],
+                    },
+                });
+
+                peerAgent.on('open', (id) => {
+                    console.log('[Agent] Peer ID:', id);
+                    document.getElementById('status').innerText = 'Sẵn sàng, Peer ID: ' + id;
+                });
+
+                // Khi viewer kết nối qua DataConnection
+                peerAgent.on('connection', async (conn) => {
+                    console.log('[Agent] Viewer connected via data:', conn.peer);
+
+                    conn.on('data', async (data) => {
+                        console.log('[Agent] Nhận data:', data);
+
+                        if (data.peerId) {
+                            console.log('[Agent] Sẽ gọi ngược lại viewer:', data.peerId);
+                            try {
+                                const stream = await navigator.mediaDevices.getDisplayMedia({
+                                    video: true || {
+                                        mandatory: {
+                                            chromeMediaSource: 'desktop',
+                                            chromeMediaSourceId: 'screen:1:0', // screen.id,
+                                        },
+                                    },
+                                    audio: false,
+                                });
+                                console.log('🚀 ~ conn.on ~ stream:', stream);
+                                const call = peerAgent.call(data.peerId, stream);
+                                console.log('🚀 ~ conn.on ~ call:', call);
+
+                                call.on('close', () => {
+                                    console.log('[Agent] Viewer đã ngắt kết nối');
+                                    stream.getTracks().forEach((t) => t.stop());
+                                });
+                            } catch (err) {
+                                console.error('[Agent] Lỗi khi lấy màn hình:', err);
+                            }
+                        }
+                    });
+                });
+
+                peerAgent.on('call', async (call) => {
+                    console.log('[Agent] Có viewer gọi tới:', call.peer);
+                    try {
+                        const stream = await navigator.mediaDevices.getDisplayMedia({
+                            video: true,
+                            audio: false,
+                        });
+                        console.log('[Agent] Đã lấy được stream màn hình:', stream);
+                        call.answer(stream);
+
+                        call.on('close', () => {
+                            console.log('[Agent] Viewer đã ngắt kết nối');
+                            stream.getTracks().forEach((t) => t.stop());
+                        });
+                    } catch (err) {
+                        console.error('[Agent] Lỗi khi lấy màn hình:', err);
+                    }
+                });
+
+                peerAgent.on('error', (err) => {
+                    console.error('[Agent] Peer error:', err);
+                    document.getElementById('status').innerText = 'Lỗi: ' + err;
+                });
+            })();
+        </script>
+    </body>
+</html>
