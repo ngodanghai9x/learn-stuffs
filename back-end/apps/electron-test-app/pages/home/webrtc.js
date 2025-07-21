@@ -1,7 +1,7 @@
 // const { ipcRenderer } = require('electron');
 
 let callActive = null;
-let peerClient = null;
+let peerAgent = null;
 
 function toast(msg) {
     const el = document.getElementById('status');
@@ -10,7 +10,7 @@ function toast(msg) {
 
 document.getElementById('connectBtn').addEventListener('click', async () => {
     const agentId = 'agent-1234';
-    peerClient = new Peer(agentId, {
+    peerAgent = new Peer(agentId, {
         host: '172.16.13.231', // hoặc domain
         port: 8030,
         path: '/peerjs',
@@ -23,18 +23,46 @@ document.getElementById('connectBtn').addEventListener('click', async () => {
         },
     });
 
-    peerClient.on('open', (id) => {
+    peerAgent.on('open', (id) => {
         console.log('[Agent] Connected with ID:', id);
         toast(`[Agent] Connected with ID: ${id}`);
     });
 
-    peerClient.on('error', (err) => {
+    peerAgent.on('error', (err) => {
         console.error('[Peer Error]', err);
         toast(`[Peer Error] ${err.message}`);
     });
 
-    peerClient.on('connection', (conn) => {
+    peerAgent.on('connection', (conn) => {
         console.log('[Agent] Web client connected:', conn.peer);
+
+        conn.on('data', async (data) => {
+            console.log('[Agent] Nhận data:', data);
+
+            if (data.peerId) {
+                console.log('[Agent] Sẽ gọi ngược lại viewer:', data.peerId);
+                try {
+                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: {
+                            mandatory: {
+                                chromeMediaSource: 'desktop',
+                                chromeMediaSourceId: 'screen:1:0', // screen.id,
+                            },
+                        },
+                        audio: false,
+                    });
+                    const call = peerAgent.call(data.peerId, stream);
+                    console.log('🚀 ~ conn.on ~ call:', call);
+
+                    call.on('close', () => {
+                        console.log('[Agent] Viewer đã ngắt kết nối');
+                        stream.getTracks().forEach((t) => t.stop());
+                    });
+                } catch (err) {
+                    console.error('[Agent] Lỗi khi lấy màn hình:', err);
+                }
+            }
+        });
 
         // thêm vào đây:
         const pc = conn.peerConnection;
@@ -115,46 +143,43 @@ document.getElementById('connectBtn').addEventListener('click', async () => {
     });
 
     // Đợi viewer gọi tới
-    peerClient.on('call', async (call) => {
-        console.log('[Agent] Incoming call from', call.peer);
-        try {
-            // const sources = await desktopCapturer.getSources({ types: ['screen'] });
-            // console.log('🚀 ~ peerClient.on ~ sources:', sources);
-            // const screen = sources[0];
-            // console.log('🚀 ~ peerClient.on ~ screen:', screen);
+    // peerAgent.on('call', async (call) => {
+    //     console.log('[Agent] Incoming call from', call.peer);
+    //     try {
+    //         // const sources = await desktopCapturer.getSources({ types: ['screen'] });
+    //         // const screen = sources[0];
+    //         // const stream = await navigator.mediaDevices.getUserMedia({
+    //         //     audio: false,
+    //         //     video: {
+    //         //         mandatory: {
+    //         //             chromeMediaSource: 'desktop',
+    //         //             chromeMediaSourceId: screen.id,
+    //         //         },
+    //         //     },
+    //         // });
+    //         const stream = await navigator.mediaDevices.getUserMedia({
+    //             audio: false,
+    //             video: {
+    //                 mandatory: {
+    //                     chromeMediaSource: 'desktop',
+    //                     chromeMediaSourceId: 'screen:1:0', // screen.id,
+    //                 },
+    //             },
+    //         });
+    //         // const stream = await window.electronAPI.calling(call.peer);
+    //         console.log('🚀 ~ peerClient.on ~ stream:', stream);
 
-            // const stream = await navigator.mediaDevices.getUserMedia({
-            //     audio: false,
-            //     video: {
-            //         mandatory: {
-            //             chromeMediaSource: 'desktop',
-            //             chromeMediaSourceId: screen.id,
-            //         },
-            //     },
-            // });
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: false,
-                video: {
-                    mandatory: {
-                        chromeMediaSource: 'desktop',
-                        chromeMediaSourceId: 'screen:1:0', // screen.id,
-                    },
-                },
-            });
-            // const stream = await window.electronAPI.calling(call.peer);
-            console.log('🚀 ~ peerClient.on ~ stream:', stream);
+    //         call.answer(stream); // 🔥 nếu stream null hoặc fail thì call trả về undefined bên web
+    //         callActive = call;
 
-            call.answer(stream); // 🔥 nếu stream null hoặc fail thì call trả về undefined bên web
-            callActive = call;
-
-            call.on('close', () => {
-                console.log('[Agent] Viewer disconnected');
-                stream?.getTracks()?.forEach((t) => t.stop());
-            });
-        } catch (err) {
-            console.error('[Agent] Error while handling incoming call:', err);
-        }
-    });
+    //         call.on('close', () => {
+    //             console.log('[Agent] Viewer disconnected');
+    //             stream?.getTracks()?.forEach((t) => t.stop());
+    //         });
+    //     } catch (err) {
+    //         console.error('[Agent] Error while handling incoming call:', err);
+    //     }
+    // });
 });
 
 ipcRenderer = window.electronAPI;
@@ -178,8 +203,8 @@ ipcRenderer.on('start-capture', async (event, peerId) => {
         console.log('🚀 ~ ipcRenderer.on ~ stream:', stream);
 
         // Dùng stream trực tiếp tại đây: truyền cho peer.call().answer(stream)
-        const call = peerClient.call(peerId, stream);
-        console.log("🚀 ~ ipcRenderer.on ~ call:", call)
+        const call = peerAgent.call(peerId, stream);
+        console.log('🚀 ~ ipcRenderer.on ~ call:', call);
 
         call.on('close', () => {
             stream?.getTracks()?.forEach((t) => t.stop());

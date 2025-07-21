@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Detect Mic Volume</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                text-align: center;
+                margin-top: 50px;
+            }
+            #micIcon {
+                font-size: 60px;
+                color: #555;
+                transition: color 0.2s;
+            }
+            #micIcon.speaking {
+                color: red;
+                background: red;
+                animation: blink 1s infinite;
+            }
+            @keyframes blink {
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.4;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h2>🎤 Mic Volume Detector</h2>
+        <div id="micIcon">🎤Mic</div>
+        <button id="startBtn">Start Detecting</button>
+
+        <script>
+            document.getElementById('startBtn').addEventListener('click', async () => {
+                try {
+                    // Lấy mic stream
+                    const micStream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false,
+                    });
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const analyser = audioContext.createAnalyser();
+                    const source = audioContext.createMediaStreamSource(micStream);
+                    source.connect(analyser);
+
+                    const dataArray = new Uint8Array(analyser.fftSize);
+                    const micIcon = document.getElementById('micIcon');
+
+                    function checkVolume() {
+                        analyser.getByteTimeDomainData(dataArray);
+
+                        // Tính RMS volume
+                        let sum = 0;
+                        for (let i = 0; i < dataArray.length; i++) {
+                            const v = (dataArray[i] - 128) / 128; // normalize [-1, 1]
+                            sum += v * v;
+                        }
+                        const volume = Math.sqrt(sum / dataArray.length);
+
+                        if (volume > 0.02) {
+                            // tuỳ chỉnh ngưỡng
+                            micIcon.classList.add('speaking');
+                        } else {
+                            micIcon.classList.remove('speaking');
+                        }
+
+                        requestAnimationFrame(checkVolume);
+                    }
+                    checkVolume();
+                } catch (err) {
+                    console.error('Could not access microphone:', err);
+                    alert('Microphone permission is required.');
+                }
+            });
+        </script>
+    </body>
+</html>
