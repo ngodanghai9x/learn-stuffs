@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Change Page Background Color",
+    "version": "1.0",
+    "permissions": [
+        "scripting",
+        "tabs"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ]
+}
