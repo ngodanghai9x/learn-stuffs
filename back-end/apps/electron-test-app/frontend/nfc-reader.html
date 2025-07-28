@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Web NFC Demo</title>
+    </head>
+    <body>
+        <h2>Web NFC Demo</h2>
+        <button id="scan">Scan NFC Tag</button>
+        <pre id="log"></pre>
+
+        <script>
+            const log = (msg) => (document.getElementById('log').textContent += msg + '\n');
+
+            document.getElementById('scan').onclick = async () => {
+                if (!('NDEFReader' in window)) {
+                    log('Web NFC is not supported on this device/browser.');
+                    return;
+                }
+
+                try {
+                    const reader = new NDEFReader();
+                    await reader.scan();
+                    log('Scan started. Tap an NFC tag.');
+
+                    reader.onreading = (event) => {
+                        log('> NFC tag read:');
+                        for (const record of event.message.records) {
+                            log(`- Record type: ${record.recordType}`);
+                            log(`- Media type: ${record.mediaType}`);
+                            const textDecoder = new TextDecoder();
+                            log(`- Data: ${textDecoder.decode(record.data)}`);
+                        }
+                    };
+
+                    reader.onerror = (err) => log('Error reading NFC: ' + err);
+                } catch (e) {
+                    log('Scan failed: ' + e);
+                }
+            };
+        </script>
+    </body>
+</html>
