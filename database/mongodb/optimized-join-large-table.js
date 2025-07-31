@@ -51,7 +51,7 @@ const slowProductAggregate = [
                                     $eq: ['$external_platform', 'shopify'],
                                 },
                                 {
-                                    $eq: ['$external_credential.id', 'abc1231421'],
+                                    $eq: ['$external_credential.id', 'uuid123'],
                                 },
                             ],
                         },
@@ -101,14 +101,30 @@ const slowProductAggregate = [
             },
         },
     },
-    // {
-    //   $match: {
-    //     "integrationInfo.status": "success",
-    //     "integrationInfo.archived_at": {
-    //       $exists: true
-    //     }
-    //   }
-    // }
+    {
+        $match: {
+            // "integrationInfo.status": "success",
+            // "integrationInfo.archived_at": {
+            //   $exists: false
+            // }
+            $or: [
+                {
+                    integrationInfo: {
+                        $exists: false,
+                    },
+                },
+                {
+                    'integrationInfo.status': 'failed',
+                },
+                {
+                    'integrationInfo.status': 'pending',
+                },
+                {
+                    'integrationInfo.status': 'processing',
+                },
+            ],
+        },
+    },
     {
         $project: {
             is_active: 1,
@@ -121,17 +137,17 @@ const slowProductAggregate = [
             integrationInfo: 1,
         },
     },
-    {
-        $sort: {
-            created: -1,
-        },
-    },
-    {
-        $skip: 0,
-    },
-    {
-        $limit: 12,
-    },
+    // {
+    //   $sort: {
+    //     created: -1
+    //   }
+    // },
+    // {
+    //   $skip: 0
+    // },
+    // {
+    //   $limit: 12
+    // }
 ];
 
 const fastProductAggregate = [
@@ -179,11 +195,12 @@ const fastProductAggregate = [
                 {
                     $match: {
                         external_platform: 'shopify',
-                        'external_credential.id': 'abc1231421',
-                        status: 'success',
-                        archived_at: {
-                            $exists: true,
-                        },
+                        'external_credential.id': 'uuid123',
+                        status: { $in: ['failed', 'pending', 'processing'] },
+                        // status: "success",
+                        // archived_at: {
+                        //   $exists: true
+                        // }
                     },
                 },
                 {
@@ -250,14 +267,36 @@ const fastProductAggregate = [
         },
     },
     {
-        $sort: {
-            created: -1,
+        $match: {
+            // "integrationInfo.status": "success",
+            //  "integrationInfo.archived_at": { $exists: true },
+            $or: [
+                {
+                    integrationInfo: {
+                        $exists: false,
+                    },
+                },
+                {
+                    'integrationInfo.status': 'failed',
+                },
+                {
+                    'integrationInfo.status': 'pending',
+                },
+                {
+                    'integrationInfo.status': 'processing',
+                },
+            ],
         },
     },
-    {
-        $skip: 0,
-    },
-    {
-        $limit: 12,
-    },
+    // {
+    //   $sort: {
+    //     created: -1
+    //   }
+    // },
+    // {
+    //   $skip: 0
+    // },
+    // {
+    //   $limit: 12
+    // }
 ];
