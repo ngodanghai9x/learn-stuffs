@@ -54,3 +54,4 @@ back-end/learn-js/src/sap/generated1
 package-lock.json
 *.zip
 sg12-19
+**.private**

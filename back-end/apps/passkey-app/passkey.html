@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Passkey Demo (Mock Backend)</title>
+        <style>
+            :root {
+                font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+                    'Apple Color Emoji', 'Segoe UI Emoji';
+            }
+            body {
+                margin: 0;
+                background: #0b0f17;
+                color: #e6edf3;
+            }
+            header {
+                padding: 24px;
+                border-bottom: 1px solid #1f2937;
+                background: #0f172a;
+            }
+            h1 {
+                margin: 0 0 8px 0;
+                font-size: 20px;
+            }
+            .wrap {
+                max-width: 960px;
+                margin: 0 auto;
+                padding: 24px;
+            }
+            .card {
+                background: #111827;
+                border: 1px solid #1f2937;
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            }
+            .row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            .actions {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-top: 12px;
+            }
+            label {
+                display: block;
+                font-size: 12px;
+                opacity: 0.8;
+                margin-bottom: 6px;
+            }
+            input {
+                width: 100%;
+                padding: 10px 12px;
+                border-radius: 10px;
+                border: 1px solid #374151;
+                background: #0b1220;
+                color: #e6edf3;
+                outline: none;
+            }
+            input::placeholder {
+                color: #9ca3af;
+            }
+            button {
+                padding: 10px 14px;
+                border-radius: 12px;
+                border: 1px solid #334155;
+                background: #0ea5e9;
+                color: #001018;
+                font-weight: 700;
+                cursor: pointer;
+            }
+            button.secondary {
+                background: #111827;
+                color: #e6edf3;
+                border-color: #374151;
+            }
+            button:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .muted {
+                color: #a3b1c6;
+                font-size: 12px;
+            }
+            pre {
+                background: #0a1220;
+                padding: 12px;
+                border-radius: 12px;
+                overflow: auto;
+                border: 1px solid #1f2937;
+            }
+            .pill {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 999px;
+                font-size: 11px;
+                border: 1px solid #334155;
+            }
+            .grid-3 {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+            .small {
+                font-size: 12px;
+            }
+            a {
+                color: #7dd3fc;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="wrap">
+                <h1>Passkey Demo – WebAuthn (Mock Backend)</h1>
+                <div class="muted">
+                    Mô phỏng hai luồng: <b>Đăng ký</b> (navigator.credentials.create) và
+                    <b>Đăng nhập</b> (navigator.credentials.get). Dữ liệu BE được <i>mock</i> hoàn
+                    toàn.
+                    <span class="pill">HTTPS bắt buộc trên trình duyệt thật</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="wrap">
+            <div class="card">
+                <div class="row">
+                    <div>
+                        <label for="username">Username</label>
+                        <input id="username" placeholder="vd: alice" value="alice" />
+                    </div>
+                    <div>
+                        <label for="displayName">Display name</label>
+                        <input id="displayName" placeholder="vd: Alice Lê" value="Alice Lê" />
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="btn-register">🔐 Đăng ký Passkey</button>
+                    <button id="btn-login" class="secondary">🔑 Đăng nhập bằng Passkey</button>
+                    <button id="btn-clear" class="secondary">🧹 Xoá mock DB</button>
+                </div>
+                <p class="muted small">
+                    Lưu ý: Trên môi trường thật cần chạy qua <b>HTTPS</b> và thiết bị hỗ trợ
+                    (Windows Hello, Touch ID, v.v.).
+                </p>
+            </div>
+
+            <div class="grid-3" style="margin-top: 16px">
+                <div class="card">
+                    <b>📤 Options từ BE (mock)</b>
+                    <pre id="options-out">(chưa có)</pre>
+                </div>
+                <div class="card">
+                    <b>📥 Payload gửi BE (client → BE)</b>
+                    <pre id="payload-out">(chưa có)</pre>
+                </div>
+                <div class="card">
+                    <b>✅ Kết quả xác minh BE (mock verify)</b>
+                    <pre id="verify-out">(chưa có)</pre>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 16px">
+                <b>🔎 Phân tích authenticatorData (khi đăng nhập)</b>
+                <pre id="authdata-out">(chưa có)</pre>
+                <p class="muted small">
+                    Parser rút ra <code>flags</code> và <code>signCount</code> từ
+                    <code>authenticatorData</code> để bạn quan sát.
+                </p>
+            </div>
+        </main>
+
+        <script>
+            // ---------- Helpers: Base64URL <-> ArrayBuffer ----------
+            const b64urlToBuf = (b64url) => {
+                const pad = (str) => str + '==='.slice((str.length + 3) % 4);
+                const b64 = pad(b64url.replace(/-/g, '+').replace(/_/g, '/'));
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                return bytes.buffer;
+            };
+            const bufToB64url = (buf) => {
+                const bytes = new Uint8Array(buf);
+                let binary = '';
+                for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            };
+
+            // ---------- Mock BE (in-memory) ----------
+            const mockDB = {
+                users: new Map(), // username -> { id, displayName, credentials: [{credentialId, signCount}] }
+            };
+
+            const randomChallenge = () =>
+                bufToB64url(crypto.getRandomValues(new Uint8Array(32)).buffer);
+
+            const mockBE = {
+                async registerOptions({ username, displayName }) {
+                    let user = mockDB.users.get(username);
+                    if (!user) {
+                        user = { id: crypto.randomUUID(), displayName, credentials: [] };
+                        mockDB.users.set(username, user);
+                    }
+                    const options = {
+                        rp: { name: 'Passkey Demo', id: location.hostname || 'localhost' },
+                        user: {
+                            id: bufToB64url(new TextEncoder().encode(user.id)),
+                            name: username,
+                            displayName: user.displayName || username,
+                        },
+                        challenge: randomChallenge(),
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 },
+                        ],
+                        authenticatorSelection: {
+                            userVerification: 'preferred',
+                            authenticatorAttachment: 'platform',
+                        },
+                        timeout: 60000,
+                        attestation: 'none',
+                    };
+                    // Persist last challenge to validate later
+                    user.lastRegChallenge = options.challenge;
+                    return options;
+                },
+
+                async verifyRegistration(username, attResp) {
+                    // In real BE: verify attestation object, extract publicKey, aaguid, etc.
+                    const user = mockDB.users.get(username);
+                    if (!user) return { ok: false, error: 'user_not_found' };
+                    if (user.lastRegChallenge !== attResp.clientData.challenge) {
+                        return { ok: false, error: 'challenge_mismatch' };
+                    }
+                    // Store credential (mock: start signCount at 1)
+                    const exists = user.credentials.find((c) => c.credentialId === attResp.id);
+                    if (!exists) user.credentials.push({ credentialId: attResp.id, signCount: 1 });
+                    return { ok: true, stored: { credentialId: attResp.id, userId: user.id } };
+                },
+
+                async authnOptions(username) {
+                    const user = mockDB.users.get(username);
+                    if (!user || user.credentials.length === 0) {
+                        return { error: 'no_credentials' };
+                    }
+                    const options = {
+                        challenge: randomChallenge(),
+                        allowCredentials: user.credentials.map((c) => ({
+                            type: 'public-key',
+                            id: c.credentialId,
+                        })),
+                        userVerification: 'preferred',
+                        timeout: 60000,
+                        rpId: location.hostname || 'localhost',
+                    };
+                    user.lastAuthnChallenge = options.challenge;
+                    return options;
+                },
+
+                async verifyAuthn(username, assertion) {
+                    // In real BE: verify signature with stored publicKey, check rpIdHash, origin, type, etc.
+                    const user = mockDB.users.get(username);
+                    if (!user) return { ok: false, error: 'user_not_found' };
+                    if (user.lastAuthnChallenge !== assertion.clientData.challenge) {
+                        return { ok: false, error: 'challenge_mismatch' };
+                    }
+                    const cred = user.credentials.find((c) => c.credentialId === assertion.id);
+                    if (!cred) return { ok: false, error: 'credential_not_found' };
+                    // Update signCount if larger
+                    if (
+                        typeof assertion.authData.signCount === 'number' &&
+                        assertion.authData.signCount > cred.signCount
+                    ) {
+                        cred.signCount = assertion.authData.signCount;
+                    }
+                    return {
+                        ok: true,
+                        user: { id: user.id, username },
+                        credentialId: cred.credentialId,
+                        signCount: cred.signCount,
+                    };
+                },
+            };
+
+            // ---------- UI helpers ----------
+            const $ = (id) => document.getElementById(id);
+            const show = (el, obj) => (el.textContent = JSON.stringify(obj, null, 2));
+
+            // ---------- Parse authenticatorData (buffer) to extract flags & signCount ----------
+            function parseAuthenticatorData(buf) {
+                const view = new DataView(buf);
+                const rpIdHash = new Uint8Array(buf.slice(0, 32));
+                const flags = view.getUint8(32);
+                const signCount = view.getUint32(33, false); // big-endian
+                // Flags bits: UP(0x01), UV(0x04), BE(0x08), BS(0x10), AT(0x40), ED(0x80)
+                return {
+                    rpIdHash_b64url: bufToB64url(rpIdHash),
+                    flags: {
+                        value: flags,
+                        userPresent: !!(flags & 0x01),
+                        userVerified: !!(flags & 0x04),
+                        attestedCredData: !!(flags & 0x40),
+                        extensionsIncluded: !!(flags & 0x80),
+                    },
+                    signCount,
+                };
+            }
+
+            // ---------- Transformers between WebAuthn structures & JSON ----------
+            function toPublicKeyCredentialCreationOptionsJSON(opts) {
+                return {
+                    ...opts,
+                    challenge: b64urlToBuf(opts.challenge),
+                    user: { ...opts.user, id: b64urlToBuf(opts.user.id) },
+                    pubKeyCredParams: opts.pubKeyCredParams,
+                };
+            }
+
+            function attestationToJSON(cred) {
+                const clientDataJSON = cred.response.clientDataJSON;
+                const attestationObject = cred.response.attestationObject;
+                const clientData = JSON.parse(new TextDecoder().decode(clientDataJSON));
+                return {
+                    id: cred.id,
+                    rawId: bufToB64url(cred.rawId),
+                    type: cred.type,
+                    response: {
+                        clientDataJSON: bufToB64url(clientDataJSON),
+                        attestationObject: bufToB64url(attestationObject),
+                    },
+                    clientData,
+                };
+            }
+
+            function toPublicKeyCredentialRequestOptionsJSON(opts) {
+                return {
+                    ...opts,
+                    challenge: b64urlToBuf(opts.challenge),
+                    allowCredentials: (opts.allowCredentials || []).map((c) => ({
+                        ...c,
+                        id: b64urlToBuf(c.id),
+                    })),
+                };
+            }
+
+            function assertionToJSON(assertion) {
+                const clientDataJSON = assertion.response.clientDataJSON;
+                const authenticatorData = assertion.response.authenticatorData;
+                const signature = assertion.response.signature;
+                const userHandle = assertion.response.userHandle;
+                const clientData = JSON.parse(new TextDecoder().decode(clientDataJSON));
+                const parsedAuth = parseAuthenticatorData(authenticatorData);
+                return {
+                    id: assertion.id,
+                    rawId: bufToB64url(assertion.rawId),
+                    type: assertion.type,
+                    response: {
+                        clientDataJSON: bufToB64url(clientDataJSON),
+                        authenticatorData: bufToB64url(authenticatorData),
+                        signature: bufToB64url(signature),
+                        userHandle: userHandle ? bufToB64url(userHandle) : null,
+                    },
+                    clientData,
+                    authData: parsedAuth,
+                };
+            }
+
+            // ---------- Event handlers ----------
+            async function onRegister() {
+                const username = $('username').value.trim();
+                const displayName = $('displayName').value.trim() || username;
+                if (!username) return alert('Nhập username trước đã');
+                if (!('credentials' in navigator))
+                    return alert('Trình duyệt không hỗ trợ WebAuthn');
+
+                // 1) Client -> BE (mock) : request options
+                const options = await mockBE.registerOptions({ username, displayName });
+                show($('options-out'), options);
+
+                // 2) navigator.credentials.create
+                let cred;
+                try {
+                    const publicKey = toPublicKeyCredentialCreationOptionsJSON(options);
+                    console.log("🚀 ~ onRegister ~ publicKey:",options, publicKey)
+                    cred = await navigator.credentials.create({ publicKey });
+                    console.log("🚀 ~ onRegister ~ cred:", cred)
+                } catch (e) {
+                    show($('verify-out'), { ok: false, error: String(e) });
+                    return;
+                }
+
+                // 3) Client -> BE: send attestation
+                const attJSON = attestationToJSON(cred);
+                console.log("🚀 ~ onRegister ~ attJSON:", attJSON)
+                // augment: include parsed clientData challenge/type/origin for BE mock
+                const payload = {
+                    id: attJSON.id,
+                    rawId: attJSON.rawId,
+                    type: attJSON.type,
+                    response: attJSON.response,
+                    clientData: attJSON.clientData,
+                };
+                show($('payload-out'), payload);
+
+                const verify = await mockBE.verifyRegistration(username, {
+                    id: attJSON.id,
+                    clientData: {
+                        challenge: attJSON.clientData.challenge,
+                        type: attJSON.clientData.type,
+                        origin: attJSON.clientData.origin,
+                    },
+                });
+                show($('verify-out'), verify);
+            }
+
+            async function onLogin() {
+                const username = $('username').value.trim();
+                if (!username) return alert('Nhập username trước đã');
+                if (!('credentials' in navigator))
+                    return alert('Trình duyệt không hỗ trợ WebAuthn');
+
+                // 1) request assertion options
+                const options = await mockBE.authnOptions(username);
+                if (options.error) {
+                    show($('options-out'), options);
+                    return alert('User chưa có passkey');
+                }
+                show($('options-out'), options);
+
+                // 2) navigator.credentials.get
+                let assertion;
+                try {
+                    const publicKey = toPublicKeyCredentialRequestOptionsJSON(options);
+                    assertion = await navigator.credentials.get({ publicKey });
+                } catch (e) {
+                    show($('verify-out'), { ok: false, error: String(e) });
+                    return;
+                }
+
+                // 3) Client -> BE: send assertion
+                const asJSON = assertionToJSON(assertion);
+                show($('payload-out'), asJSON);
+                show($('authdata-out'), asJSON.authData);
+
+                const verify = await mockBE.verifyAuthn(username, {
+                    id: asJSON.id,
+                    clientData: {
+                        challenge: asJSON.clientData.challenge,
+                        type: asJSON.clientData.type,
+                        origin: asJSON.clientData.origin,
+                    },
+                    authData: { signCount: asJSON.authData.signCount },
+                });
+                show($('verify-out'), verify);
+            }
+
+            function onClear() {
+                mockDB.users.clear();
+                $('options-out').textContent = '(đã xoá)';
+                $('payload-out').textContent = '(đã xoá)';
+                $('verify-out').textContent = '(đã xoá)';
+                $('authdata-out').textContent = '(đã xoá)';
+            }
+
+            $('btn-register').addEventListener('click', onRegister);
+            $('btn-login').addEventListener('click', onLogin);
+            $('btn-clear').addEventListener('click', onClear);
+        </script>
+    </body>
+</html>
