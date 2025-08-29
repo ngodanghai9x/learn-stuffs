@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Stripe Payment (Vanilla JS)</title>
+        <script src="https://js.stripe.com/v3"></script>
+        <style>
+            body {
+                font-family: system-ui, sans-serif;
+                max-width: 640px;
+                margin: 40px auto;
+                padding: 0 16px;
+            }
+            .row {
+                margin: 12px 0;
+            }
+            #pay-btn[disabled] {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            #card-element,
+            .StripeElement {
+                padding: 12px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+            #message {
+                margin-top: 12px;
+                white-space: pre-line;
+            }
+            .ok {
+                color: #0a8;
+            }
+            .err {
+                color: #c33;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Thanh toán bằng Stripe (HTML + JS)</h1>
+
+        <div class="row">
+            <label>Số tiền (cents) • ví dụ 2000 = $20.00</label>
+            <input
+                id="amount"
+                type="number"
+                value="2000"
+                min="50"
+                step="50"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px"
+            />
+        </div>
+
+        <div class="row">
+            <label>Currency</label>
+            <select
+                id="currency"
+                style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px"
+            >
+                <option value="usd" selected>USD</option>
+                <option value="eur">EUR</option>
+                <option value="sgd">SGD</option>
+                <!-- thêm nếu BE của bạn cho phép -->
+            </select>
+        </div>
+
+        <div class="row">
+            <label>Card</label>
+            <div id="card-element"></div>
+        </div>
+
+        <div class="row">
+            <button id="pay-btn">Pay</button>
+        </div>
+
+        <div id="message"></div>
+
+        <script>
+            // 1) Khởi tạo Stripe bằng Publishable Key (Test mode)
+            // const publishableKey = 'pk_test_xxx_replaceme';
+            const publishableKey = 'pk_test_5';
+            const stripe = Stripe(publishableKey); // TODO: thay bằng publishable key của bạn
+
+            // 2) Tạo Elements & mount CardElement
+            const elements = stripe.elements();
+            const card = elements.create('card', { hidePostalCode: false });
+            card.mount('#card-element');
+
+            const $btn = document.getElementById('pay-btn');
+            const $msg = document.getElementById('message');
+
+            function setLoading(loading) {
+                $btn.disabled = loading;
+                $btn.textContent = loading ? 'Processing...' : 'Pay';
+            }
+            function say(html, cls = '') {
+                $msg.innerHTML = `<div class="${cls}">${html}</div>`;
+            }
+
+            // 3) Handle click: gọi BE tạo PaymentIntent -> confirmCardPayment
+            $btn.addEventListener('click', async () => {
+                setLoading(true);
+                say('');
+
+                const amount = Number(document.getElementById('amount').value);
+                const currency = document.getElementById('currency').value;
+
+                if (!amount || amount < 50) {
+                    say('Amount không hợp lệ (>= 50 cents).', 'err');
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    // GỌI BE của bạn (ví dụ: /create-payment-intent)
+                    const res = await fetch('http://172.16.13.231:8010/create-payment-intent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount, currency }),
+                    });
+                    if (!res.ok) {
+                        const t = await res.text();
+                        throw new Error(`Create PI failed: ${t}`);
+                    }
+                    const { clientSecret } = await res.json();
+                    if (!clientSecret) throw new Error('Missing clientSecret');
+
+                    // Xác nhận thanh toán với CardElement
+                    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                        payment_method: { card },
+                    });
+
+                    if (error) {
+                        // Lỗi xác thực/thanh toán
+                        say(`❌ ${error.message}`, 'err');
+                    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+                        say(`✅ Payment succeeded\nPaymentIntent: ${paymentIntent.id}`, 'ok');
+                        // TODO: gọi BE của bạn để finalize order nếu cần
+                    } else {
+                        say(`ℹ️ Status: ${paymentIntent?.status || 'unknown'}`, 'err');
+                    }
+                } catch (e) {
+                    say(`❌ ${e.message}`, 'err');
+                } finally {
+                    setLoading(false);
+                }
+            });
+        </script>
+    </body>
+</html>
