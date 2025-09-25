@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "name": "Order",
+    "namespace": "haind.app",
+    "fields": [
+        { "name": "orderId", "type": "string" },
+        { "name": "amount", "type": "double" }
+    ]
+}
