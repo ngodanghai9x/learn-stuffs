@@ -11,4 +11,4 @@ services:
       - .:/usr/src/app # Đồng bộ mã nguồn để hỗ trợ phát triển
       - /usr/src/app/node_modules # Loại trừ node_modules để tránh xung đột
     command: npm run start # Chạy ở chế độ phát triển nếu cần
-    restart: unless-stop # Tự động khởi động lại nếu container dừng
+    restart: unless-stopped # Tự động khởi động lại nếu container dừng
