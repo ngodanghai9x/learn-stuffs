@@ -16,9 +16,10 @@ async function runConsumer() {
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             if (!message.value) return;
-            // Decode using schemaId embedded in payload
-            const decoded = await registry.decode(message.value);
-            console.log('Decoded order:', decoded);
+            // // Decode using schemaId embedded in payload
+            // const decoded = await registry.decode(message.value);
+            const decoded = JSON.parse(message.value.toString());
+            console.log('Decoded order:', decoded, message);
         },
     });
 }

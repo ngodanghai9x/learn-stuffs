@@ -1,0 +1,20 @@
+# mkdir kafka2_data
+# sudo chown -R 1001:1001 ./kafka2_data
+# version: '3.8'
+
+services:
+    kafka-ui:
+        image: provectuslabs/kafka-ui:latest
+        container_name: kafka-ui
+        restart: unless-stopped
+        ports:
+            - '8080:8080'
+        environment:
+            - KAFKA_CLUSTERS_0_NAME=local
+            # - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9092
+            # - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=0.0.0.0:9092,0.0.0.0:9094
+            - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=172.16.13.231:9092,172.16.13.231:9094
+        # depends_on:
+        #     - kafka-1
+        #     - kafka-2
+

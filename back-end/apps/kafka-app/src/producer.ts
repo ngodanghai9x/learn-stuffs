@@ -7,7 +7,12 @@ async function runProducer() {
         clientId: 'order-service',
         brokers: ['localhost:9092', 'localhost:9094'],
     });
-    const producer = kafka.producer();
+    const producer = kafka
+        .producer
+        //         {
+        //   createPartitioner: Partitioners.LegacyPartitioner,
+        // }
+        ();
     await producer.connect();
 
     // Load schema từ file avsc
@@ -15,24 +20,28 @@ async function runProducer() {
     // const subject = 'orders-value';
 
     // Đảm bảo schema được register
-    const { orderSchemaId } = await ensureSchema('./schemas/orders.avsc');
-    console.log('🚀 ~ runProducer ~ orderSchemaId:', orderSchemaId);
+    // const { orderSchemaId } = await ensureSchema('./src/schemas/order.avsc');
+    // console.log('🚀 ~ runProducer ~ orderSchemaId:', orderSchemaId);
 
     // Encode message
     const payload = {
-        orderId: 'A123',
+        orderId: 'A123' + Date.now(),
         amount: 99.5,
         //  status: 'NEW'
     };
-    const encoded = await registry.encode(+orderSchemaId, payload);
-    console.log('🚀 ~ runProducer ~ encoded:', encoded);
+    // const encoded = await registry.encode(+orderSchemaId, payload);
+    // console.log('🚀 ~ runProducer ~ encoded:', encoded);
 
     await producer.send({
         topic: 'orders-topic',
-        messages: [{ value: encoded }],
+        // messages: [{ value: encoded }],
+        messages: [{ 
+            value: JSON.stringify(payload), 
+            key: payload.orderId
+        }],
     });
 
-    console.log('Message sent with schemaId:', orderSchemaId);
+    console.log('Message sent with schemaId:', true);
 
     await producer.disconnect();
 }

@@ -1,7 +1,8 @@
 // registry.ts
 import { SchemaRegistry, COMPATIBILITY, SchemaType } from '@kafkajs/confluent-schema-registry';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+console.log("🚀 ~ path:", fs)
 
 const filePath =
     '/home/gem/Documents/MyRepo/learn-stuffs/back-end/apps/kafka-app/src/schemas/order.avsc';

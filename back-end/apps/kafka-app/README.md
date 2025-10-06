@@ -17,3 +17,6 @@ Khi update schema, CI/CD validate compatibility với Schema Registry.
 Định nghĩa TypeScript type/interface trong code.
 
 Dùng codegen tool convert TS type → Avro schema → push vào Registry.
+
+![alt text](image.png)
+![alt text](image-1.png)
