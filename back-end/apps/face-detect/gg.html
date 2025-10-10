@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Face Detection - MediaPipe</title>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+        <style>
+            body {
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: #111;
+                overflow: hidden;
+            }
+            video,
+            canvas {
+                position: absolute;
+                border-radius: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <video id="video" width="720" height="560" autoplay muted></video>
+        <canvas id="canvas" width="720" height="560"></canvas>
+
+        <script>
+            const videoElement = document.getElementById('video');
+            const canvasElement = document.getElementById('canvas');
+            const canvasCtx = canvasElement.getContext('2d');
+
+            const faceDetection = new FaceDetection.FaceDetection({
+                locateFile: (file) =>
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
+            });
+            faceDetection.setOptions({
+                model: 'short',
+                minDetectionConfidence: 0.5,
+            });
+
+            faceDetection.onResults((results) => {
+                canvasCtx.save();
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+                if (results.detections.length > 0) {
+                    for (const detection of results.detections) {
+                        const box = detection.boundingBox;
+                        canvasCtx.strokeStyle = '#00FF00';
+                        canvasCtx.lineWidth = 3;
+                        canvasCtx.strokeRect(
+                            box.xCenter - box.width / 2,
+                            box.yCenter - box.height / 2,
+                            box.width,
+                            box.height,
+                        );
+                    }
+                }
+                canvasCtx.restore();
+            });
+
+            const camera = new Camera(videoElement, {
+                onFrame: async () => {
+                    await faceDetection.send({ image: videoElement });
+                },
+                width: 720,
+                height: 560,
+            });
+            camera.start();
+        </script>
+    </body>
+</html>

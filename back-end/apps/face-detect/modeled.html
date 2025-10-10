@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Face Detection - face-api.js</title>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                padding: 16px;
+                display: flex;
+                gap: 16px;
+            }
+            #wrap {
+                position: relative;
+                width: 640px;
+            }
+            video,
+            canvas {
+                width: 100%;
+                height: auto;
+                border-radius: 6px;
+                background: #000;
+            }
+            #controls {
+                margin-top: 8px;
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+            #log {
+                margin-top: 8px;
+                color: #333;
+                font-size: 13px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrap">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="overlay"></canvas>
+            <div id="controls">
+                <button id="startBtn">Start</button>
+                <button id="stopBtn" disabled>Stop</button>
+                <span id="status"></span>
+            </div>
+            <div id="log"></div>
+        </div>
+
+        <!-- face-api.js from CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+        <script>
+            const MODEL_PATH = '/models'; // <-- đặt models tại đây (tải từ repo face-api models)
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('overlay');
+            const ctx = canvas.getContext('2d');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const status = document.getElementById('status');
+            const log = document.getElementById('log');
+
+            let stream = null;
+            let intervalId = null;
+
+            function writeLog(txt) {
+                log.textContent = txt;
+            }
+
+            async function loadModels() {
+                writeLog('Loading models...');
+                // tiny_face_detector is lightweight; bạn có thể load thêm landmark/expressions nếu cần
+                await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_PATH);
+                writeLog('Models loaded.');
+            }
+
+            async function start() {
+                try {
+                    await loadModels();
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'user' },
+                    });
+                    video.srcObject = stream;
+                    await video.play();
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    startBtn.disabled = true;
+                    stopBtn.disabled = false;
+                    status.textContent = 'Detecting (face-api.js)...';
+
+                    intervalId = setInterval(async () => {
+                        const detections = await faceapi.detectAllFaces(
+                            video,
+                            new faceapi.TinyFaceDetectorOptions({
+                                inputSize: 224,
+                                scoreThreshold: 0.5,
+                            }),
+                        );
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        detections.forEach((det) => {
+                            const { x, y, width, height } = det.box || det._box || {};
+                            if (!width) return;
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = 'deepskyblue';
+                            ctx.strokeRect(x, y, width, height);
+                            ctx.font = '14px sans-serif';
+                            ctx.fillStyle = 'deepskyblue';
+                            ctx.fillText((det.score || 0).toFixed(2), x + 4, y - 6);
+                        });
+                        writeLog(`Detected ${detections.length} face(s)`);
+                    }, 150);
+                } catch (err) {
+                    writeLog('Error: ' + err.message);
+                }
+            }
+
+            function stop() {
+                if (intervalId) clearInterval(intervalId);
+                if (stream) stream.getTracks().forEach((t) => t.stop());
+                stream = null;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                status.textContent = 'Stopped';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                writeLog('Stopped');
+            }
+
+            startBtn.addEventListener('click', start);
+            stopBtn.addEventListener('click', stop);
+        </script>
+    </body>
+</html>

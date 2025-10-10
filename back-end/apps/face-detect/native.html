@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Face Detection (Native Browser API)</title>
+        <style>
+            body {
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: #000;
+                overflow: hidden;
+            }
+            #wrapper {
+                position: relative;
+                width: 720px;
+                height: 560px;
+            }
+            video {
+                width: 100%;
+                height: 100%;
+                border-radius: 8px;
+                object-fit: cover;
+            }
+            canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 8px;
+                pointer-events: none; /* tránh canvas bắt chuột */
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrapper">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <script>
+            async function init() {
+                // check support
+                if (!('FaceDetector' in window)) {
+                    alert('Trình duyệt này chưa hỗ trợ FaceDetector API.');
+                    return;
+                }
+
+                const video = document.getElementById('video');
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // mở webcam
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                await video.play();
+
+                // đồng bộ kích thước canvas với video
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const detector = new FaceDetector({ fastMode: false });
+
+                async function detectLoop() {
+                    try {
+                        const faces = await detector.detect(video);
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        for (const face of faces) {
+                            const { width, height, top, left } = face.boundingBox;
+                            ctx.strokeStyle = '#00FF00';
+                            ctx.lineWidth = 3;
+                            ctx.strokeRect(left, top, width, height);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                    requestAnimationFrame(detectLoop);
+                }
+
+                detectLoop();
+            }
+
+            init().catch(console.error);
+        </script>
+    </body>
+</html>
